@@ -905,9 +905,10 @@ html { -webkit-tap-highlight-color: transparent; }
   background: radial-gradient(circle, rgba(200, 71, 79, .18), transparent 65%); animation: float 12s ease-in-out infinite;
 }
 @media (min-width: 992px) { .mood-inner { grid-template-columns: 1fr 1.5fr; align-items: center; gap: 56px; } }
+.mood-head, .mood-stage, .mood-copy { min-width: 0; }
 .mood-head { position: relative; }
 .mood-head .section-title { margin-bottom: 24px; }
-.mood-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.mood-chips { display: flex; flex-wrap: wrap; gap: 8px; max-width: 100%; }
 .mood-chip {
   padding: 10px 18px; min-height: 44px; border-radius: 999px; border: 1.5px solid rgba(43, 32, 36, .14);
   background: rgba(255, 255, 255, .7); color: var(--ink); font: inherit; font-size: 14px; font-weight: 500; cursor: pointer;
@@ -917,9 +918,9 @@ html { -webkit-tap-highlight-color: transparent; }
 .mood-chip.is-active { background: var(--ink); color: #fff; border-color: var(--ink); }
 
 .mood-stage { position: relative; display: grid; gap: 24px; }
-@media (min-width: 640px) { .mood-stage { grid-template-columns: 0.9fr 1fr; align-items: center; } }
+@media (min-width: 992px) { .mood-stage { grid-template-columns: 0.9fr 1fr; align-items: center; } }
 .mood-image {
-  position: relative; display: block; aspect-ratio: 4 / 5; border-radius: 24px; overflow: hidden; box-shadow: var(--shadow-lg);
+  position: relative; display: block; width: 100%; aspect-ratio: 4 / 5; border-radius: 24px; overflow: hidden; box-shadow: var(--shadow-lg);
   animation: mood-in .7s var(--ease) both;
 }
 .mood-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s var(--ease); }
@@ -982,11 +983,13 @@ html { -webkit-tap-highlight-color: transparent; }
 
 @media (max-width: 767px) {
   .mood-finder, .process { padding-top: 56px; }
-  .mood-inner { border-radius: 24px; }
-  .mood-chips { flex-wrap: nowrap; overflow-x: auto; margin: 0 -4px; padding: 2px 4px 6px; scrollbar-width: none; }
-  .mood-chips::-webkit-scrollbar { display: none; }
-  .mood-chip { flex-shrink: 0; }
+  .mood-inner { border-radius: 24px; padding: 22px 18px; }
+  .mood-chips { flex-wrap: wrap; overflow: visible; width: auto; }
+  .mood-chip:hover { transform: none; }
   .mood-image { aspect-ratio: 1 / 1; }
+  .mood-name { font-size: 26px; overflow-wrap: anywhere; }
+  .mood-intro { -webkit-line-clamp: unset; display: block; }
+  .mood-copy .button { max-width: 100%; height: auto; white-space: normal; text-align: center; }
 }
 
 @keyframes mood-in { from { opacity: 0; transform: scale(.94) rotate(-2deg); } to { opacity: 1; transform: none; } }
