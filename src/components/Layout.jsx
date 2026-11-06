@@ -3,6 +3,7 @@ import Header from './Header.jsx';
 import Footer from './Footer.jsx';
 import CartPreview from './CartPreview.jsx';
 import BackToTop from './BackToTop.jsx';
+import MobileTabBar from './MobileTabBar.jsx';
 
 export default function Layout() {
   const { pathname } = useLocation();
@@ -17,6 +18,7 @@ export default function Layout() {
       <Footer />
       <CartPreview />
       <BackToTop />
+      <MobileTabBar />
     </div>
   );
 }

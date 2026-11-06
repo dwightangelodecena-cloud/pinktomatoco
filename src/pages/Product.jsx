@@ -7,6 +7,43 @@ import ReviewModal from '../components/ReviewModal.jsx';
 import NotFound from './NotFound.jsx';
 import { ProductPageSkeleton } from '../components/Skeleton.jsx';
 
+const FORM_ID = 'product-options-form';
+
+// Phone-only bar that appears once the main Add To Cart button scrolls out of view.
+function StickyBuyBar({ product, price }) {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    const form = document.getElementById(FORM_ID);
+    if (!form || !('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver(([e]) => setShow(!e.isIntersecting && e.boundingClientRect.top < 0));
+    io.observe(form);
+    return () => io.disconnect();
+  }, [product.id]);
+
+  const buy = () => {
+    const form = document.getElementById(FORM_ID);
+    if (!form) return;
+    const select = form.querySelector('select');
+    if (select && !select.value) {
+      form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    form.requestSubmit();
+  };
+
+  return (
+    <div className={`sticky-buy-bar ${show ? 'is-visible' : ''}`} aria-hidden={!show}>
+      <img src={product.images?.[0]} alt="" />
+      <div className="sticky-buy-info">
+        <span className="sticky-buy-name">{product.name}</span>
+        <span className="sticky-buy-price">{price != null ? money(price) : ''}</span>
+      </div>
+      <button className="button button-primary" onClick={buy} tabIndex={show ? 0 : -1}>Add To Cart</button>
+    </div>
+  );
+}
+
 // Image that zooms toward the cursor on hover.
 function ZoomImage({ src, alt }) {
   const [origin, setOrigin] = useState('50% 50%');
@@ -99,6 +136,7 @@ export default function Product() {
           </dl>
 
           <ProductOptions
+            formId={FORM_ID}
             product={product}
             onPriceChange={(p, v) => {
               if (p != null) setPrice(p);
@@ -149,6 +187,8 @@ export default function Product() {
           <ProductGrid products={related} />
         </section>
       )}
+
+      <StickyBuyBar product={product} price={price} />
 
       {reviewOpen && <ReviewModal product={product} onClose={() => setReviewOpen(false)} />}
     </div>

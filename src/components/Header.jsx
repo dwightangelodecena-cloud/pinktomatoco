@@ -2,7 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
-import { SearchIcon, CartIcon, CloseIcon, MenuIcon, ChevronDown, UserIcon } from './Icons.jsx';
+import {
+  SearchIcon, CartIcon, CloseIcon, MenuIcon, ChevronDown, UserIcon,
+  MapPinIcon, LeafIcon, TagIcon, ShieldCheckIcon, FlameIcon,
+} from './Icons.jsx';
 
 export const BRAND = 'Pink Tomato Candle & Bath Co. by Len Parent Style';
 
@@ -14,9 +17,10 @@ const shopLinks = [
 ];
 
 const announcements = [
-  'Hand-poured in North Dakota',
-  'Clean-burning coconut soy wax',
-  'Bulk pricing on 12+ candles',
+  { Icon: MapPinIcon, text: 'Hand-poured in North Dakota' },
+  { Icon: LeafIcon, text: 'Clean-burning coconut soy wax' },
+  { Icon: TagIcon, text: 'Bulk pricing on 12+ candles' },
+  { Icon: ShieldCheckIcon, text: 'Toxic-free & vegan fragrances' },
 ];
 
 // Continuously scrolling strip; the list is repeated so the loop is seamless.
@@ -24,15 +28,21 @@ function AnnouncementBar() {
   const row = [...announcements, ...announcements];
   return (
     <div className="announcement-bar">
-      <p className="sr-only">{announcements.join('. ')}</p>
-      <div className="marquee" aria-hidden="true">
+      <p className="sr-only">{announcements.map((a) => a.text).join('. ')}</p>
+      <div className="marquee-viewport" aria-hidden="true">
+      <div className="marquee">
         {[0, 1].map((k) => (
           <div className="marquee-track" key={k}>
-            {row.map((t, i) => (
-              <span key={i} className="marquee-item">{t}<span className="marquee-dot">✦</span></span>
+            {row.map(({ Icon, text }, i) => (
+              <span key={i} className="marquee-item">
+                <span className="marquee-chip"><Icon size={14} strokeWidth={2} /></span>
+                {text}
+                <span className="marquee-sep"><FlameIcon size={12} strokeWidth={2} /></span>
+              </span>
             ))}
           </div>
         ))}
+      </div>
       </div>
     </div>
   );
@@ -46,6 +56,14 @@ export default function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [query, setQuery] = useState('');
+  const [isMobile, setIsMobile] = useState(() => window.matchMedia('(max-width: 991px)').matches);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 991px)');
+    const onChange = () => setIsMobile(mq.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
   const navigate = useNavigate();
   const location = useLocation();
   const searchRef = useRef(null);
@@ -111,7 +129,13 @@ export default function Header() {
             <span className={`toggle-icon ${menuOpen ? 'is-open' : ''}`}>{menuOpen ? <CloseIcon /> : <MenuIcon />}</span>
           </button>
 
-          <Link to="/" className={`nav-logo ${scrolled ? 'is-visible' : ''}`} aria-hidden={!scrolled} tabIndex={scrolled ? 0 : -1}>
+          <Link
+            to="/"
+            className={`nav-logo ${scrolled || isMobile ? 'is-visible' : ''}`}
+            aria-label="Pink Tomato home"
+            aria-hidden={!(scrolled || isMobile)}
+            tabIndex={scrolled || isMobile ? 0 : -1}
+          >
             <img src="/images/logo.png" alt="" />
           </Link>
 

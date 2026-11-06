@@ -4,7 +4,7 @@ import { CartIcon, CheckIcon, MinusIcon, PlusIcon } from './Icons.jsx';
 import { bulkTierText, defaultVariant, money, sortedVariants, unitPrice } from '../lib/pricing.js';
 
 // Size select, bulk pricing, quantity and Add To Cart (used on the product page and in Quick View).
-export default function ProductOptions({ product, onPriceChange, onAdded }) {
+export default function ProductOptions({ product, onPriceChange, onAdded, formId }) {
   const { add } = useCart();
   const variants = sortedVariants(product);
   const [variantId, setVariantId] = useState(defaultVariant(product)?.id ?? '');
@@ -36,7 +36,7 @@ export default function ProductOptions({ product, onPriceChange, onAdded }) {
   const lineUnit = variant ? unitPrice(variant.price, tiers, qty) : null;
 
   return (
-    <form className="product-options" onSubmit={submit}>
+    <form className="product-options" onSubmit={submit} id={formId}>
       {variants.length > 0 && (
         <label className="form-field">
           <span className="form-field-title">
