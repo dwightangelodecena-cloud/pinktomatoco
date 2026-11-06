@@ -18,24 +18,3 @@ export function priceRange(product) {
   return min === max ? money(min) : `${money(min)} - ${money(max)}`;
 }
 
-function matchingTier(tiers, qty) {
-  return (tiers || []).find((t) => qty >= t.min && (t.max == null || qty <= t.max));
-}
-
-// Same rules as public.bulk_unit_price() in the database.
-export function unitPrice(basePrice, tiers, qty) {
-  const base = Number(basePrice);
-  const t = matchingTier(tiers, qty);
-  if (!t) return base;
-  if (t.type === 'percent') return Math.round(base * (1 - t.value / 100) * 100) / 100;
-  if (t.type === 'price') return Math.max(base - t.value, 0);
-  if (t.type === 'fixed') return Number(t.value);
-  return base;
-}
-
-export function bulkTierText(t) {
-  const range = t.max == null ? `Buy ${t.min} or above` : `Buy ${t.min} - ${t.max}`;
-  if (t.type === 'percent') return `${range} and get ${t.value}% off`;
-  if (t.type === 'price') return `${range} and get ${money(t.value)} off`;
-  return `${range} and pay only ${money(t.value)} each`;
-}

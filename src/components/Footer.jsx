@@ -26,7 +26,7 @@ export default function Footer() {
     <footer className="main-footer">
       <section className="footer-site-subscribe">
         <h2 className="footer-heading">Join our candle club</h2>
-        <p className="footer-sub">New scents, restocks and bulk deals, straight to your inbox.</p>
+        <p className="footer-sub">New scents and restocks, straight to your inbox.</p>
         <form className="subscription-form" onSubmit={onSubscribe}>
           <label className="sr-only" htmlFor="nl_email">Email</label>
           <input

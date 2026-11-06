@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useCart } from '../context/CartContext.jsx';
 import { CartIcon, CheckIcon, MinusIcon, PlusIcon } from './Icons.jsx';
-import { bulkTierText, defaultVariant, money, sortedVariants, unitPrice } from '../lib/pricing.js';
+import { defaultVariant, sortedVariants } from '../lib/pricing.js';
 
-// Size select, bulk pricing, quantity and Add To Cart (used on the product page and in Quick View).
+// Size select, quantity and Add To Cart (used on the product page and in Quick View).
 export default function ProductOptions({ product, onPriceChange, onAdded, formId }) {
   const { add } = useCart();
   const variants = sortedVariants(product);
@@ -32,9 +32,6 @@ export default function ProductOptions({ product, onPriceChange, onAdded, formId
     onAdded?.();
   };
 
-  const tiers = product.bulk_pricing || [];
-  const lineUnit = variant ? unitPrice(variant.price, tiers, qty) : null;
-
   return (
     <form className="product-options" onSubmit={submit} id={formId}>
       {variants.length > 0 && (
@@ -51,15 +48,6 @@ export default function ProductOptions({ product, onPriceChange, onAdded, formId
             </select>
           </span>
         </label>
-      )}
-
-      {tiers.length > 0 && (
-        <div className="form-field bulk-pricing">
-          <div className="form-field-title">Bulk Pricing</div>
-          <ul>
-            {tiers.map((t) => <li key={t.min}>{bulkTierText(t)}</li>)}
-          </ul>
-        </div>
       )}
 
       <div className="form-submit-container">
@@ -83,9 +71,6 @@ export default function ProductOptions({ product, onPriceChange, onAdded, formId
           <span className="added-label" aria-hidden={!added}><CheckIcon /> Added</span>
         </button>
       </div>
-      {variant && lineUnit !== Number(variant.price) && (
-        <p className="bulk-note">Bulk price applied: {money(lineUnit)} each</p>
-      )}
       {error && <p className="form-message error shake">{error}</p>}
     </form>
   );

@@ -154,13 +154,13 @@ begin
     v_qty := (v_item->>'quantity')::int;
     if v_qty is null or v_qty < 1 then raise exception 'Invalid quantity'; end if;
 
-    select v.id, v.label, v.price, p.id as product_id, p.name, p.bulk_pricing
+    select v.id, v.label, v.price, p.id as product_id, p.name
       into v_variant
       from product_variants v join products p on p.id = v.product_id
      where v.id = (v_item->>'variant_id')::int and p.is_visible;
     if not found then raise exception 'Unknown product option'; end if;
 
-    v_unit := bulk_unit_price(v_variant.price, v_variant.bulk_pricing, v_qty);
+    v_unit := v_variant.price;
     v_subtotal := v_subtotal + v_unit * v_qty;
 
     insert into order_items (order_id, product_id, variant_id, name, option_label, quantity, unit_price)

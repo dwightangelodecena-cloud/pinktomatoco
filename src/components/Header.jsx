@@ -4,7 +4,7 @@ import { useCart } from '../context/CartContext.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import {
   SearchIcon, CartIcon, CloseIcon, MenuIcon, ChevronDown, UserIcon,
-  MapPinIcon, LeafIcon, TagIcon, ShieldCheckIcon, FlameIcon,
+  MapPinIcon, LeafIcon, ShieldCheckIcon, FlameIcon,
 } from './Icons.jsx';
 
 export const BRAND = 'Pink Tomato Candle & Bath Co. by Len Parent Style';
@@ -19,7 +19,6 @@ const shopLinks = [
 const announcements = [
   { Icon: MapPinIcon, text: 'Hand-poured in North Dakota' },
   { Icon: LeafIcon, text: 'Clean-burning coconut soy wax' },
-  { Icon: TagIcon, text: 'Bulk pricing on 12+ candles' },
   { Icon: ShieldCheckIcon, text: 'Toxic-free & vegan fragrances' },
 ];
 

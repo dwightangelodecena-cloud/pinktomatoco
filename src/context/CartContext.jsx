@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { load, save } from '../lib/storage.js';
-import { unitPrice } from '../lib/pricing.js';
 
 const CartContext = createContext(null);
 const KEY = 'ptc-cart';
@@ -13,7 +12,7 @@ export function CartProvider({ children }) {
 
   const value = useMemo(() => {
     const lines = items.map((i) => {
-      const unit = unitPrice(i.basePrice, i.bulkPricing, i.quantity);
+      const unit = Number(i.basePrice);
       return { ...i, unit, total: unit * i.quantity };
     });
     return {
@@ -42,7 +41,6 @@ export function CartProvider({ children }) {
               optionName: product.option_name || 'Size',
               optionLabel: variant.label,
               basePrice: Number(variant.price),
-              bulkPricing: product.bulk_pricing || [],
               quantity,
             },
           ];

@@ -3,8 +3,6 @@ import { Link } from 'react-router-dom';
 import Mosaic from '../components/Mosaic.jsx';
 import ValueProps from '../components/ValueProps.jsx';
 import MoodFinder from '../components/MoodFinder.jsx';
-import SizeGuide from '../components/SizeGuide.jsx';
-import BulkBand from '../components/BulkBand.jsx';
 import Process from '../components/Process.jsx';
 import Reveal from '../components/Reveal.jsx';
 import { ProductGrid } from '../components/ProductCard.jsx';
@@ -37,8 +35,6 @@ export default function Home() {
       </section>
 
       {products && <MoodFinder products={products} />}
-      {products && <SizeGuide products={products} />}
-      <BulkBand />
       <Process />
 
       <section className="latest-blog-posts container">

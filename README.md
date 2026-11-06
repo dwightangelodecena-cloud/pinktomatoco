@@ -11,7 +11,7 @@ Storefront for [pinktomatoco.com](https://pinktomatoco.com), rebuilt from the or
 | --- | --- |
 | `/` | Home: 4-image mosaic, New Products, Blog |
 | `/shop-all` | All products, sort, 12 per page |
-| `/:slug` | Product page: size, bulk pricing, quantity, add to cart, share, wishlist, reviews, similar items |
+| `/:slug` | Product page: size, quantity, add to cart, share, wishlist, reviews, similar items |
 | `/cart`, `/checkout` | Cart and checkout (orders saved to Supabase) |
 | `/shipping-returns`, `/contact-us`, `/blog`, `/sitemap` | Content pages |
 | `/login`, `/wishlist`, `/search?q=` | Account, wishlist, search |
@@ -33,7 +33,7 @@ Without a `.env` the site still runs and shows the products from `src/data/produ
 3. Copy **Project Settings → API → Project URL / anon key** into `.env`.
 
 Tables: `products`, `product_variants`, `reviews` (need `approved = true` to show), `newsletter_subscribers`, `contact_messages`, `orders`, `order_items`.
-Orders are created through the `create_order` function, which recalculates prices and bulk discounts in the database so prices can't be changed from the browser.
+Orders are created through the `create_order` function, which recalculates prices in the database so prices can't be changed from the browser.
 
 ## Not done yet
 
