@@ -1,17 +1,22 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import Header from './Header.jsx';
 import Footer from './Footer.jsx';
 import CartPreview from './CartPreview.jsx';
+import BackToTop from './BackToTop.jsx';
 
 export default function Layout() {
+  const { pathname } = useLocation();
   return (
     <div className="site-frame">
       <Header />
       <main className="main-content">
-        <Outlet />
+        <div key={pathname} className="page-transition">
+          <Outlet />
+        </div>
       </main>
       <Footer />
       <CartPreview />
+      <BackToTop />
     </div>
   );
 }

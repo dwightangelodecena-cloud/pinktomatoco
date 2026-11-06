@@ -9,6 +9,7 @@ export default function ProductOptions({ product, onPriceChange, onAdded }) {
   const [variantId, setVariantId] = useState(defaultVariant(product)?.id ?? '');
   const [qty, setQty] = useState(1);
   const [error, setError] = useState('');
+  const [added, setAdded] = useState(false);
   const variant = variants.find((v) => v.id === Number(variantId)) || null;
 
   const changeVariant = (id) => {
@@ -25,6 +26,8 @@ export default function ProductOptions({ product, onPriceChange, onAdded }) {
       return;
     }
     add(product, variant, qty);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1600);
     onAdded?.();
   };
 
@@ -74,12 +77,15 @@ export default function ProductOptions({ product, onPriceChange, onAdded }) {
             <button type="button" className="quantity-control" aria-label="Increase quantity" onClick={() => setQty((q) => q + 1)}>&#43;</button>
           </div>
         </div>
-        <button className="button button-primary add-to-cart" type="submit">Add To Cart</button>
+        <button className={`button button-primary add-to-cart ${added ? 'is-added' : ''}`} type="submit">
+          <span className="add-label">Add To Cart</span>
+          <span className="added-label" aria-hidden={!added}>Added ✓</span>
+        </button>
       </div>
       {variant && lineUnit !== Number(variant.price) && (
         <p className="bulk-note">Bulk price applied: {money(lineUnit)} each</p>
       )}
-      {error && <p className="form-message error">{error}</p>}
+      {error && <p className="form-message error shake">{error}</p>}
     </form>
   );
 }

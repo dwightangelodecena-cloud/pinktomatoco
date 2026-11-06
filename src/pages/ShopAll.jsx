@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import Breadcrumbs from '../components/Breadcrumbs.jsx';
 import { ProductGrid } from '../components/ProductCard.jsx';
+import { ProductGridSkeleton } from '../components/Skeleton.jsx';
 import { useProducts } from '../lib/useProducts.js';
 import { defaultVariant } from '../lib/pricing.js';
 
@@ -42,6 +43,7 @@ export default function ShopAll() {
       <h1 className="page-heading">Shop All</h1>
 
       <div className="catalog-toolbar">
+        <span className="catalog-count">{products ? `${products.length} products` : ''}</span>
         <label>
           <span className="form-field-title">Sort By:</span>
           <select
@@ -59,7 +61,7 @@ export default function ShopAll() {
         </label>
       </div>
 
-      {products ? <ProductGrid products={shown} showSummary /> : <p className="loading">Loading…</p>}
+      {products ? <ProductGrid key={`${sort}-${page}`} products={shown} showSummary /> : <ProductGridSkeleton count={8} />}
 
       {pages > 1 && (
         <nav className="pagination" aria-label="Pagination">

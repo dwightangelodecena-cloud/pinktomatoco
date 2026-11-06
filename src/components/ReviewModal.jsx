@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import { useEffect, useState } from 'react';
 import { submitReview } from '../lib/api.js';
 import { CloseIcon, Star } from './Icons.jsx';
@@ -28,7 +29,7 @@ export default function ReviewModal({ product, onClose }) {
     }
   };
 
-  return (
+  return createPortal(
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal review-modal" role="dialog" aria-modal="true" aria-label="Write a Review" onClick={(e) => e.stopPropagation()}>
         <button className="icon-button modal-close" onClick={onClose} aria-label="Close"><CloseIcon /></button>
@@ -70,7 +71,8 @@ export default function ReviewModal({ product, onClose }) {
           </form>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 

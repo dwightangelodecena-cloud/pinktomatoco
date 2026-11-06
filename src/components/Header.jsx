@@ -13,12 +13,32 @@ const shopLinks = [
   { to: '/blog', label: 'Blog' },
 ];
 
+const announcements = [
+  'Hand-poured in North Dakota',
+  'Clean-burning coconut soy wax',
+  'Bulk pricing on 12+ candles',
+];
+
+function AnnouncementBar() {
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setI((n) => (n + 1) % announcements.length), 4000);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <div className="announcement-bar" aria-live="polite">
+      <span key={i} className="announcement-text">{announcements[i]}</span>
+    </div>
+  );
+}
+
 export default function Header() {
   const { count, openPreview } = useCart();
   const { user, signOut } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const [shopOpen, setShopOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const [query, setQuery] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
@@ -34,91 +54,113 @@ export default function Header() {
     if (searchOpen) searchRef.current?.focus();
   }, [searchOpen]);
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    document.body.classList.toggle('menu-open', menuOpen);
+  }, [menuOpen]);
+
   const submitSearch = (e) => {
     e.preventDefault();
     if (query.trim()) navigate(`/search?q=${encodeURIComponent(query.trim())}`);
   };
 
   return (
-    <header className="main-header">
-      {searchOpen && (
-        <section className="header-search">
+    <>
+      <AnnouncementBar />
+
+      <header className={`main-header ${scrolled ? 'is-scrolled' : ''}`}>
+        <div className={`header-search ${searchOpen ? 'is-open' : ''}`}>
           <form className="search-form" onSubmit={submitSearch} role="search">
+            <SearchIcon />
             <label className="sr-only" htmlFor="header-search">Search</label>
             <input
               id="header-search"
               ref={searchRef}
               className="search-input"
               type="search"
-              placeholder="Search the store"
+              placeholder="Search candles, wax melts, scents…"
               value={query}
+              tabIndex={searchOpen ? 0 : -1}
               onChange={(e) => setQuery(e.target.value)}
             />
-            <button type="button" className="icon-button" onClick={() => setSearchOpen(false)} aria-label="Close search">
+            <button type="button" className="icon-button" tabIndex={searchOpen ? 0 : -1} onClick={() => setSearchOpen(false)} aria-label="Close search">
               <CloseIcon />
             </button>
           </form>
-        </section>
-      )}
-
-      <div className="primary-navigation">
-        <button
-          className="icon-button navigation-toggle"
-          aria-label="Menu"
-          aria-expanded={menuOpen}
-          onClick={() => setMenuOpen((o) => !o)}
-        >
-          {menuOpen ? <CloseIcon /> : <MenuIcon />}
-        </button>
-
-        <nav className={`main-menu ${menuOpen ? 'is-open' : ''}`} aria-label="Main">
-          <ul className="main-menu-list">
-            <li
-              className={`has-dropdown ${shopOpen ? 'is-open' : ''}`}
-              onMouseEnter={() => setShopOpen(true)}
-              onMouseLeave={() => setShopOpen(false)}
-            >
-              <button className="main-menu-link" aria-expanded={shopOpen} onClick={() => setShopOpen((o) => !o)}>
-                Shop <ChevronDown />
-              </button>
-              <ul className="dropdown">
-                <li><NavLink to="/shop-all">Shop All</NavLink></li>
-              </ul>
-            </li>
-            {shopLinks.map((l) => (
-              <li key={l.to}><NavLink className="main-menu-link" to={l.to}>{l.label}</NavLink></li>
-            ))}
-            <li className="mobile-only">
-              {user ? (
-                <button className="main-menu-link" onClick={signOut}>Log out</button>
-              ) : (
-                <NavLink className="main-menu-link" to="/login">Log in</NavLink>
-              )}
-            </li>
-          </ul>
-        </nav>
-
-        <div className="header-tools">
-          {user ? (
-            <button className="tool-link desktop-only" onClick={signOut}>Log out</button>
-          ) : (
-            <Link className="tool-link desktop-only" to="/login">Log in</Link>
-          )}
-          <button className="icon-button" aria-label="Search" onClick={() => setSearchOpen((o) => !o)}>
-            <SearchIcon />
-          </button>
-          <button className="icon-button cart-preview-trigger" aria-label={`Cart, ${count} items`} onClick={openPreview}>
-            <CartIcon />
-            <span className="cart-preview-quantity">{count}</span>
-          </button>
         </div>
-      </div>
+
+        <div className="primary-navigation">
+          <button
+            className="icon-button navigation-toggle"
+            aria-label="Menu"
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((o) => !o)}
+          >
+            <span className={`toggle-icon ${menuOpen ? 'is-open' : ''}`}>{menuOpen ? <CloseIcon /> : <MenuIcon />}</span>
+          </button>
+
+          <Link to="/" className={`nav-logo ${scrolled ? 'is-visible' : ''}`} aria-hidden={!scrolled} tabIndex={scrolled ? 0 : -1}>
+            <img src="/images/logo.png" alt="" />
+          </Link>
+
+          <nav className={`main-menu ${menuOpen ? 'is-open' : ''}`} aria-label="Main">
+            <ul className="main-menu-list">
+              <li
+                className={`has-dropdown ${shopOpen ? 'is-open' : ''}`}
+                onMouseEnter={() => setShopOpen(true)}
+                onMouseLeave={() => setShopOpen(false)}
+              >
+                <button className="main-menu-link" aria-expanded={shopOpen} onClick={() => setShopOpen((o) => !o)}>
+                  <span>Shop</span> <ChevronDown />
+                </button>
+                <ul className="dropdown">
+                  <li><NavLink to="/shop-all">Shop All</NavLink></li>
+                </ul>
+              </li>
+              {shopLinks.map((l, i) => (
+                <li key={l.to} style={{ '--i': i + 1 }}>
+                  <NavLink className="main-menu-link" to={l.to}><span>{l.label}</span></NavLink>
+                </li>
+              ))}
+              <li className="mobile-only" style={{ '--i': shopLinks.length + 1 }}>
+                {user ? (
+                  <button className="main-menu-link" onClick={signOut}><span>Log out</span></button>
+                ) : (
+                  <NavLink className="main-menu-link" to="/login"><span>Log in</span></NavLink>
+                )}
+              </li>
+            </ul>
+          </nav>
+
+          <div className="header-tools">
+            {user ? (
+              <button className="tool-link desktop-only" onClick={signOut}>Log out</button>
+            ) : (
+              <Link className="tool-link desktop-only" to="/login">Log in</Link>
+            )}
+            <button className="icon-button" aria-label="Search" aria-expanded={searchOpen} onClick={() => setSearchOpen((o) => !o)}>
+              <SearchIcon />
+            </button>
+            <button className="icon-button cart-preview-trigger" aria-label={`Cart, ${count} items`} onClick={openPreview}>
+              <CartIcon />
+              <span key={count} className={`cart-preview-quantity ${count ? 'bump' : ''}`}>{count}</span>
+            </button>
+          </div>
+        </div>
+        <div className={`menu-backdrop ${menuOpen ? 'is-open' : ''}`} onClick={() => setMenuOpen(false)} />
+      </header>
 
       <div className="header-logo">
         <Link to="/" className="logo">
           <img src="/images/logo.png" alt={BRAND} className="logo-image" />
         </Link>
       </div>
-    </header>
+    </>
   );
 }

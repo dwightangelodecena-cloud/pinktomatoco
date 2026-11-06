@@ -5,6 +5,21 @@ import ProductOptions from '../components/ProductOptions.jsx';
 import { ProductGrid } from '../components/ProductCard.jsx';
 import ReviewModal from '../components/ReviewModal.jsx';
 import NotFound from './NotFound.jsx';
+import { ProductPageSkeleton } from '../components/Skeleton.jsx';
+
+// Image that zooms toward the cursor on hover.
+function ZoomImage({ src, alt }) {
+  const [origin, setOrigin] = useState('50% 50%');
+  const onMove = (e) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    setOrigin(`${((e.clientX - r.left) / r.width) * 100}% ${((e.clientY - r.top) / r.height) * 100}%`);
+  };
+  return (
+    <a href={src} target="_blank" rel="noreferrer" className="product-image zoomable" onMouseMove={onMove}>
+      <img src={src} alt={alt} style={{ transformOrigin: origin }} />
+    </a>
+  );
+}
 import { getProductBySlug, getProducts, getReviews } from '../lib/api.js';
 import { defaultVariant, money } from '../lib/pricing.js';
 import { useWishlist } from '../context/WishlistContext.jsx';
@@ -43,7 +58,7 @@ export default function Product() {
     };
   }, [slug]);
 
-  if (product === undefined) return <div className="container page"><p className="loading">Loading…</p></div>;
+  if (product === undefined) return <ProductPageSkeleton />;
   if (product === null) return <NotFound />;
 
   const pageUrl = typeof window !== 'undefined' ? window.location.href : '';
@@ -57,15 +72,13 @@ export default function Product() {
 
       <div className="product-top">
         <div className="product-images">
-          <a href={image} target="_blank" rel="noreferrer" className="product-image">
-            <img src={image} alt={product.name} />
-          </a>
+          <ZoomImage src={image} alt={product.name} />
         </div>
 
         <div className="product-details">
           <header className="product-header">
             <h1 className="product-title">{product.name}</h1>
-            <div className="product-price">{price != null ? money(price) : ''}</div>
+            <div key={price} className="product-price price-pop">{price != null ? money(price) : ''}</div>
             <div className="product-rating">
               {reviews.length > 0 ? (
                 <>

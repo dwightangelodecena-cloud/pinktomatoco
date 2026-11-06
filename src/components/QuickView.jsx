@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ProductOptions from './ProductOptions.jsx';
@@ -17,7 +18,7 @@ export default function QuickView({ product, onClose }) {
     };
   }, [onClose]);
 
-  return (
+  return createPortal(
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal quick-view" role="dialog" aria-modal="true" aria-label={product.name} onClick={(e) => e.stopPropagation()}>
         <button className="icon-button modal-close" onClick={onClose} aria-label="Close"><CloseIcon /></button>
@@ -26,11 +27,12 @@ export default function QuickView({ product, onClose }) {
         </div>
         <div className="quick-view-details">
           <h2 className="product-title">{product.name}</h2>
-          <div className="product-price">{price != null ? money(price) : ''}</div>
+          <div key={price} className="product-price price-pop">{price != null ? money(price) : ''}</div>
           <ProductOptions product={product} onPriceChange={(p) => p != null && setPrice(p)} onAdded={onClose} />
           <Link to={`/${product.slug}`} className="view-details" onClick={onClose}>View Full Details</Link>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
