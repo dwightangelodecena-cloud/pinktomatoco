@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
-import { SearchIcon, CartIcon, CloseIcon, MenuIcon, ChevronDown } from './Icons.jsx';
+import { SearchIcon, CartIcon, CloseIcon, MenuIcon, ChevronDown, UserIcon } from './Icons.jsx';
 
 export const BRAND = 'Pink Tomato Candle & Bath Co. by Len Parent Style';
 
@@ -19,15 +19,21 @@ const announcements = [
   'Bulk pricing on 12+ candles',
 ];
 
+// Continuously scrolling strip; the list is repeated so the loop is seamless.
 function AnnouncementBar() {
-  const [i, setI] = useState(0);
-  useEffect(() => {
-    const id = setInterval(() => setI((n) => (n + 1) % announcements.length), 4000);
-    return () => clearInterval(id);
-  }, []);
+  const row = [...announcements, ...announcements];
   return (
-    <div className="announcement-bar" aria-live="polite">
-      <span key={i} className="announcement-text">{announcements[i]}</span>
+    <div className="announcement-bar">
+      <p className="sr-only">{announcements.join('. ')}</p>
+      <div className="marquee" aria-hidden="true">
+        {[0, 1].map((k) => (
+          <div className="marquee-track" key={k}>
+            {row.map((t, i) => (
+              <span key={i} className="marquee-item">{t}<span className="marquee-dot">✦</span></span>
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -140,9 +146,9 @@ export default function Header() {
 
           <div className="header-tools">
             {user ? (
-              <button className="tool-link desktop-only" onClick={signOut}>Log out</button>
+              <button className="tool-link desktop-only" onClick={signOut}><UserIcon size={18} /> Log out</button>
             ) : (
-              <Link className="tool-link desktop-only" to="/login">Log in</Link>
+              <Link className="tool-link desktop-only" to="/login"><UserIcon size={18} /> Log in</Link>
             )}
             <button className="icon-button" aria-label="Search" aria-expanded={searchOpen} onClick={() => setSearchOpen((o) => !o)}>
               <SearchIcon />

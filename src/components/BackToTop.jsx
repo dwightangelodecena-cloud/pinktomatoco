@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { ArrowUp } from './Icons.jsx';
 
 export default function BackToTop() {
   const [show, setShow] = useState(false);
@@ -17,9 +18,7 @@ export default function BackToTop() {
       tabIndex={show ? 0 : -1}
       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
     >
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M6 14l6-6 6 6" />
-      </svg>
+      <ArrowUp />
     </button>
   );
 }

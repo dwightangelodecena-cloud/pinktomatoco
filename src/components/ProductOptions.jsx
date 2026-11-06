@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useCart } from '../context/CartContext.jsx';
+import { CartIcon, CheckIcon, MinusIcon, PlusIcon } from './Icons.jsx';
 import { bulkTierText, defaultVariant, money, sortedVariants, unitPrice } from '../lib/pricing.js';
 
 // Size select, bulk pricing, quantity and Add To Cart (used on the product page and in Quick View).
@@ -65,7 +66,7 @@ export default function ProductOptions({ product, onPriceChange, onAdded }) {
         <div className="form-field">
           <span className="form-field-title">Quantity</span>
           <div className="quantity-control-wrap">
-            <button type="button" className="quantity-control" aria-label="Decrease quantity" onClick={() => setQty((q) => Math.max(1, q - 1))}>&mdash;</button>
+            <button type="button" className="quantity-control" aria-label="Decrease quantity" onClick={() => setQty((q) => Math.max(1, q - 1))}><MinusIcon /></button>
             <input
               className="form-input quantity-input"
               type="number"
@@ -74,12 +75,12 @@ export default function ProductOptions({ product, onPriceChange, onAdded }) {
               value={qty}
               onChange={(e) => setQty(Math.max(1, parseInt(e.target.value, 10) || 1))}
             />
-            <button type="button" className="quantity-control" aria-label="Increase quantity" onClick={() => setQty((q) => q + 1)}>&#43;</button>
+            <button type="button" className="quantity-control" aria-label="Increase quantity" onClick={() => setQty((q) => q + 1)}><PlusIcon /></button>
           </div>
         </div>
         <button className={`button button-primary add-to-cart ${added ? 'is-added' : ''}`} type="submit">
-          <span className="add-label">Add To Cart</span>
-          <span className="added-label" aria-hidden={!added}>Added ✓</span>
+          <span className="add-label"><CartIcon size={18} /> Add To Cart</span>
+          <span className="added-label" aria-hidden={!added}><CheckIcon /> Added</span>
         </button>
       </div>
       {variant && lineUnit !== Number(variant.price) && (

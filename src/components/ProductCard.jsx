@@ -4,7 +4,7 @@ import { priceRange } from '../lib/pricing.js';
 import { useWishlist } from '../context/WishlistContext.jsx';
 import QuickView from './QuickView.jsx';
 import Reveal from './Reveal.jsx';
-import { HeartIcon } from './Icons.jsx';
+import { ArrowRight, EyeIcon, HeartIcon } from './Icons.jsx';
 
 function summary(html) {
   return (html || '')
@@ -24,8 +24,8 @@ export default function ProductCard({ product, showSummary = false, index = 0 })
   return (
     <Reveal as="article" className="product-item" delay={(index % 4) * 90}>
       <div className="product-item-thumbnail">
-        <Link to={url} className="product-item-image">
-          <img src={product.images?.[0]} alt={product.name} loading="lazy" />
+        <Link to={url} className="product-item-image" tabIndex={-1} aria-hidden="true">
+          <img src={product.images?.[0]} alt="" loading="lazy" />
         </Link>
         {product.is_new && <span className="product-badge">New</span>}
         <button
@@ -36,8 +36,8 @@ export default function ProductCard({ product, showSummary = false, index = 0 })
         >
           <HeartIcon filled={saved} />
         </button>
-        <button className="button button-second quick-view-button" onClick={() => setQuick(true)}>
-          Quick View
+        <button className="quick-view-button" onClick={() => setQuick(true)}>
+          <EyeIcon /> Quick View
         </button>
       </div>
       <div className="product-item-details">
@@ -46,8 +46,8 @@ export default function ProductCard({ product, showSummary = false, index = 0 })
         </h3>
         <div className="product-item-price">{priceRange(product)}</div>
         {showSummary && <p className="product-item-summary">{summary(product.description_html)}</p>}
-        <Link to={url} className="button button-primary button-small product-item-action">
-          Pick Options
+        <Link to={url} className="product-item-action">
+          Pick Options <ArrowRight />
         </Link>
       </div>
       {quick && <QuickView product={product} onClose={() => setQuick(false)} />}

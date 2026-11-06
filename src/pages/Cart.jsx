@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext.jsx';
 import { money } from '../lib/pricing.js';
+import { MinusIcon, PlusIcon } from '../components/Icons.jsx';
 
 export default function Cart() {
   const { items, subtotal, setQuantity, remove } = useCart();
@@ -33,7 +34,7 @@ export default function Cart() {
                   </td>
                   <td data-label="Quantity">
                     <div className="quantity-control-wrap">
-                      <button type="button" className="quantity-control" aria-label="Decrease" onClick={() => setQuantity(i.variantId, i.quantity - 1)}>&mdash;</button>
+                      <button type="button" className="quantity-control" aria-label="Decrease" onClick={() => setQuantity(i.variantId, i.quantity - 1)}><MinusIcon /></button>
                       <input
                         className="form-input quantity-input"
                         type="number"
@@ -42,7 +43,7 @@ export default function Cart() {
                         value={i.quantity}
                         onChange={(e) => setQuantity(i.variantId, Math.max(1, parseInt(e.target.value, 10) || 1))}
                       />
-                      <button type="button" className="quantity-control" aria-label="Increase" onClick={() => setQuantity(i.variantId, i.quantity + 1)}>&#43;</button>
+                      <button type="button" className="quantity-control" aria-label="Increase" onClick={() => setQuantity(i.variantId, i.quantity + 1)}><PlusIcon /></button>
                     </div>
                   </td>
                   <td data-label="Total">{money(i.total)}</td>
