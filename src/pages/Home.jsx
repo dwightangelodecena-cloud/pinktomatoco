@@ -2,16 +2,22 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Mosaic from '../components/Mosaic.jsx';
 import ValueProps from '../components/ValueProps.jsx';
+import MoodFinder from '../components/MoodFinder.jsx';
+import SizeGuide from '../components/SizeGuide.jsx';
+import BulkBand from '../components/BulkBand.jsx';
+import Process from '../components/Process.jsx';
 import Reveal from '../components/Reveal.jsx';
 import { ProductGrid } from '../components/ProductCard.jsx';
 import { ProductGridSkeleton } from '../components/Skeleton.jsx';
 import { ArrowRight } from '../components/Icons.jsx';
 import { getNewProducts } from '../lib/api.js';
+import { useProducts } from '../lib/useProducts.js';
 
 export default function Home() {
-  const [products, setProducts] = useState(null);
+  const [newProducts, setNewProducts] = useState(null);
+  const products = useProducts();
   useEffect(() => {
-    getNewProducts(4).then(setProducts);
+    getNewProducts(4).then(setNewProducts);
   }, []);
 
   return (
@@ -27,8 +33,13 @@ export default function Home() {
           </div>
           <Link to="/shop-all" className="text-link">View all products <ArrowRight /></Link>
         </Reveal>
-        {products ? <ProductGrid products={products} /> : <ProductGridSkeleton count={4} />}
+        {newProducts ? <ProductGrid products={newProducts} /> : <ProductGridSkeleton count={4} />}
       </section>
+
+      {products && <MoodFinder products={products} />}
+      {products && <SizeGuide products={products} />}
+      <BulkBand />
+      <Process />
 
       <section className="latest-blog-posts container">
         <Reveal className="blog-card">

@@ -67,6 +67,18 @@ export async function subscribe(email) {
 export const sendContactMessage = (msg) => insert('contact_messages', msg);
 export const submitReview = (review) => insert('reviews', review);
 
+// The signed-in customer's recent orders (row level security limits this to their own).
+export async function getMyOrders() {
+  if (!supabase) return [];
+  const { data, error } = await supabase
+    .from('orders')
+    .select('id, created_at, subtotal, status, order_items(name, option_label, quantity)')
+    .order('created_at', { ascending: false })
+    .limit(10);
+  if (error) throw error;
+  return data || [];
+}
+
 export async function createOrder({ email, fullName, address, items }) {
   if (!supabase) throw new Error(NOT_CONFIGURED);
   const { data, error } = await supabase.rpc('create_order', {

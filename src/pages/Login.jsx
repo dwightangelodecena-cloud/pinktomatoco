@@ -1,97 +1,336 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase.js';
+import { getMyOrders } from '../lib/api.js';
+import { money } from '../lib/pricing.js';
 import { useAuth } from '../context/AuthContext.jsx';
+import { useWishlist } from '../context/WishlistContext.jsx';
+import {
+  ArrowRight, CheckIcon, EyeIcon, EyeOffIcon, HeartIcon, LockIcon, LogOutIcon,
+  MailIcon, PackageIcon, UserIcon,
+} from '../components/Icons.jsx';
 
-export default function Login() {
-  const { user, signOut } = useAuth();
+const NOT_READY = 'Accounts are not available yet. Please try again later.';
+
+const BENEFITS = ['Check out faster', 'Save your shipping details', 'See your order history', 'Keep a wishlist of favourite scents'];
+
+function friendlyError(msg = '') {
+  if (/invalid login credentials/i.test(msg)) return "That email and password don't match. Try again or reset your password.";
+  if (/email not confirmed/i.test(msg)) return 'Please confirm your email first. Check your inbox for the link we sent.';
+  if (/already registered|already exists/i.test(msg)) return 'An account with this email already exists. Try signing in instead.';
+  if (/rate limit|too many/i.test(msg)) return 'Too many attempts. Please wait a minute and try again.';
+  return msg || 'Something went wrong. Please try again.';
+}
+
+function passwordScore(pw) {
+  let s = 0;
+  if (pw.length >= 8) s++;
+  if (/[A-Z]/.test(pw) && /[a-z]/.test(pw)) s++;
+  if (/\d/.test(pw)) s++;
+  if (/[^A-Za-z0-9]/.test(pw) || pw.length >= 12) s++;
+  return s;
+}
+const STRENGTH = ['Too short', 'Weak', 'Okay', 'Good', 'Strong'];
+
+function Field({ icon: Icon, label, type = 'text', value, onChange, autoComplete, required = true, minLength, children }) {
+  const [show, setShow] = useState(false);
+  const isPassword = type === 'password';
+  return (
+    <label className="auth-field">
+      <span className="form-field-title">{label}</span>
+      <span className="auth-input-wrap">
+        <Icon size={18} />
+        <input
+          className="auth-input"
+          type={isPassword && show ? 'text' : type}
+          value={value}
+          onChange={onChange}
+          autoComplete={autoComplete}
+          required={required}
+          minLength={minLength}
+          placeholder=" "
+        />
+        {isPassword && (
+          <button type="button" className="auth-eye" onClick={() => setShow((s) => !s)} aria-label={show ? 'Hide password' : 'Show password'}>
+            {show ? <EyeOffIcon /> : <EyeIcon />}
+          </button>
+        )}
+      </span>
+      {children}
+    </label>
+  );
+}
+
+function SubmitButton({ pending, children }) {
+  return (
+    <button className="button button-primary auth-submit" type="submit" disabled={pending}>
+      {pending ? <span className="spinner" aria-label="Please wait" /> : <>{children} <ArrowRight /></>}
+    </button>
+  );
+}
+
+function AuthForms() {
   const navigate = useNavigate();
-  const [mode, setMode] = useState('login');
+  const [params, setParams] = useSearchParams();
+  const mode = params.get('mode') || 'signin'; // signin | signup | forgot | reset
+  const setMode = (m) => {
+    setStatus(null);
+    setParams(m === 'signin' ? {} : { mode: m }, { replace: true });
+  };
+
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
   const [status, setStatus] = useState(null);
 
-  if (user) {
+  // Opening the reset link from the email signs the visitor in with a "recovery" session.
+  useEffect(() => {
+    if (!supabase) return;
+    const { data } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') setParams({ mode: 'reset' }, { replace: true });
+    });
+    return () => data.subscription.unsubscribe();
+  }, [setParams]);
+
+  const run = async (fn) => {
+    if (!supabase) return setStatus({ type: 'error', text: NOT_READY });
+    setStatus({ type: 'pending' });
+    try {
+      await fn();
+    } catch (err) {
+      setStatus({ type: 'error', text: friendlyError(err.message) });
+    }
+  };
+
+  const signIn = (e) => {
+    e.preventDefault();
+    run(async () => {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      navigate('/login', { replace: true });
+    });
+  };
+
+  const signUp = (e) => {
+    e.preventDefault();
+    if (password !== confirm) return setStatus({ type: 'error', text: 'Passwords do not match.' });
+    run(async () => {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { full_name: name.trim() }, emailRedirectTo: `${window.location.origin}/login` },
+      });
+      if (error) throw error;
+      if (!data.session) setStatus({ type: 'sent', text: `We sent a confirmation link to ${email}. Open it to activate your account.` });
+    });
+  };
+
+  const forgot = (e) => {
+    e.preventDefault();
+    run(async () => {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/login` });
+      if (error) throw error;
+      setStatus({ type: 'sent', text: `If ${email} has an account, a reset link is on its way.` });
+    });
+  };
+
+  const reset = (e) => {
+    e.preventDefault();
+    if (password !== confirm) return setStatus({ type: 'error', text: 'Passwords do not match.' });
+    run(async () => {
+      const { error } = await supabase.auth.updateUser({ password });
+      if (error) throw error;
+      setParams({}, { replace: true });
+    });
+  };
+
+  const pending = status?.type === 'pending';
+  const score = passwordScore(password);
+
+  if (status?.type === 'sent') {
     return (
-      <div className="container page page-narrow">
-        <h1 className="page-heading">My Account</h1>
-        <p>You are signed in as <strong>{user.email}</strong>.</p>
-        <button className="button button-secondary" onClick={signOut}>Log out</button>
+      <div className="auth-card auth-sent">
+        <span className="auth-sent-icon"><MailIcon size={30} /></span>
+        <h2>Check your inbox</h2>
+        <p>{status.text}</p>
+        <button className="button button-secondary" onClick={() => setMode('signin')}>Back to sign in</button>
       </div>
     );
   }
 
-  const submit = async (e) => {
-    e.preventDefault();
-    if (!supabase) {
-      setStatus({ type: 'error', text: 'Accounts are not available yet. Please try again later.' });
-      return;
-    }
-    setStatus({ type: 'pending' });
-    const fn = mode === 'login' ? supabase.auth.signInWithPassword : supabase.auth.signUp;
-    const { data, error } = await fn.call(supabase.auth, { email, password });
-    if (error) return setStatus({ type: 'error', text: error.message });
-    if (mode === 'signup' && !data.session) {
-      return setStatus({ type: 'success', text: 'Check your email to confirm your account, then sign in.' });
-    }
-    navigate('/');
-  };
+  return (
+    <div className="auth-card">
+      {(mode === 'signin' || mode === 'signup') && (
+        <div className="auth-tabs" role="tablist" data-active={mode}>
+          <span className="auth-tab-indicator" aria-hidden="true" />
+          <button role="tab" aria-selected={mode === 'signin'} onClick={() => setMode('signin')}>Sign in</button>
+          <button role="tab" aria-selected={mode === 'signup'} onClick={() => setMode('signup')}>Create account</button>
+        </div>
+      )}
 
-  const resetPassword = async () => {
-    if (!supabase || !email) {
-      setStatus({ type: 'error', text: 'Enter your email address above first.' });
-      return;
-    }
-    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/login` });
-    setStatus(error ? { type: 'error', text: error.message } : { type: 'success', text: 'If that email has an account, a reset link is on its way.' });
-  };
+      <div key={mode} className="auth-panel">
+        {mode === 'signin' && (
+          <form className="auth-form" onSubmit={signIn}>
+            <div className="auth-heading">
+              <h1>Welcome back</h1>
+              <p>Sign in to check out faster and see your orders.</p>
+            </div>
+            <Field icon={MailIcon} label="Email address" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <Field icon={LockIcon} label="Password" type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)}>
+              <button type="button" className="auth-forgot" onClick={() => setMode('forgot')}>Forgot password?</button>
+            </Field>
+            {status?.type === 'error' && <p className="auth-error shake">{status.text}</p>}
+            <SubmitButton pending={pending}>Sign in</SubmitButton>
+            <p className="auth-switch">New here? <button type="button" onClick={() => setMode('signup')}>Create an account</button></p>
+          </form>
+        )}
+
+        {mode === 'signup' && (
+          <form className="auth-form" onSubmit={signUp}>
+            <div className="auth-heading">
+              <h1>Join Pink Tomato</h1>
+              <p>Create an account in less than a minute.</p>
+            </div>
+            <Field icon={UserIcon} label="Full name" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} />
+            <Field icon={MailIcon} label="Email address" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <Field icon={LockIcon} label="Password" type="password" autoComplete="new-password" minLength={8} value={password} onChange={(e) => setPassword(e.target.value)}>
+              {password && (
+                <span className="strength" data-score={score}>
+                  <span className="strength-bars">{[1, 2, 3, 4].map((n) => <i key={n} className={n <= score ? 'on' : ''} />)}</span>
+                  <span className="strength-label">{password.length < 8 ? 'At least 8 characters' : STRENGTH[score]}</span>
+                </span>
+              )}
+            </Field>
+            <Field icon={LockIcon} label="Confirm password" type="password" autoComplete="new-password" value={confirm} onChange={(e) => setConfirm(e.target.value)}>
+              {confirm && password === confirm && <span className="match"><CheckIcon /> Passwords match</span>}
+            </Field>
+            {status?.type === 'error' && <p className="auth-error shake">{status.text}</p>}
+            <SubmitButton pending={pending}>Create account</SubmitButton>
+            <p className="auth-switch">Already have an account? <button type="button" onClick={() => setMode('signin')}>Sign in</button></p>
+          </form>
+        )}
+
+        {mode === 'forgot' && (
+          <form className="auth-form" onSubmit={forgot}>
+            <div className="auth-heading">
+              <h1>Reset your password</h1>
+              <p>Enter your email and we'll send you a link to choose a new one.</p>
+            </div>
+            <Field icon={MailIcon} label="Email address" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            {status?.type === 'error' && <p className="auth-error shake">{status.text}</p>}
+            <SubmitButton pending={pending}>Send reset link</SubmitButton>
+            <p className="auth-switch"><button type="button" onClick={() => setMode('signin')}>← Back to sign in</button></p>
+          </form>
+        )}
+
+        {mode === 'reset' && (
+          <form className="auth-form" onSubmit={reset}>
+            <div className="auth-heading">
+              <h1>Choose a new password</h1>
+              <p>Pick something you haven't used before.</p>
+            </div>
+            <Field icon={LockIcon} label="New password" type="password" autoComplete="new-password" minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} />
+            <Field icon={LockIcon} label="Confirm new password" type="password" autoComplete="new-password" value={confirm} onChange={(e) => setConfirm(e.target.value)} />
+            {status?.type === 'error' && <p className="auth-error shake">{status.text}</p>}
+            <SubmitButton pending={pending}>Save password</SubmitButton>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function AccountDashboard({ user, signOut }) {
+  const { ids } = useWishlist();
+  const [orders, setOrders] = useState(null);
+  const name = user.user_metadata?.full_name || user.email.split('@')[0];
+
+  useEffect(() => {
+    getMyOrders().then(setOrders).catch(() => setOrders([]));
+  }, []);
 
   return (
-    <div className="container page">
-      <h1 className="page-heading">{mode === 'login' ? 'Sign in' : 'New Account'}</h1>
-      <div className="account-login-wrapper">
-        <form className="form login-form" onSubmit={submit}>
-          <label className="form-field">
-            <span className="form-field-title">Email Address</span>
-            <input className="form-input" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
-          </label>
-          <label className="form-field">
-            <span className="form-field-title">Password</span>
-            <input className="form-input" type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} />
-          </label>
-          {status?.text && <p className={`form-message ${status.type}`}>{status.text}</p>}
-          <div className="form-actions">
-            <button className="button button-primary" type="submit" disabled={status?.type === 'pending'}>
-              {mode === 'login' ? 'Sign in' : 'Create Account'}
-            </button>
-            {mode === 'login' && (
-              <button type="button" className="link-button" onClick={resetPassword}>Forgot your password?</button>
-            )}
-          </div>
-        </form>
-
-        <div className="new-customer">
-          {mode === 'login' ? (
-            <>
-              <h2 className="account-sub-heading">New Customer?</h2>
-              <p>Create an account with us and you'll be able to:</p>
-              <ul>
-                <li>Check out faster</li>
-                <li>Save multiple shipping addresses</li>
-                <li>Access your order history</li>
-                <li>Track new orders</li>
-                <li>Save items to your Wish List</li>
-              </ul>
-              <button className="button button-secondary" onClick={() => { setMode('signup'); setStatus(null); }}>Create Account</button>
-            </>
-          ) : (
-            <>
-              <h2 className="account-sub-heading">Already have an account?</h2>
-              <button className="button button-secondary" onClick={() => { setMode('login'); setStatus(null); }}>Sign in</button>
-            </>
-          )}
+    <div className="container page account-page">
+      <section className="account-hero">
+        <span className="account-avatar">{name.charAt(0).toUpperCase()}</span>
+        <div>
+          <p className="eyebrow">My account</p>
+          <h1>Hi, {name}</h1>
+          <p className="account-email">{user.email}</p>
         </div>
+        <button className="button button-secondary account-signout" onClick={signOut}><LogOutIcon /> Sign out</button>
+      </section>
+
+      <div className="account-grid">
+        <section className="account-card account-orders">
+          <h2><PackageIcon size={20} /> Recent orders</h2>
+          {orders === null ? (
+            <div className="skeleton skeleton-block" />
+          ) : orders.length === 0 ? (
+            <div className="account-empty">
+              <p>You haven't placed an order yet.</p>
+              <Link to="/shop-all" className="button button-primary button-small">Start shopping <ArrowRight /></Link>
+            </div>
+          ) : (
+            <ul className="order-list">
+              {orders.map((o) => (
+                <li key={o.id}>
+                  <div>
+                    <strong>Order #{o.id}</strong>
+                    <span>{new Date(o.created_at).toLocaleDateString()} · {o.order_items?.reduce((n, i) => n + i.quantity, 0)} items</span>
+                  </div>
+                  <span className={`order-status status-${o.status}`}>{o.status}</span>
+                  <span className="order-total">{money(o.subtotal)}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        <aside className="account-side">
+          <Link to="/wishlist" className="account-card account-tile">
+            <span className="account-tile-icon"><HeartIcon /></span>
+            <span><strong>Wishlist</strong><small>{ids.length} saved item{ids.length === 1 ? '' : 's'}</small></span>
+            <ArrowRight />
+          </Link>
+          <Link to="/shop-all" className="account-card account-tile">
+            <span className="account-tile-icon"><PackageIcon size={18} /></span>
+            <span><strong>Shop all candles</strong><small>21 scents & wax melts</small></span>
+            <ArrowRight />
+          </Link>
+          <Link to="/contact-us" className="account-card account-tile">
+            <span className="account-tile-icon"><MailIcon /></span>
+            <span><strong>Need help?</strong><small>Returns, orders and questions</small></span>
+            <ArrowRight />
+          </Link>
+        </aside>
       </div>
+    </div>
+  );
+}
+
+export default function Login() {
+  const { user, signOut } = useAuth();
+  const [params] = useSearchParams();
+
+  if (user && params.get('mode') !== 'reset') return <AccountDashboard user={user} signOut={signOut} />;
+
+  return (
+    <div className="auth-page container">
+      <aside className="auth-visual">
+        <div className="auth-visual-bg" style={{ backgroundImage: 'url(/images/hero/hero-3.jpg)' }} />
+        <div className="auth-visual-copy">
+          <p className="hero-eyebrow">Pink Tomato Candle &amp; Bath Co.</p>
+          <h2>Hand-poured candles, saved just for you.</h2>
+          <ul>
+            {BENEFITS.map((b, i) => (
+              <li key={b} style={{ '--d': `${300 + i * 90}ms` }}><span><CheckIcon /></span>{b}</li>
+            ))}
+          </ul>
+        </div>
+      </aside>
+      <AuthForms />
     </div>
   );
 }
