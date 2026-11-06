@@ -1,0 +1,1467 @@
+[
+  {
+    "id": 133,
+    "slug": "taro-milk-tea-wooden-wick",
+    "name": "Taro Milk Tea Wooden Wick",
+    "sku": "133-8O",
+    "price": 22.92,
+    "description_html": "<p><span>All candles are hand-poured in North Dakota<br class=\"html-br\" /></span></p>\n<p><span>What is our candle constructed with?</span><br class=\"html-br\" /><span>- Natural Coconut Soy Wax that burns clean (minimal soot, no smoke, easy to trim)</span><br class=\"html-br\" /><span>- Made with fragrances that are Toxic Free / Parabens Free / Phthalate Free / Cruelty Free / Vegan</span></p>",
+    "images": [
+      "/images/products/taro-milk-tea-wooden-wick.jpg"
+    ],
+    "option_name": "Size",
+    "is_new": true,
+    "new_rank": 1,
+    "bulk_pricing": [
+      {
+        "min": 12,
+        "max": 24,
+        "type": "percent",
+        "value": 10
+      },
+      {
+        "min": 25,
+        "max": 49,
+        "type": "percent",
+        "value": 20
+      },
+      {
+        "min": 50,
+        "max": null,
+        "type": "percent",
+        "value": 30
+      }
+    ],
+    "variants": [
+      {
+        "id": 184,
+        "label": "11 oz",
+        "price": 18.33,
+        "sku": "110-2-1",
+        "is_default": false,
+        "sort": 0
+      },
+      {
+        "id": 185,
+        "label": "8 oz",
+        "price": 22.92,
+        "sku": "133-8O",
+        "is_default": true,
+        "sort": 1
+      },
+      {
+        "id": 186,
+        "label": "1 oz",
+        "price": 3,
+        "sku": "133-1O",
+        "is_default": false,
+        "sort": 2
+      },
+      {
+        "id": 187,
+        "label": "Aura (13 oz)",
+        "price": 38,
+        "sku": "133-AU",
+        "is_default": false,
+        "sort": 3
+      }
+    ],
+    "related": [
+      112
+    ]
+  },
+  {
+    "id": 132,
+    "slug": "rose-wax-melt",
+    "name": "Rose Wax Melt",
+    "sku": "114-WA-1",
+    "price": 6,
+    "description_html": "<p><span>All candles are hand-poured in North Dakota<br class=\"html-br\" /></span></p>\n<p><span>What is our candle constructed with?</span><br class=\"html-br\" /><span>- Natural Coconut Soy Wax that burns clean (minimal soot, no smoke, easy to trim)</span><br class=\"html-br\" /><span>- Made with fragrances that are Toxic Free / Parabens Free / Phthalate Free / Cruelty Free / Vegan</span></p>",
+    "images": [
+      "/images/products/rose-wax-melt.jpg"
+    ],
+    "option_name": "Size",
+    "is_new": true,
+    "new_rank": 2,
+    "bulk_pricing": [
+      {
+        "min": 3,
+        "max": 3,
+        "type": "fixed",
+        "value": 15
+      },
+      {
+        "min": 4,
+        "max": 29,
+        "type": "fixed",
+        "value": 16
+      },
+      {
+        "min": 30,
+        "max": null,
+        "type": "fixed",
+        "value": 30
+      }
+    ],
+    "variants": [
+      {
+        "id": 180,
+        "label": "11 oz",
+        "price": 6,
+        "sku": "132-11",
+        "is_default": false,
+        "sort": 0
+      },
+      {
+        "id": 181,
+        "label": "8 oz",
+        "price": 6,
+        "sku": "132-8O",
+        "is_default": false,
+        "sort": 1
+      },
+      {
+        "id": 182,
+        "label": "1 oz",
+        "price": 6,
+        "sku": "132-1O",
+        "is_default": false,
+        "sort": 2
+      },
+      {
+        "id": 183,
+        "label": "Wax Melts",
+        "price": 6,
+        "sku": "114-WA-1",
+        "is_default": true,
+        "sort": 3
+      }
+    ],
+    "related": [
+      112
+    ]
+  },
+  {
+    "id": 130,
+    "slug": "de-luxe",
+    "name": "De Luxe",
+    "sku": "114-1-1",
+    "price": 26.75,
+    "description_html": "<p><span>All candles are hand-poured in North Dakota<br class=\"html-br\" /></span></p>\n<p><span>What is our candle constructed with?</span><br class=\"html-br\" /><span>- Natural Coconut Soy Wax that burns clean (minimal soot, no smoke, easy to trim)</span><br class=\"html-br\" /><span>- Made with fragrances that are Toxic Free / Parabens Free / Phthalate Free / Cruelty Free / Vegan</span></p>",
+    "images": [
+      "/images/products/de-luxe.jpg"
+    ],
+    "option_name": "Size",
+    "is_new": true,
+    "new_rank": 3,
+    "bulk_pricing": [
+      {
+        "min": 12,
+        "max": 24,
+        "type": "percent",
+        "value": 10
+      },
+      {
+        "min": 25,
+        "max": 49,
+        "type": "percent",
+        "value": 20
+      },
+      {
+        "min": 50,
+        "max": null,
+        "type": "percent",
+        "value": 30
+      }
+    ],
+    "variants": [
+      {
+        "id": 171,
+        "label": "11 oz",
+        "price": 26.75,
+        "sku": "114-1-1",
+        "is_default": true,
+        "sort": 0
+      },
+      {
+        "id": 172,
+        "label": "8 oz",
+        "price": 22.92,
+        "sku": "130-8O",
+        "is_default": false,
+        "sort": 1
+      },
+      {
+        "id": 173,
+        "label": "1 oz",
+        "price": 3,
+        "sku": "130-1O",
+        "is_default": false,
+        "sort": 2
+      },
+      {
+        "id": 174,
+        "label": "Aura (13 oz)",
+        "price": 38,
+        "sku": "130-AU",
+        "is_default": false,
+        "sort": 3
+      }
+    ],
+    "related": []
+  },
+  {
+    "id": 129,
+    "slug": "apple-sage",
+    "name": "Apple Sage",
+    "sku": "125-1O-1-1-1-1",
+    "price": 3,
+    "description_html": "<p><span>All candles are hand-poured in North Dakota<br class=\"html-br\" /></span></p>\n<p><span>What is our candle constructed with?</span><br class=\"html-br\" /><span>- Natural Coconut Soy Wax that burns clean (minimal soot, no smoke, easy to trim)</span><br class=\"html-br\" /><span>- Made with fragrances that are Toxic Free / Parabens Free / Phthalate Free / Cruelty Free / Vegan</span></p>",
+    "images": [
+      "/images/products/apple-sage.jpg"
+    ],
+    "option_name": "Size",
+    "is_new": true,
+    "new_rank": 4,
+    "bulk_pricing": [
+      {
+        "min": 12,
+        "max": 24,
+        "type": "percent",
+        "value": 10
+      },
+      {
+        "min": 25,
+        "max": 49,
+        "type": "percent",
+        "value": 20
+      },
+      {
+        "min": 50,
+        "max": null,
+        "type": "percent",
+        "value": 30
+      }
+    ],
+    "variants": [
+      {
+        "id": 167,
+        "label": "11 oz",
+        "price": 3,
+        "sku": "113-1-1-1-1-1-1",
+        "is_default": false,
+        "sort": 0
+      },
+      {
+        "id": 168,
+        "label": "8 oz",
+        "price": 22.92,
+        "sku": "125-8O-1-1-1-1",
+        "is_default": false,
+        "sort": 1
+      },
+      {
+        "id": 169,
+        "label": "1 oz",
+        "price": 3,
+        "sku": "125-1O-1-1-1-1",
+        "is_default": true,
+        "sort": 2
+      },
+      {
+        "id": 170,
+        "label": "Aura (13 oz)",
+        "price": 38,
+        "sku": "125-AU-1-1-1-1",
+        "is_default": false,
+        "sort": 3
+      }
+    ],
+    "related": []
+  },
+  {
+    "id": 128,
+    "slug": "pink-peony",
+    "name": "Pink Peony",
+    "sku": "113-1-1-1-1-1",
+    "price": 26.75,
+    "description_html": "<p><span>All candles are hand-poured in North Dakota<br class=\"html-br\" /></span></p>\n<p><span>What is our candle constructed with?</span><br class=\"html-br\" /><span>- Natural Coconut Soy Wax that burns clean (minimal soot, no smoke, easy to trim)</span><br class=\"html-br\" /><span>- Made with fragrances that are Toxic Free / Parabens Free / Phthalate Free / Cruelty Free / Vegan</span></p>",
+    "images": [
+      "/images/products/pink-peony.jpg"
+    ],
+    "option_name": "Size",
+    "is_new": false,
+    "new_rank": null,
+    "bulk_pricing": [
+      {
+        "min": 12,
+        "max": 24,
+        "type": "percent",
+        "value": 10
+      },
+      {
+        "min": 25,
+        "max": 49,
+        "type": "percent",
+        "value": 20
+      },
+      {
+        "min": 50,
+        "max": null,
+        "type": "percent",
+        "value": 30
+      }
+    ],
+    "variants": [
+      {
+        "id": 163,
+        "label": "11 oz",
+        "price": 26.75,
+        "sku": "113-1-1-1-1-1",
+        "is_default": true,
+        "sort": 0
+      },
+      {
+        "id": 164,
+        "label": "8 oz",
+        "price": 22.92,
+        "sku": "125-8O-1-1-1",
+        "is_default": false,
+        "sort": 1
+      },
+      {
+        "id": 165,
+        "label": "1 oz",
+        "price": 3,
+        "sku": "125-1O-1-1-1",
+        "is_default": false,
+        "sort": 2
+      },
+      {
+        "id": 166,
+        "label": "Aura (13 oz)",
+        "price": 38,
+        "sku": "125-AU-1-1-1",
+        "is_default": false,
+        "sort": 3
+      }
+    ],
+    "related": []
+  },
+  {
+    "id": 127,
+    "slug": "manhattan",
+    "name": "Manhattan",
+    "sku": "113-1-1-1-1",
+    "price": 26.75,
+    "description_html": "<p><span>A tribute to the spirited heart of the city. This candle captures the raw, earthy notes of Oakmoss, intertwined with the enigmatic aroma of Smokey Incense. The crisp, green freshness of Cedar Leaves harmonizes with the unique scent of Wet Leaves, evoking the sensation of a rain-kissed urban forest.</span><br class=\"html-br\" /><br class=\"html-br\" /><span>Mood: Sophisticated, Grounded</span><br class=\"html-br\" /><br class=\"html-br\" /><span>Scent Notes: Oakmoss, Smokey Incense, Cedar Leaves, Wet Leaves, Soil</span><br class=\"html-br\" /><br class=\"html-br\" /><span>Burn Time: 50-55 hours for 9-10oz., 60-65 hours for 12oz.</span><br class=\"html-br\" /><br class=\"html-br\" /><span>What is our candle constructed with?</span><br class=\"html-br\" /><span>- Coconut Soy Wax that burns clean (minimal soot, no smoke, easy to trim)</span><br class=\"html-br\" /><span>- Wooden Wicks with crackling sound</span><br class=\"html-br\" /><span>- Beautiful Glass Vessels that can double as a fancy cup after use</span><br class=\"html-br\" /><span>- Made with fragrances that are Toxic Free / Parabens Free / Phthalate Free / Cruelty Free / Vegan</span><br class=\"html-br\" /><br class=\"html-br\" /><span>All candles are made in North Dakota</span></p>",
+    "images": [
+      "/images/products/manhattan.jpg"
+    ],
+    "option_name": "Size",
+    "is_new": false,
+    "new_rank": null,
+    "bulk_pricing": [
+      {
+        "min": 12,
+        "max": 24,
+        "type": "percent",
+        "value": 10
+      },
+      {
+        "min": 25,
+        "max": 49,
+        "type": "percent",
+        "value": 20
+      },
+      {
+        "min": 50,
+        "max": null,
+        "type": "percent",
+        "value": 30
+      }
+    ],
+    "variants": [
+      {
+        "id": 159,
+        "label": "11 oz",
+        "price": 26.75,
+        "sku": "113-1-1-1-1",
+        "is_default": true,
+        "sort": 0
+      },
+      {
+        "id": 160,
+        "label": "8 oz",
+        "price": 22.92,
+        "sku": "125-8O-1-1",
+        "is_default": false,
+        "sort": 1
+      },
+      {
+        "id": 161,
+        "label": "1 oz",
+        "price": 3,
+        "sku": "125-1O-1-1",
+        "is_default": false,
+        "sort": 2
+      },
+      {
+        "id": 162,
+        "label": "Aura (13 oz)",
+        "price": 38,
+        "sku": "125-AU-1-1",
+        "is_default": false,
+        "sort": 3
+      }
+    ],
+    "related": []
+  },
+  {
+    "id": 126,
+    "slug": "sweet-smoke",
+    "name": "Sweet Smoke",
+    "sku": "113-1-1-1",
+    "price": 26.75,
+    "description_html": "<p><span>A captivating blend of deep, smoky Vetiver and rich Amber. This luxurious candle weaves a tapestry of twilight magic, where the earthy depth of timbers melds seamlessly with a whisper of Vanilla, creating an ambiance of mystery and comfort. Ideal for evenings of reflection or intimate gatherings, After Hours transforms your surroundings into a sanctuary of nocturnal elegance.</span><br class=\"html-br\" /><br class=\"html-br\" /><span>Mood: Mysterious, Introspective</span><br class=\"html-br\" /><br class=\"html-br\" /><span>Scent Notes: Smoky Vetiver, Amber, Timbers, Vanilla</span><br class=\"html-br\" /><br class=\"html-br\" /><span>Burn Time: 50-55 hours for 9-10oz., 60-65 hours for 12oz.</span><br class=\"html-br\" /><br class=\"html-br\" /><span>What is our candle constructed with?</span><br class=\"html-br\" /><span>- Coconut Soy Wax that burns clean (minimal soot, no smoke, easy to trim)</span><br class=\"html-br\" /><span>- Wooden Wicks with crackling sound</span><br class=\"html-br\" /><span>- Beautiful Glass Vessels that can double as a fancy cup after use</span><br class=\"html-br\" /><span>- Made with fragrances that are Toxic Free / Parabens Free / Phthalate Free / Cruelty Free / Vegan</span><br class=\"html-br\" /><br class=\"html-br\" /><span>All candles are made in North Dakota</span></p>",
+    "images": [
+      "/images/products/sweet-smoke.jpg"
+    ],
+    "option_name": "Size",
+    "is_new": false,
+    "new_rank": null,
+    "bulk_pricing": [
+      {
+        "min": 12,
+        "max": 24,
+        "type": "percent",
+        "value": 10
+      },
+      {
+        "min": 25,
+        "max": 49,
+        "type": "percent",
+        "value": 20
+      },
+      {
+        "min": 50,
+        "max": null,
+        "type": "percent",
+        "value": 30
+      }
+    ],
+    "variants": [
+      {
+        "id": 155,
+        "label": "11 oz",
+        "price": 26.75,
+        "sku": "113-1-1-1",
+        "is_default": true,
+        "sort": 0
+      },
+      {
+        "id": 156,
+        "label": "8 oz",
+        "price": 22.92,
+        "sku": "125-8O-1",
+        "is_default": false,
+        "sort": 1
+      },
+      {
+        "id": 157,
+        "label": "1 oz",
+        "price": 3,
+        "sku": "125-1O-1",
+        "is_default": false,
+        "sort": 2
+      },
+      {
+        "id": 158,
+        "label": "Aura (13 oz)",
+        "price": 38,
+        "sku": "125-AU-1",
+        "is_default": false,
+        "sort": 3
+      }
+    ],
+    "related": [
+      125
+    ]
+  },
+  {
+    "id": 125,
+    "slug": "sweet-tobacco",
+    "name": "Sweet Tobacco",
+    "sku": "113-1-1",
+    "price": 26.75,
+    "description_html": "<p><span>All candles are hand-poured in North Dakota<br class=\"html-br\" /></span></p>\n<p><span>What is our candle constructed with?</span><br class=\"html-br\" /><span>- Natural Coconut Soy Wax that burns clean (minimal soot, no smoke, easy to trim)</span><br class=\"html-br\" /><span>- Made with fragrances that are Toxic Free / Parabens Free / Phthalate Free / Cruelty Free / Vegan</span></p>",
+    "images": [
+      "/images/products/sweet-tobacco.jpg"
+    ],
+    "option_name": "Size",
+    "is_new": false,
+    "new_rank": null,
+    "bulk_pricing": [
+      {
+        "min": 12,
+        "max": 24,
+        "type": "percent",
+        "value": 10
+      },
+      {
+        "min": 25,
+        "max": 49,
+        "type": "percent",
+        "value": 20
+      },
+      {
+        "min": 50,
+        "max": null,
+        "type": "percent",
+        "value": 30
+      }
+    ],
+    "variants": [
+      {
+        "id": 151,
+        "label": "11 oz",
+        "price": 26.75,
+        "sku": "113-1-1",
+        "is_default": true,
+        "sort": 0
+      },
+      {
+        "id": 152,
+        "label": "8 oz",
+        "price": 22.92,
+        "sku": "125-8O",
+        "is_default": false,
+        "sort": 1
+      },
+      {
+        "id": 153,
+        "label": "1 oz",
+        "price": 3,
+        "sku": "125-1O",
+        "is_default": false,
+        "sort": 2
+      },
+      {
+        "id": 154,
+        "label": "Aura (13 oz)",
+        "price": 38,
+        "sku": "125-AU",
+        "is_default": false,
+        "sort": 3
+      }
+    ],
+    "related": [
+      126
+    ]
+  },
+  {
+    "id": 124,
+    "slug": "brown-sugar",
+    "name": "Brown Sugar",
+    "sku": "112-1O-1-1-1-1-1-1-1-1-1-1-1-1",
+    "price": 3,
+    "description_html": "<p><span>All candles are hand-poured in North Dakota<br class=\"html-br\" /></span></p>\n<p><span>What is our candle constructed with?</span><br class=\"html-br\" /><span>- Natural Coconut Soy Wax that burns clean (minimal soot, no smoke, easy to trim)</span><br class=\"html-br\" /><span>- Made with fragrances that are Toxic Free / Parabens Free / Phthalate Free / Cruelty Free / Vegan</span></p>",
+    "images": [
+      "/images/products/brown-sugar.jpg"
+    ],
+    "option_name": "Size",
+    "is_new": false,
+    "new_rank": null,
+    "bulk_pricing": [
+      {
+        "min": 12,
+        "max": 24,
+        "type": "percent",
+        "value": 10
+      },
+      {
+        "min": 25,
+        "max": 49,
+        "type": "percent",
+        "value": 20
+      },
+      {
+        "min": 50,
+        "max": null,
+        "type": "percent",
+        "value": 30
+      }
+    ],
+    "variants": [
+      {
+        "id": 147,
+        "label": "11 oz",
+        "price": 18.33,
+        "sku": "112-11-1-1-1-1-1-1-1-1-1-1-1-1",
+        "is_default": false,
+        "sort": 0
+      },
+      {
+        "id": 148,
+        "label": "8 oz",
+        "price": 22.92,
+        "sku": "112-8O-1-1-1-1-1-1-1-1-1-1-1-1",
+        "is_default": false,
+        "sort": 1
+      },
+      {
+        "id": 149,
+        "label": "1 oz",
+        "price": 3,
+        "sku": "112-1O-1-1-1-1-1-1-1-1-1-1-1-1",
+        "is_default": true,
+        "sort": 2
+      },
+      {
+        "id": 150,
+        "label": "Aura (13 oz)",
+        "price": 38,
+        "sku": "112-WA-1-1-1-1-1-1-1-1-1-1-1-1",
+        "is_default": false,
+        "sort": 3
+      }
+    ],
+    "related": []
+  },
+  {
+    "id": 123,
+    "slug": "starry-night",
+    "name": "Starry Night",
+    "sku": "112-11-1-1-1-1-1-1-1-1-1-1-1",
+    "price": 26.75,
+    "description_html": "<p><span>Opening with the bright notes of Bergamot and Orange, Starry Night sweeps you into starlit vistas. With a sparkle of cassis and the allure of deep sea water, this wooden wick candle captures the zest of lemon and the elegance of blue lilies and hyacinth. At the heart of this wood wick candle, floral elegance envelops you, reminiscent of a moonlit garden's soothing embrace.</span><br class=\"html-br\" /><br class=\"html-br\" /><span>Mood: Introspective, Calming, Mysterious</span><br class=\"html-br\" /><br class=\"html-br\" /><span>Scent Notes: Bergamot, orange, sparkling cassis, deep sea water, hyacinth, blue lilies, lemon zest, patchouli, and seaweed</span><br class=\"html-br\" /><br class=\"html-br\" /><span>Burn Time: 50-55 hours for 9-10 oz., 60-65 hours for 12 oz.</span><br class=\"html-br\" /><br class=\"html-br\" /><span>What is our candle constructed with?</span><br class=\"html-br\" /><span>- Coconut Soy Wax that burns clean (minimal soot, no smoke, easy to trim)</span><br class=\"html-br\" /><span>- Wooden Wicks with crackling sound</span><br class=\"html-br\" /><span>- Beautiful Glass Vessels that can double as a fancy cup after use</span><br class=\"html-br\" /><span>- Made with fragrances that are Toxic Free / Parabens Free / Phthalate Free / Cruelty Free / Vegan</span><br class=\"html-br\" /><br class=\"html-br\" /><span>All candles are made in North Dakota</span></p>",
+    "images": [
+      "/images/products/starry-night.jpg"
+    ],
+    "option_name": "Size",
+    "is_new": false,
+    "new_rank": null,
+    "bulk_pricing": [
+      {
+        "min": 12,
+        "max": 24,
+        "type": "percent",
+        "value": 10
+      },
+      {
+        "min": 25,
+        "max": 49,
+        "type": "percent",
+        "value": 20
+      },
+      {
+        "min": 50,
+        "max": null,
+        "type": "percent",
+        "value": 30
+      }
+    ],
+    "variants": [
+      {
+        "id": 143,
+        "label": "11 oz",
+        "price": 26.75,
+        "sku": "112-11-1-1-1-1-1-1-1-1-1-1-1",
+        "is_default": true,
+        "sort": 0
+      },
+      {
+        "id": 144,
+        "label": "8 oz",
+        "price": 22.92,
+        "sku": "112-8O-1-1-1-1-1-1-1-1-1-1-1",
+        "is_default": false,
+        "sort": 1
+      },
+      {
+        "id": 145,
+        "label": "1 oz",
+        "price": 3,
+        "sku": "112-1O-1-1-1-1-1-1-1-1-1-1-1",
+        "is_default": false,
+        "sort": 2
+      },
+      {
+        "id": 146,
+        "label": "Aura (13 oz)",
+        "price": 38,
+        "sku": "112-WA-1-1-1-1-1-1-1-1-1-1-1",
+        "is_default": false,
+        "sort": 3
+      }
+    ],
+    "related": []
+  },
+  {
+    "id": 122,
+    "slug": "spa-session",
+    "name": "Spa Session",
+    "sku": "112-11-1-1-1-1-1-1-1-1-1-1",
+    "price": 26.75,
+    "description_html": "<p><span>Step into pure relaxation with our Spa Session wood wick candle. Picture yourself sinking into plush towels and comfy PJs, creating your ultimate self-care haven. This candle is all about setting the vibe for unwinding and pampering in the comfort of your own space.</span><br class=\"html-br\" /><br class=\"html-br\" /><span>The soothing blend of Eucalyptus, Cotton, and Gardenia notes transports you to your favorite spa getaway. Imagine the invigorating aroma of Eucalyptus filling the air, igniting a sense of rejuvenation. Balanced with the soft embrace of Cotton and the alluring essence of Gardenia, this wooden wick candle is a symphony of scents that takes self-care to the next level.</span><br class=\"html-br\" /><br class=\"html-br\" /><span>Mood: Relaxed, Decompressed, Relief</span><br class=\"html-br\" /><br class=\"html-br\" /><span>Scent Notes: Peppermint, Gardenia, Eucalyptus, Cotton, Hyacinth, Musk, Sandalwood, Ylang Ylang.</span><br class=\"html-br\" /><br class=\"html-br\" /><span>Burn Time: 50-55 hours for 9-10 oz., 60-65 hours for 12 oz.</span><br class=\"html-br\" /><br class=\"html-br\" /><span>What is our candle constructed with?</span><br class=\"html-br\" /><span>- Coconut Soy Wax that burns clean (minimal soot, no smoke, easy to trim)</span><br class=\"html-br\" /><span>- Wooden Wicks with crackling sound</span><br class=\"html-br\" /><span>- Beautiful Glass Vessels that can double as a fancy cup after use</span><br class=\"html-br\" /><span>- Made with fragrances that are Toxic Free / Parabens Free / Phthalate Free / Cruelty Free / Vegan</span><br class=\"html-br\" /><br class=\"html-br\" /><span>All candles are made in North Dakota</span></p>",
+    "images": [
+      "/images/products/spa-session.jpg"
+    ],
+    "option_name": "Size",
+    "is_new": false,
+    "new_rank": null,
+    "bulk_pricing": [
+      {
+        "min": 12,
+        "max": 24,
+        "type": "percent",
+        "value": 10
+      },
+      {
+        "min": 25,
+        "max": 49,
+        "type": "percent",
+        "value": 20
+      },
+      {
+        "min": 50,
+        "max": null,
+        "type": "percent",
+        "value": 30
+      }
+    ],
+    "variants": [
+      {
+        "id": 139,
+        "label": "11 oz",
+        "price": 26.75,
+        "sku": "112-11-1-1-1-1-1-1-1-1-1-1",
+        "is_default": true,
+        "sort": 0
+      },
+      {
+        "id": 140,
+        "label": "8 oz",
+        "price": 22.92,
+        "sku": "112-8O-1-1-1-1-1-1-1-1-1-1",
+        "is_default": false,
+        "sort": 1
+      },
+      {
+        "id": 141,
+        "label": "1 oz",
+        "price": 3,
+        "sku": "112-1O-1-1-1-1-1-1-1-1-1-1",
+        "is_default": false,
+        "sort": 2
+      },
+      {
+        "id": 142,
+        "label": "Aura (13 oz)",
+        "price": 38,
+        "sku": "112-WA-1-1-1-1-1-1-1-1-1-1",
+        "is_default": false,
+        "sort": 3
+      }
+    ],
+    "related": []
+  },
+  {
+    "id": 121,
+    "slug": "if-by-sea",
+    "name": "If By Sea",
+    "sku": "112-11-1-1-1-1-1-1-1-1-1",
+    "price": 26.75,
+    "description_html": "<p><span>If by Sea is one of the green-smelling candles that have floral notes mixed with wood notes to find a perfect balance of smoothness and earthiness.</span><br class=\"html-br\" /><br class=\"html-br\" /><span>The journey begins with the invigorating scent of Sea Moss, evoking the calm of ocean waves and the purity of untouched shores. Orchid adds an exotic touch, reminiscent of lush botanical gardens, while Violet contributes a subtle floral nuance that encapsulates the essence of new beginnings.</span><br class=\"html-br\" /><br class=\"html-br\" /><span>Whether you're seeking a space of serenity for meditation or simply aiming to infuse your environment with a sense of purity, our Detox wood wick candle provides the perfect aromatic backdrop. Embrace the renewing ambiance that only a wood wick candle can provide, and let its calming presence uplift your space.</span><br class=\"html-br\" /><br class=\"html-br\" /><span>Mood: Purified, Light, Refreshed.</span><br class=\"html-br\" /><br class=\"html-br\" /><span>Scent Notes: Sea Moss, Orchid, Violet, Jasmine, Bergamot, Ozone, Sandalwood, Musk, Moss.</span><br class=\"html-br\" /><br class=\"html-br\" /><span>Burn Time: 50-55 hours for 9-10oz., 60-65 hours for 12oz.</span><br class=\"html-br\" /><br class=\"html-br\" /><span>What is our candle constructed with?</span><br class=\"html-br\" /><span>- Coconut Soy Wax that burns clean (minimal soot, no smoke, easy to trim)</span><br class=\"html-br\" /><span>- Wooden Wicks with crackling sound</span><br class=\"html-br\" /><span>- Beautiful Glass Vessels that can double as a fancy cup after use</span><br class=\"html-br\" /><span>- Made with fragrances that are Toxic Free / Parabens Free / Phthalate Free / Cruelty Free / Vegan</span><br class=\"html-br\" /><br class=\"html-br\" /><span>All candles are made in North Dakota</span></p>",
+    "images": [
+      "/images/products/if-by-sea.jpg"
+    ],
+    "option_name": "Size",
+    "is_new": false,
+    "new_rank": null,
+    "bulk_pricing": [
+      {
+        "min": 12,
+        "max": 24,
+        "type": "percent",
+        "value": 10
+      },
+      {
+        "min": 25,
+        "max": 49,
+        "type": "percent",
+        "value": 20
+      },
+      {
+        "min": 50,
+        "max": null,
+        "type": "percent",
+        "value": 30
+      }
+    ],
+    "variants": [
+      {
+        "id": 135,
+        "label": "11 oz",
+        "price": 26.75,
+        "sku": "112-11-1-1-1-1-1-1-1-1-1",
+        "is_default": true,
+        "sort": 0
+      },
+      {
+        "id": 136,
+        "label": "8 oz",
+        "price": 22.92,
+        "sku": "112-8O-1-1-1-1-1-1-1-1-1",
+        "is_default": false,
+        "sort": 1
+      },
+      {
+        "id": 137,
+        "label": "1 oz",
+        "price": 3,
+        "sku": "112-1O-1-1-1-1-1-1-1-1-1",
+        "is_default": false,
+        "sort": 2
+      },
+      {
+        "id": 138,
+        "label": "Aura (13 oz)",
+        "price": 38,
+        "sku": "112-WA-1-1-1-1-1-1-1-1-1",
+        "is_default": false,
+        "sort": 3
+      }
+    ],
+    "related": []
+  },
+  {
+    "id": 120,
+    "slug": "jasmine",
+    "name": "Jasmine",
+    "sku": "112-11-1-1-1-1-1-1-1-1",
+    "price": 26.75,
+    "description_html": "<p><span>All candles are hand-poured in North Dakota<br class=\"html-br\" /></span></p>\n<p><span>What is our candle constructed with?</span><br class=\"html-br\" /><span>- Natural Coconut Soy Wax that burns clean (minimal soot, no smoke, easy to trim)</span><br class=\"html-br\" /><span>- Made with fragrances that are Toxic Free / Parabens Free / Phthalate Free / Cruelty Free / Vegan</span></p>",
+    "images": [
+      "/images/products/jasmine.jpg"
+    ],
+    "option_name": "Size",
+    "is_new": false,
+    "new_rank": null,
+    "bulk_pricing": [
+      {
+        "min": 12,
+        "max": 24,
+        "type": "percent",
+        "value": 10
+      },
+      {
+        "min": 25,
+        "max": 49,
+        "type": "percent",
+        "value": 20
+      },
+      {
+        "min": 50,
+        "max": null,
+        "type": "percent",
+        "value": 30
+      }
+    ],
+    "variants": [
+      {
+        "id": 131,
+        "label": "11 oz",
+        "price": 26.75,
+        "sku": "112-11-1-1-1-1-1-1-1-1",
+        "is_default": true,
+        "sort": 0
+      },
+      {
+        "id": 132,
+        "label": "8 oz",
+        "price": 22.92,
+        "sku": "112-8O-1-1-1-1-1-1-1-1",
+        "is_default": false,
+        "sort": 1
+      },
+      {
+        "id": 133,
+        "label": "1 oz",
+        "price": 3,
+        "sku": "112-1O-1-1-1-1-1-1-1-1",
+        "is_default": false,
+        "sort": 2
+      },
+      {
+        "id": 134,
+        "label": "Aura (13 oz)",
+        "price": 38,
+        "sku": "112-WA-1-1-1-1-1-1-1-1",
+        "is_default": false,
+        "sort": 3
+      }
+    ],
+    "related": []
+  },
+  {
+    "id": 119,
+    "slug": "grandma-s-house",
+    "name": "Grandma's House",
+    "sku": "112-11-1-1-1-1-1-1-1",
+    "price": 26.75,
+    "description_html": "<p><span>All candles are hand-poured in North Dakota<br class=\"html-br\" /></span></p>\n<p><span>What is our candle constructed with?</span><br class=\"html-br\" /><span>- Natural Coconut Soy Wax that burns clean (minimal soot, no smoke, easy to trim)</span><br class=\"html-br\" /><span>- Made with fragrances that are Toxic Free / Parabens Free / Phthalate Free / Cruelty Free / Vegan</span></p>",
+    "images": [
+      "/images/products/grandma-s-house.jpg"
+    ],
+    "option_name": "Size",
+    "is_new": false,
+    "new_rank": null,
+    "bulk_pricing": [
+      {
+        "min": 12,
+        "max": 24,
+        "type": "percent",
+        "value": 10
+      },
+      {
+        "min": 25,
+        "max": 49,
+        "type": "percent",
+        "value": 20
+      },
+      {
+        "min": 50,
+        "max": null,
+        "type": "percent",
+        "value": 30
+      }
+    ],
+    "variants": [
+      {
+        "id": 127,
+        "label": "11 oz",
+        "price": 26.75,
+        "sku": "112-11-1-1-1-1-1-1-1",
+        "is_default": true,
+        "sort": 0
+      },
+      {
+        "id": 128,
+        "label": "8 oz",
+        "price": 22.92,
+        "sku": "112-8O-1-1-1-1-1-1-1",
+        "is_default": false,
+        "sort": 1
+      },
+      {
+        "id": 129,
+        "label": "1 oz",
+        "price": 3,
+        "sku": "112-1O-1-1-1-1-1-1-1",
+        "is_default": false,
+        "sort": 2
+      },
+      {
+        "id": 130,
+        "label": "Aura (13 oz)",
+        "price": 38,
+        "sku": "112-WA-1-1-1-1-1-1-1",
+        "is_default": false,
+        "sort": 3
+      }
+    ],
+    "related": []
+  },
+  {
+    "id": 118,
+    "slug": "snowy-day",
+    "name": "Snowy Day",
+    "sku": "112-11-1-1-1-1-1-1",
+    "price": 26.75,
+    "description_html": "<p><span>All candles are hand-poured in North Dakota<br class=\"html-br\" /></span></p>\n<p><span>What is our candle constructed with?</span><br class=\"html-br\" /><span>- Natural Coconut Soy Wax that burns clean (minimal soot, no smoke, easy to trim)</span><br class=\"html-br\" /><span>- Made with fragrances that are Toxic Free / Parabens Free / Phthalate Free / Cruelty Free / Vegan</span></p>",
+    "images": [
+      "/images/products/snowy-day.jpg"
+    ],
+    "option_name": "Size",
+    "is_new": false,
+    "new_rank": null,
+    "bulk_pricing": [
+      {
+        "min": 12,
+        "max": 24,
+        "type": "percent",
+        "value": 10
+      },
+      {
+        "min": 25,
+        "max": 49,
+        "type": "percent",
+        "value": 20
+      },
+      {
+        "min": 50,
+        "max": null,
+        "type": "percent",
+        "value": 30
+      }
+    ],
+    "variants": [
+      {
+        "id": 123,
+        "label": "11 oz",
+        "price": 26.75,
+        "sku": "112-11-1-1-1-1-1-1",
+        "is_default": true,
+        "sort": 0
+      },
+      {
+        "id": 124,
+        "label": "8 oz",
+        "price": 22.92,
+        "sku": "112-8O-1-1-1-1-1-1",
+        "is_default": false,
+        "sort": 1
+      },
+      {
+        "id": 125,
+        "label": "1 oz",
+        "price": 3,
+        "sku": "112-1O-1-1-1-1-1-1",
+        "is_default": false,
+        "sort": 2
+      },
+      {
+        "id": 126,
+        "label": "Aura (13 oz)",
+        "price": 38,
+        "sku": "112-WA-1-1-1-1-1-1",
+        "is_default": false,
+        "sort": 3
+      }
+    ],
+    "related": []
+  },
+  {
+    "id": 117,
+    "slug": "hickory-suede",
+    "name": "Hickory Suede",
+    "sku": "112-11-1-1-1-1-1",
+    "price": 26.75,
+    "description_html": "<p><span>All candles are hand-poured in North Dakota<br class=\"html-br\" /></span></p>\n<p><span>What is our candle constructed with?</span><br class=\"html-br\" /><span>- Natural Coconut Soy Wax that burns clean (minimal soot, no smoke, easy to trim)</span><br class=\"html-br\" /><span>- Made with fragrances that are Toxic Free / Parabens Free / Phthalate Free / Cruelty Free / Vegan</span></p>",
+    "images": [
+      "/images/products/hickory-suede.jpg"
+    ],
+    "option_name": "Size",
+    "is_new": false,
+    "new_rank": null,
+    "bulk_pricing": [
+      {
+        "min": 12,
+        "max": 24,
+        "type": "percent",
+        "value": 10
+      },
+      {
+        "min": 25,
+        "max": 49,
+        "type": "percent",
+        "value": 20
+      },
+      {
+        "min": 50,
+        "max": null,
+        "type": "percent",
+        "value": 30
+      }
+    ],
+    "variants": [
+      {
+        "id": 118,
+        "label": "11 oz",
+        "price": 26.75,
+        "sku": "112-11-1-1-1-1-1",
+        "is_default": true,
+        "sort": 0
+      },
+      {
+        "id": 119,
+        "label": "8 oz",
+        "price": 22.92,
+        "sku": "112-8O-1-1-1-1-1",
+        "is_default": false,
+        "sort": 1
+      },
+      {
+        "id": 120,
+        "label": "1 oz",
+        "price": 3,
+        "sku": "112-1O-1-1-1-1-1",
+        "is_default": false,
+        "sort": 2
+      },
+      {
+        "id": 121,
+        "label": "Aura (13 oz)",
+        "price": 38,
+        "sku": "112-WA-1-1-1-1-1",
+        "is_default": false,
+        "sort": 3
+      }
+    ],
+    "related": []
+  },
+  {
+    "id": 116,
+    "slug": "christmas-tree",
+    "name": "Christmas Tree",
+    "sku": "112-11-1-1-1-1",
+    "price": 26.75,
+    "description_html": "<p><span>All candles are hand-poured in North Dakota<br class=\"html-br\" /></span></p>\n<p><span>What is our candle constructed with?</span><br class=\"html-br\" /><span>- Natural Coconut Soy Wax that burns clean (minimal soot, no smoke, easy to trim)</span><br class=\"html-br\" /><span>- Made with fragrances that are Toxic Free / Parabens Free / Phthalate Free / Cruelty Free / Vegan</span></p>",
+    "images": [
+      "/images/products/christmas-tree.jpg"
+    ],
+    "option_name": "Size",
+    "is_new": false,
+    "new_rank": null,
+    "bulk_pricing": [
+      {
+        "min": 12,
+        "max": 24,
+        "type": "percent",
+        "value": 10
+      },
+      {
+        "min": 25,
+        "max": 49,
+        "type": "percent",
+        "value": 20
+      },
+      {
+        "min": 50,
+        "max": null,
+        "type": "percent",
+        "value": 30
+      }
+    ],
+    "variants": [
+      {
+        "id": 114,
+        "label": "11 oz",
+        "price": 26.75,
+        "sku": "112-11-1-1-1-1",
+        "is_default": true,
+        "sort": 0
+      },
+      {
+        "id": 115,
+        "label": "8 oz",
+        "price": 22.92,
+        "sku": "112-8O-1-1-1-1",
+        "is_default": false,
+        "sort": 1
+      },
+      {
+        "id": 116,
+        "label": "1 oz",
+        "price": 3,
+        "sku": "112-1O-1-1-1-1",
+        "is_default": false,
+        "sort": 2
+      },
+      {
+        "id": 117,
+        "label": "Aura (13 oz)",
+        "price": 38,
+        "sku": "112-WA-1-1-1-1",
+        "is_default": false,
+        "sort": 3
+      }
+    ],
+    "related": []
+  },
+  {
+    "id": 115,
+    "slug": "earl-grey",
+    "name": "Earl Grey",
+    "sku": "114-11-1-",
+    "price": 26.75,
+    "description_html": "<p><span>At its heart, the comforting aroma of Earl Grey wraps around you, reminiscent of quiet mornings and time spent reflecting. This is elegantly paired with the zesty undertones of Bergamot, known for its uplifting properties and addicting citrus scent. A splash of fresh Cucumber serves as a gentle reminder of nature's simple serenities. The gentle crackle of the wooden wick, echoing the sounds of a serene fireplace which deepens the meditative experience.</span><br class=\"html-br\" /><br class=\"html-br\" /><span>Mood: Calm, Relaxed, Invigorating</span><br class=\"html-br\" /><br class=\"html-br\" /><span>Scent Notes: Bergamot, Earl Grey Tea, Cucumber, Lime, Beeswax, Amber, Musk.</span><br class=\"html-br\" /><br class=\"html-br\" /><span>Burn Time: 50-55 hours for 9-10oz., 60-65 hours for 12oz.</span><br class=\"html-br\" /><br class=\"html-br\" /><span>What is our candle constructed with?</span><br class=\"html-br\" /><span>- Coconut Soy Wax that burns clean (minimal soot, no smoke, easy to trim)</span><br class=\"html-br\" /><span>- Wooden Wicks with crackling sound</span><br class=\"html-br\" /><span>- Beautiful Glass Vessels that can double as a fancy cup after use</span><br class=\"html-br\" /><span>- Made with fragrances that are Toxic Free / Parabens Free / Phthalate Free / Cruelty Free / Vegan</span><br class=\"html-br\" /><br class=\"html-br\" /><span>All candles are made in North Dakota</span></p>",
+    "images": [
+      "/images/products/earl-grey.jpg"
+    ],
+    "option_name": "Size",
+    "is_new": false,
+    "new_rank": null,
+    "bulk_pricing": [
+      {
+        "min": 12,
+        "max": 24,
+        "type": "percent",
+        "value": 10
+      },
+      {
+        "min": 25,
+        "max": 49,
+        "type": "percent",
+        "value": 20
+      },
+      {
+        "min": 50,
+        "max": null,
+        "type": "percent",
+        "value": 30
+      }
+    ],
+    "variants": [
+      {
+        "id": 110,
+        "label": "11 oz",
+        "price": 26.75,
+        "sku": "114-11-1-",
+        "is_default": true,
+        "sort": 0
+      },
+      {
+        "id": 111,
+        "label": "8 oz",
+        "price": 22.92,
+        "sku": "114-8O-1",
+        "is_default": false,
+        "sort": 1
+      },
+      {
+        "id": 112,
+        "label": "1 oz",
+        "price": 3,
+        "sku": "114-1O-1",
+        "is_default": false,
+        "sort": 2
+      },
+      {
+        "id": 113,
+        "label": "Aura (13 oz)",
+        "price": 38,
+        "sku": "114-WA-0",
+        "is_default": false,
+        "sort": 3
+      }
+    ],
+    "related": []
+  },
+  {
+    "id": 114,
+    "slug": "jeju-island",
+    "name": "Jeju Island",
+    "sku": "112-11-1-1",
+    "price": 26.75,
+    "description_html": "<p><span>A mesmerizing fusion of yuzu, sugarcane, and pomelo scents that will transport you to a citrus paradise. Immerse yourself in the invigorating essence of yuzu, with its zesty and refreshing aroma that awakens your senses. Add the sweetness of sugarcane and the bitterness of pomelo into a wooden wick candle and you'll get a fusion of bittersweet goodness that is addicting to smell in any occasion.</span><br class=\"html-br\" /><br class=\"html-br\" /><span>Mood: Energetic, Fresh</span><br class=\"html-br\" /><br class=\"html-br\" /><span>Scent Notes: Yuzu, Sugarcane, Pomelo</span><br class=\"html-br\" /><br class=\"html-br\" /><span>Burn Time: 50-55 hours for 9-10oz., 60-65 hours for 12oz.</span><br class=\"html-br\" /><br class=\"html-br\" /><span>What is our candle constructed with?</span><br class=\"html-br\" /><span>- Coconut Soy Wax that burns clean (minimal soot, no smoke, easy to trim)</span><br class=\"html-br\" /><span>- Wooden Wicks with crackling sound</span><br class=\"html-br\" /><span>- Beautiful Glass Vessels that can double as a fancy cup after use</span><br class=\"html-br\" /><span>- Made with fragrances that are Toxic Free / Parabens Free / Phthalate Free / Cruelty Free / Vegan</span><br class=\"html-br\" /><br class=\"html-br\" /><span>All candles are made in North Dakota</span></p>",
+    "images": [
+      "/images/products/jeju-island.jpg"
+    ],
+    "option_name": "Size",
+    "is_new": false,
+    "new_rank": null,
+    "bulk_pricing": [
+      {
+        "min": 12,
+        "max": 24,
+        "type": "percent",
+        "value": 10
+      },
+      {
+        "min": 25,
+        "max": 49,
+        "type": "percent",
+        "value": 20
+      },
+      {
+        "min": 50,
+        "max": null,
+        "type": "percent",
+        "value": 30
+      }
+    ],
+    "variants": [
+      {
+        "id": 106,
+        "label": "11 oz",
+        "price": 26.75,
+        "sku": "112-11-1-1",
+        "is_default": true,
+        "sort": 0
+      },
+      {
+        "id": 107,
+        "label": "8 oz",
+        "price": 22.92,
+        "sku": "112-8O-1-1",
+        "is_default": false,
+        "sort": 1
+      },
+      {
+        "id": 108,
+        "label": "1 oz",
+        "price": 3,
+        "sku": "112-1O-1-1",
+        "is_default": false,
+        "sort": 2
+      },
+      {
+        "id": 122,
+        "label": "Wax Melts (2oz)",
+        "price": 26.75,
+        "sku": "114-WA",
+        "is_default": false,
+        "sort": 3
+      },
+      {
+        "id": 109,
+        "label": "Aura (13 oz)",
+        "price": 38,
+        "sku": "112-WA-1-1",
+        "is_default": false,
+        "sort": 4
+      }
+    ],
+    "related": []
+  },
+  {
+    "id": 113,
+    "slug": "sunny-mornings",
+    "name": "Sunny Mornings",
+    "sku": "112-11-1",
+    "price": 26.75,
+    "description_html": "<p><span>All candles are hand-poured in North Dakota<br class=\"html-br\" /></span></p>\n<p><span>What is our candle constructed with?</span><br class=\"html-br\" /><span>- Natural Coconut Soy Wax that burns clean (minimal soot, no smoke, easy to trim)</span><br class=\"html-br\" /><span>- Made with fragrances that are Toxic Free / Parabens Free / Phthalate Free / Cruelty Free / Vegan</span></p>",
+    "images": [
+      "/images/products/sunny-mornings.jpg"
+    ],
+    "option_name": "Size",
+    "is_new": false,
+    "new_rank": null,
+    "bulk_pricing": [
+      {
+        "min": 12,
+        "max": 24,
+        "type": "percent",
+        "value": 10
+      },
+      {
+        "min": 25,
+        "max": 49,
+        "type": "percent",
+        "value": 20
+      },
+      {
+        "min": 50,
+        "max": null,
+        "type": "percent",
+        "value": 30
+      }
+    ],
+    "variants": [
+      {
+        "id": 102,
+        "label": "11 oz",
+        "price": 26.75,
+        "sku": "112-11-1",
+        "is_default": true,
+        "sort": 0
+      },
+      {
+        "id": 103,
+        "label": "8 oz",
+        "price": 22.92,
+        "sku": "112-8O-1",
+        "is_default": false,
+        "sort": 1
+      },
+      {
+        "id": 104,
+        "label": "1 oz",
+        "price": 3,
+        "sku": "112-1O-1",
+        "is_default": false,
+        "sort": 2
+      },
+      {
+        "id": 105,
+        "label": "Aura (13 oz)",
+        "price": 38,
+        "sku": "112-WA-1",
+        "is_default": false,
+        "sort": 3
+      }
+    ],
+    "related": []
+  },
+  {
+    "id": 112,
+    "slug": "taro-milktea-wax-melt",
+    "name": "Taro Milktea Wax Melt",
+    "sku": "112-WA",
+    "price": 6,
+    "description_html": "<p><span>Sweet taro, brown sugar syrup, and whipped cream.</span></p>\n<p><span>Mood: Playful and indulgent &mdash; perfect for boba lovers.</span><span></span></p>\n<p>&nbsp;</p>\n<p><span>All candles are hand-poured in North Dakota<br class=\"html-br\" /></span></p>\n<p><span>What is our candle constructed with?</span><br class=\"html-br\" /><span>- Natural Coconut Soy Wax that burns clean (minimal soot, no smoke, easy to trim)</span><br class=\"html-br\" /><span>- Made with fragrances that are Toxic Free / Parabens Free / Phthalate Free / Cruelty Free / Vegan</span></p>",
+    "images": [
+      "/images/products/taro-milktea-wax-melt.jpg"
+    ],
+    "option_name": "Size",
+    "is_new": false,
+    "new_rank": null,
+    "bulk_pricing": [
+      {
+        "min": 3,
+        "max": 3,
+        "type": "fixed",
+        "value": 15
+      },
+      {
+        "min": 4,
+        "max": 29,
+        "type": "fixed",
+        "value": 16
+      },
+      {
+        "min": 30,
+        "max": null,
+        "type": "fixed",
+        "value": 30
+      }
+    ],
+    "variants": [
+      {
+        "id": 98,
+        "label": "11 oz",
+        "price": 6,
+        "sku": "112-11",
+        "is_default": false,
+        "sort": 0
+      },
+      {
+        "id": 99,
+        "label": "8 oz",
+        "price": 6,
+        "sku": "112-8O",
+        "is_default": false,
+        "sort": 1
+      },
+      {
+        "id": 100,
+        "label": "1 oz",
+        "price": 6,
+        "sku": "112-1O",
+        "is_default": false,
+        "sort": 2
+      },
+      {
+        "id": 101,
+        "label": "Wax Melts",
+        "price": 6,
+        "sku": "112-WA",
+        "is_default": true,
+        "sort": 3
+      }
+    ],
+    "related": []
+  }
+]
