@@ -7,6 +7,12 @@ const CartContext = createContext(null);
 const KEY = 'ptc-cart-bc';
 const CHECKOUT_KEY = 'ptc-checkout-cart';
 
+// Logging out empties the cart, so the next person on a shared computer doesn't see it.
+export function clearSavedCart() {
+  save(KEY, []);
+  save(CHECKOUT_KEY, null);
+}
+
 export function CartProvider({ children }) {
   const [items, setItems] = useState(() => load(KEY, []));
   const [previewOpen, setPreviewOpen] = useState(false);
