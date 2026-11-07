@@ -126,7 +126,7 @@ function AuthForms() {
     run(async () => {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
-      navigate('/login', { replace: true });
+      navigate('/', { replace: true });
     });
   };
 
@@ -138,10 +138,11 @@ function AuthForms() {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { full_name: name.trim() }, emailRedirectTo: `${window.location.origin}/login` },
+        options: { data: { full_name: name.trim() }, emailRedirectTo: `${window.location.origin}/` },
       });
       if (error) throw error;
-      if (!data.session) setStatus({ type: 'sent', text: `We sent a confirmation link to ${email}. Open it to activate your account.` });
+      if (data.session) navigate('/', { replace: true });
+      else setStatus({ type: 'sent', text: `We sent a confirmation link to ${email}. Open it to activate your account.` });
     });
   };
 

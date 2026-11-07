@@ -157,7 +157,12 @@ export default function Header() {
                   <NavLink className="main-menu-link" to={l.to}><span>{l.label}</span></NavLink>
                 </li>
               ))}
-              <li className="mobile-only" style={{ '--i': shopLinks.length + 1 }}>
+              {user && (
+                <li className="mobile-only" style={{ '--i': shopLinks.length + 1 }}>
+                  <NavLink className="main-menu-link" to="/login"><span>My account</span></NavLink>
+                </li>
+              )}
+              <li className="mobile-only" style={{ '--i': shopLinks.length + 2 }}>
                 {user ? (
                   <button className="main-menu-link" onClick={signOut}><span>Log out</span></button>
                 ) : (
@@ -169,7 +174,10 @@ export default function Header() {
 
           <div className="header-tools">
             {user ? (
-              <button className="tool-link desktop-only" onClick={signOut}><UserIcon size={18} /> Log out</button>
+              <>
+                <button className="tool-link desktop-only" onClick={signOut}>Log out</button>
+                <Link className="icon-button profile-button" to="/login" aria-label="My account" title="My account"><UserIcon /></Link>
+              </>
             ) : (
               <Link className="tool-link desktop-only" to="/login"><UserIcon size={18} /> Log in</Link>
             )}

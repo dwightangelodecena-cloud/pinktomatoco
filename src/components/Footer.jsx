@@ -66,6 +66,7 @@ export default function Footer() {
         </ul>
         <ul className="footer-menu">
           <li className="footer-menu-header">Account</li>
+          {user && <li><Link to="/login">My account</Link></li>}
           <li>{user ? <button className="link-button" onClick={signOut}>Log out</button> : <Link to="/login">Log in</Link>}</li>
           <li><Link to="/wishlist">Wishlist</Link></li>
         </ul>
