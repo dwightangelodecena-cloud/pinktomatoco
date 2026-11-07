@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { customerRequest } from '../lib/api.js';
 import { supabase } from '../lib/supabase.js';
 
@@ -29,6 +29,7 @@ export function AuthProvider({ children }) {
   const [sessionReady, setSessionReady] = useState(!supabase);
   const [customerReady, setCustomerReady] = useState(false);
   const [adminCheck, setAdminCheck] = useState({ userId: null, isAdmin: false });
+  const signingOut = useRef(false);
 
   useEffect(() => {
     if (!supabase) return;
@@ -36,7 +37,9 @@ export function AuthProvider({ children }) {
       setAdminUser(data.session?.user ?? null);
       setSessionReady(true);
     });
-    const { data } = supabase.auth.onAuthStateChange((_e, session) => setAdminUser(session?.user ?? null));
+    const { data } = supabase.auth.onAuthStateChange((_e, session) => {
+      if (!signingOut.current) setAdminUser(session?.user ?? null);
+    });
     return () => data.subscription.unsubscribe();
   }, []);
 
@@ -78,9 +81,9 @@ export function AuthProvider({ children }) {
 
   // Logging out must always work, so nothing here can leave someone signed in: each step has a
   // time limit, the saved session is removed directly, and the reload starts the page clean.
+  // The page keeps its signed-in state until then, so protected pages don't redirect to sign in first.
   const signOut = useCallback(async () => {
-    setCustomer(null);
-    setAdminUser(null);
+    signingOut.current = true;
     const timeLimit = new Promise((resolve) => setTimeout(resolve, SIGN_OUT_WAIT_MS));
     await Promise.race([
       Promise.allSettled([customerRequest({ action: 'logout' }), supabase?.auth.signOut({ scope: 'local' })]),
