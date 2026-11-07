@@ -7,7 +7,34 @@ export function plainText(html) {
     .replace(/<[^>]+>/g, '')
     .replace(/&mdash;/g, '—')
     .replace(/&nbsp;/g, ' ')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
     .replace(/&amp;/g, '&');
+}
+
+// What the admin sees in the description box.
+export function descriptionToText(html) {
+  return plainText(html)
+    .split('\n')
+    .map((line) => line.trim())
+    .join('\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
+const escapeHtml = (text) =>
+  text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+
+// Saved text becomes safe HTML: a blank line starts a paragraph, a single line break stays one.
+export function textToDescription(text) {
+  return text
+    .trim()
+    .split(/\n\s*\n/)
+    .filter(Boolean)
+    .map((paragraph) => `<p>${paragraph.split('\n').map(escapeHtml).join('<br />')}</p>`)
+    .join('\n');
 }
 
 const field = (text, label) => {

@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { subscribe } from '../lib/api.js';
 import { useAuth } from '../context/AuthContext.jsx';
+import { useContent } from '../context/SiteContentContext.jsx';
 import { PaymentIcons } from './Icons.jsx';
 import { BRAND } from './Header.jsx';
 
 export default function Footer() {
   const { user, signOut } = useAuth();
+  const footer = useContent('footer');
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState(null);
 
@@ -25,8 +27,8 @@ export default function Footer() {
   return (
     <footer className="main-footer">
       <section className="footer-site-subscribe">
-        <h2 className="footer-heading">Join our candle club</h2>
-        <p className="footer-sub">New scents and restocks, straight to your inbox.</p>
+        <h2 className="footer-heading">{footer.heading}</h2>
+        <p className="footer-sub">{footer.text}</p>
         <form className="subscription-form" onSubmit={onSubscribe}>
           <label className="sr-only" htmlFor="nl_email">Email</label>
           <input
@@ -49,7 +51,7 @@ export default function Footer() {
         <Link to="/" className="logo">
           <img src="/images/logo.png" alt={BRAND} className="footer-logo-image" />
         </Link>
-        <address>Watford City, ND, United States, 5884</address>
+        <address>{footer.address}</address>
       </section>
 
       <nav className="footer-navigation" aria-label="Footer">
@@ -74,7 +76,7 @@ export default function Footer() {
 
       <div className="footer-bottom-row">
         <PaymentIcons />
-        <span className="footer-copyright">&copy; {new Date().getFullYear()} Pink Tomato Enterprises</span>
+        <span className="footer-copyright">&copy; {new Date().getFullYear()} {footer.copyright}</span>
       </div>
     </footer>
   );

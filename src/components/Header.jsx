@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext.jsx';
+import { useContent } from '../context/SiteContentContext.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import {
   SearchIcon, CartIcon, CloseIcon, MenuIcon, ChevronDown, UserIcon,
@@ -16,14 +17,15 @@ const shopLinks = [
   { to: '/blog', label: 'Blog' },
 ];
 
-const announcements = [
-  { Icon: MapPinIcon, text: 'Hand-poured in North Dakota' },
-  { Icon: LeafIcon, text: 'Clean-burning coconut soy wax' },
-  { Icon: ShieldCheckIcon, text: 'Toxic-free & vegan fragrances' },
-];
+const ANNOUNCEMENT_ICONS = [MapPinIcon, LeafIcon, ShieldCheckIcon];
 
 // Continuously scrolling strip; the list is repeated so the loop is seamless.
 function AnnouncementBar() {
+  const { items } = useContent('announcement');
+  const announcements = items
+    .filter((m) => m.visible && m.text.trim())
+    .map((m, i) => ({ text: m.text, Icon: ANNOUNCEMENT_ICONS[i % ANNOUNCEMENT_ICONS.length] }));
+  if (announcements.length === 0) return null;
   const row = [...announcements, ...announcements];
   return (
     <div className="announcement-bar">

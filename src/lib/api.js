@@ -1,6 +1,8 @@
 import { supabase } from './supabase.js';
 import localProducts from '../data/products.json';
 
+export const HOME_PRODUCT_LIMIT = 8;
+
 const NOT_CONFIGURED = 'The store database is not connected yet. Please try again later.';
 
 function normalize(row) {
@@ -38,12 +40,19 @@ export async function getProductBySlug(slug) {
   return all.find((p) => p.slug === slug) || null;
 }
 
-export async function getNewProducts(limit = 4) {
+export async function getNewProducts(limit = HOME_PRODUCT_LIMIT) {
   const all = await getProducts();
   return all
     .filter((p) => p.is_new)
     .sort((a, b) => (a.new_rank ?? 99) - (b.new_rank ?? 99))
     .slice(0, limit);
+}
+
+// Saved page content as { home: {...}, footer: {...} }. Pages without a row use the built-in wording.
+export async function getSiteContent() {
+  const { data, error } = await supabase.from('site_content').select('key, value');
+  if (error) throw error;
+  return Object.fromEntries(data.map((row) => [row.key, row.value]));
 }
 
 export async function getReviews(productId) {

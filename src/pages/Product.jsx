@@ -70,6 +70,7 @@ export default function Product() {
   const [price, setPrice] = useState(null);
   const [sku, setSku] = useState('');
   const [reviewOpen, setReviewOpen] = useState(false);
+  const [photo, setPhoto] = useState(0);
   const wishlist = useWishlist();
 
   useEffect(() => {
@@ -109,7 +110,16 @@ export default function Product() {
 
       <div className="product-top">
         <div className="product-images">
-          <ZoomImage src={image} alt={product.name} />
+          <ZoomImage src={product.images?.[photo] ?? image} alt={product.name} />
+          {product.images?.length > 1 && (
+            <div className="product-thumbs">
+              {product.images.map((src, i) => (
+                <button key={src} type="button" aria-label={`Show photo ${i + 1}`} aria-pressed={i === photo} onClick={() => setPhoto(i)}>
+                  <img src={src} alt="" />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="product-details">

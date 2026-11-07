@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { getCounts } from '../lib/adminApi.js';
@@ -6,14 +6,14 @@ import OverviewTab from '../components/admin/OverviewTab.jsx';
 import OrdersTab from '../components/admin/OrdersTab.jsx';
 import CustomersTab from '../components/admin/CustomersTab.jsx';
 import SalesTab from '../components/admin/SalesTab.jsx';
-import ProductsTab from '../components/admin/ProductsTab.jsx';
+import ContentTab from '../components/admin/ContentTab.jsx';
 import ReviewsTab from '../components/admin/ReviewsTab.jsx';
 import MessagesTab from '../components/admin/MessagesTab.jsx';
 import SubscribersTab from '../components/admin/SubscribersTab.jsx';
 import AccountTab from '../components/admin/AccountTab.jsx';
 import {
-  BarChartIcon, CloseIcon, GridIcon, HeartIcon, LogOutIcon, MailIcon, MenuIcon, PackageIcon,
-  Star, StoreIcon, TagIcon, UserIcon, UsersIcon,
+  BarChartIcon, CloseIcon, FileIcon, GridIcon, HeartIcon, LogOutIcon, MailIcon, MenuIcon, PackageIcon,
+  Star, StoreIcon, UserIcon, UsersIcon,
 } from '../components/Icons.jsx';
 import '../admin.css';
 
@@ -28,9 +28,9 @@ const GROUPS = [
     ],
   },
   {
-    label: 'Catalog',
+    label: 'Website',
     tabs: [
-      { id: 'products', label: 'Products', Icon: TagIcon, Panel: ProductsTab },
+      { id: 'content', label: 'Content', Icon: FileIcon, Panel: ContentTab },
       { id: 'reviews', label: 'Reviews', Icon: Star, Panel: ReviewsTab, badge: 'waitingReviews' },
     ],
   },
@@ -53,6 +53,23 @@ function Dashboard({ signOut }) {
   const tab = TABS.find((t) => t.id === params.get('tab')) || TABS[0];
   const [counts, setCounts] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const unsaved = useRef(false);
+  const setDirty = useCallback((value) => {
+    unsaved.current = value;
+  }, []);
+
+  // Stops an accidental click from losing edits made in the Content tab.
+  const guard = (e) => {
+    if (unsaved.current && !window.confirm('You have unsaved changes. Leave without saving?')) e.preventDefault();
+  };
+
+  useEffect(() => {
+    const onLeave = (e) => {
+      if (unsaved.current) e.preventDefault();
+    };
+    window.addEventListener('beforeunload', onLeave);
+    return () => window.removeEventListener('beforeunload', onLeave);
+  }, []);
 
   const refreshCounts = useCallback(() => {
     getCounts().then(setCounts).catch(() => {});
@@ -86,7 +103,7 @@ function Dashboard({ signOut }) {
 
       <aside className={`admin-sidebar ${menuOpen ? 'is-open' : ''}`}>
         <div className="admin-brand">
-          <Link to="?tab=dashboard"><img src="/images/logo.png" alt="Pink Tomato admin" /></Link>
+          <Link to="?tab=dashboard" onClick={guard}><img src="/images/logo.png" alt="Pink Tomato admin" /></Link>
           <button className="icon-button admin-menu-close" aria-label="Close admin menu" onClick={() => setMenuOpen(false)}><CloseIcon /></button>
         </div>
 
@@ -95,7 +112,7 @@ function Dashboard({ signOut }) {
             <div key={g.label}>
               <p>{g.label}</p>
               {g.tabs.map((t) => (
-                <Link key={t.id} to={`?tab=${t.id}`} aria-current={t.id === tab.id ? 'page' : undefined}>
+                <Link key={t.id} to={`?tab=${t.id}`} aria-current={t.id === tab.id ? 'page' : undefined} onClick={guard}>
                   <t.Icon size={18} /> {t.label}
                   {t.badge && counts?.[t.badge] > 0 && <span className="admin-badge">{counts[t.badge]}</span>}
                 </Link>
@@ -105,13 +122,21 @@ function Dashboard({ signOut }) {
         </nav>
 
         <div className="admin-sidebar-foot">
-          <Link to="/"><StoreIcon size={18} /> View store</Link>
-          <button type="button" onClick={signOut}><LogOutIcon size={18} /> Log out</button>
+          <Link to="/" onClick={guard}><StoreIcon size={18} /> View store</Link>
+          <button
+            type="button"
+            onClick={(e) => {
+              guard(e);
+              if (!e.defaultPrevented) signOut();
+            }}
+          >
+            <LogOutIcon size={18} /> Log out
+          </button>
         </div>
       </aside>
 
       <main className="admin-main">
-        <tab.Panel key={tab.id} counts={counts} onChange={refreshCounts} />
+        <tab.Panel key={tab.id} counts={counts} onChange={refreshCounts} setDirty={setDirty} />
       </main>
     </div>
   );

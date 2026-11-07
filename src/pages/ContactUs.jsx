@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { sendContactMessage } from '../lib/api.js';
+import { useContent } from '../context/SiteContentContext.jsx';
 
 const empty = { full_name: '', phone: '', email: '', order_number: '', company_name: '', rma_number: '', comments: '' };
 
 export default function ContactUs() {
+  const page = useContent('contact');
   const [form, setForm] = useState(empty);
   const [status, setStatus] = useState(null);
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
@@ -22,8 +24,8 @@ export default function ContactUs() {
 
   return (
     <div className="container page page-narrow">
-      <h1 className="page-heading">Contact Us</h1>
-      <p>We're happy to answer questions or help you with returns.</p>
+      <h1 className="page-heading">{page.title}</h1>
+      <p>{page.intro}</p>
 
       <form className="form contact-form" onSubmit={submit}>
         <div className="form-row">

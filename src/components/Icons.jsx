@@ -33,6 +33,36 @@ export const BarChartIcon = (p) => (
 export const StoreIcon = (p) => (
   <Icon {...p}><path d="M4 10v10a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V10" /><path d="M2.5 9 5 3h14l2.5 6a3.17 3.17 0 0 1-6.33 0 3.17 3.17 0 0 1-6.34 0 3.17 3.17 0 0 1-6.33 0Z" /><path d="M10 21v-6h4v6" /></Icon>
 );
+export const ImageIcon = (p) => (
+  <Icon {...p}><rect x="3" y="3" width="18" height="18" rx="3" /><circle cx="9" cy="9" r="2" /><path d="m21 15-4.6-4.6a2 2 0 0 0-2.8 0L5 19" /></Icon>
+);
+export const FileIcon = (p) => (
+  <Icon {...p}><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7Z" /><path d="M14 2v5h5" /><path d="M9 13h6" /><path d="M9 17h6" /></Icon>
+);
+export const MegaphoneIcon = (p) => (
+  <Icon {...p}><path d="m3 11 16-6v14L3 13Z" /><path d="M7 14.5V18a2 2 0 0 0 4 0v-2" /><path d="M21 10v4" /></Icon>
+);
+export const UndoIcon = (p) => (
+  <Icon {...p}><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11" /></Icon>
+);
+export const RefreshIcon = (p) => (
+  <Icon {...p}><path d="M3 12a9 9 0 0 1 15-6.7L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-15 6.7L3 16" /><path d="M3 21v-5h5" /></Icon>
+);
+export const SaveIcon = (p) => (
+  <Icon {...p}><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z" /><path d="M17 21v-8H7v8" /><path d="M7 3v5h8" /></Icon>
+);
+export const MonitorIcon = (p) => (
+  <Icon {...p}><rect x="2" y="3" width="20" height="14" rx="2" /><path d="M8 21h8" /><path d="M12 17v4" /></Icon>
+);
+export const PhoneIcon = (p) => (
+  <Icon {...p}><rect x="6" y="2" width="12" height="20" rx="2.5" /><path d="M11 18h2" /></Icon>
+);
+export const PencilIcon = (p) => (
+  <Icon {...p}><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" /></Icon>
+);
+export const TrashIcon = (p) => (
+  <Icon {...p}><path d="M3 6h18" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></Icon>
+);
 export const LockIcon = (p) => (
   <Icon {...p}><rect x="4" y="11" width="16" height="10" rx="2.5" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></Icon>
 );

@@ -5,6 +5,7 @@ import { ArrowRight, FlameIcon } from './Icons.jsx';
 import { priceRange } from '../lib/pricing.js';
 import { scentProfile } from '../lib/productText.js';
 import { useInView } from '../lib/useInView.js';
+import { useContent } from '../context/SiteContentContext.jsx';
 
 // "Find your mood": chips built from each candle's own Mood / Scent Notes lines.
 export default function MoodFinder({ products }) {
@@ -23,6 +24,7 @@ export default function MoodFinder({ products }) {
   const [active, setActive] = useState(0);
   const [touched, setTouched] = useState(false);
   const [ref, inView] = useInView();
+  const home = useContent('home');
 
   // Gently cycle through moods until the visitor picks one.
   useEffect(() => {
@@ -39,8 +41,8 @@ export default function MoodFinder({ products }) {
     <section className="mood-finder container" ref={ref}>
       <div className="mood-inner">
         <Reveal className="mood-head">
-          <p className="eyebrow">Find your mood</p>
-          <h2 className="section-title">How do you want to feel tonight?</h2>
+          <p className="eyebrow">{home.moodEyebrow}</p>
+          <h2 className="section-title">{home.moodTitle}</h2>
           <div className="mood-chips" role="tablist" aria-label="Moods">
             {items.map((it, i) => (
               <button

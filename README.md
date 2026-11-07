@@ -15,7 +15,7 @@ Storefront for [pinktomatoco.com](https://pinktomatoco.com), rebuilt from the or
 | `/cart`, `/checkout` | Cart and checkout (orders saved to Supabase) |
 | `/shipping-returns`, `/contact-us`, `/blog`, `/sitemap` | Content pages |
 | `/login`, `/wishlist`, `/search?q=` | Account, wishlist, search |
-| `/admin` | Store admin dashboard: orders, customers, sales, products, reviews, messages, subscribers, account |
+| `/admin` | Store admin dashboard: orders, customers, sales, content editor with live preview, reviews, messages, subscribers, account |
 
 ## Local setup
 
@@ -33,6 +33,7 @@ Without a `.env` the site still runs and shows the products from `src/data/produ
 2. In **SQL Editor**, run `supabase/migrations/0001_init.sql`, `0002_drop_bulk_pricing.sql`, then `supabase/seed.sql`.
 3. Copy **Project Settings → API → Project URL / anon key** into `.env`.
 4. Create the admin account on the site, then run `supabase/migrations/0003_admin.sql`. It makes that account an admin and adds the admin permissions.
+5. Run `supabase/migrations/0005_cms.sql` to turn on the content editor, photo uploads and full product editing.
 
 Tables: `products`, `product_variants`, `reviews` (need `approved = true` to show), `newsletter_subscribers`, `contact_messages`, `orders`, `order_items`.
 Orders are created through the `create_order` function, which recalculates prices in the database so prices can't be changed from the browser.
@@ -41,7 +42,7 @@ Orders are created through the `create_order` function, which recalculates price
 
 - **Online payment.** Checkout records the order with status `pending`. It doesn't charge a card yet. Stripe or PayPal can be added later.
 - **Shipping rates and tax** are not calculated.
-- **Product images** are served from `public/images`. They could also be moved to Supabase Storage.
+- **Original product images** are served from `public/images`. Photos uploaded in the admin go to Supabase Storage.
 
 ## Deploy
 
