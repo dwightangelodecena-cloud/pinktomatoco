@@ -32,6 +32,24 @@ function passwordScore(pw) {
 }
 const STRENGTH = ['Too short', 'Weak', 'Okay', 'Good', 'Strong'];
 
+const PASSWORD_RULES = [
+  { label: 'At least 8 characters', test: (pw) => pw.length >= 8 },
+  { label: 'A number', test: (pw) => /\d/.test(pw) },
+  { label: 'A symbol', test: (pw) => /[^A-Za-z0-9\s]/.test(pw) },
+];
+const passwordIsValid = (pw) => PASSWORD_RULES.every((r) => r.test(pw));
+const PASSWORD_ERROR = 'Your password needs at least 8 characters, a number and a symbol.';
+
+function PasswordRules({ password }) {
+  return (
+    <ul className="password-rules">
+      {PASSWORD_RULES.map((r) => (
+        <li key={r.label} className={r.test(password) ? 'is-met' : ''}><CheckIcon /> {r.label}</li>
+      ))}
+    </ul>
+  );
+}
+
 function Field({ icon: Icon, label, type = 'text', value, onChange, autoComplete, required = true, minLength, children }) {
   const [show, setShow] = useState(false);
   const isPassword = type === 'password';
@@ -114,6 +132,7 @@ function AuthForms() {
 
   const signUp = (e) => {
     e.preventDefault();
+    if (!passwordIsValid(password)) return setStatus({ type: 'error', text: PASSWORD_ERROR });
     if (password !== confirm) return setStatus({ type: 'error', text: 'Passwords do not match.' });
     run(async () => {
       const { data, error } = await supabase.auth.signUp({
@@ -137,6 +156,7 @@ function AuthForms() {
 
   const reset = (e) => {
     e.preventDefault();
+    if (!passwordIsValid(password)) return setStatus({ type: 'error', text: PASSWORD_ERROR });
     if (password !== confirm) return setStatus({ type: 'error', text: 'Passwords do not match.' });
     run(async () => {
       const { error } = await supabase.auth.updateUser({ password });
@@ -198,9 +218,10 @@ function AuthForms() {
               {password && (
                 <span className="strength" data-score={score}>
                   <span className="strength-bars">{[1, 2, 3, 4].map((n) => <i key={n} className={n <= score ? 'on' : ''} />)}</span>
-                  <span className="strength-label">{password.length < 8 ? 'At least 8 characters' : STRENGTH[score]}</span>
+                  <span className="strength-label">{STRENGTH[score]}</span>
                 </span>
               )}
+              <PasswordRules password={password} />
             </Field>
             <Field icon={LockIcon} label="Confirm password" type="password" autoComplete="new-password" value={confirm} onChange={(e) => setConfirm(e.target.value)}>
               {confirm && password === confirm && <span className="match"><CheckIcon /> Passwords match</span>}
@@ -230,7 +251,9 @@ function AuthForms() {
               <h1>Choose a new password</h1>
               <p>Pick something you haven't used before.</p>
             </div>
-            <Field icon={LockIcon} label="New password" type="password" autoComplete="new-password" minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} />
+            <Field icon={LockIcon} label="New password" type="password" autoComplete="new-password" minLength={8} value={password} onChange={(e) => setPassword(e.target.value)}>
+              <PasswordRules password={password} />
+            </Field>
             <Field icon={LockIcon} label="Confirm new password" type="password" autoComplete="new-password" value={confirm} onChange={(e) => setConfirm(e.target.value)} />
             {status?.type === 'error' && <p className="auth-error shake">{status.text}</p>}
             <SubmitButton pending={pending}>Save password</SubmitButton>

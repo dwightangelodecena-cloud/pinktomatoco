@@ -1071,6 +1071,11 @@ html { -webkit-tap-highlight-color: transparent; }
 .strength[data-score='3'] .strength-bars i.on { background: #8fae6a; }
 .strength[data-score='4'] .strength-bars i.on { background: var(--sage); }
 .match { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--sage); font-weight: 500; }
+.password-rules { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 0; padding: 0; list-style: none; font-size: 12px; color: var(--muted); }
+.password-rules li { display: inline-flex; align-items: center; gap: 5px; transition: color .2s; }
+.password-rules li svg { width: 13px; height: 13px; opacity: .3; transition: opacity .2s; }
+.password-rules li.is-met { color: var(--sage); font-weight: 500; }
+.password-rules li.is-met svg { opacity: 1; }
 
 .spinner { width: 20px; height: 20px; border-radius: 50%; border: 2.5px solid rgba(255, 255, 255, .4); border-top-color: #fff; animation: spin .7s linear infinite; }
 
