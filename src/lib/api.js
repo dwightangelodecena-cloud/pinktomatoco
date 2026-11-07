@@ -12,6 +12,9 @@ function normalize(row) {
 }
 
 let cache = null;
+export const clearProductCache = () => {
+  cache = null;
+};
 
 // All visible products, newest first (same order as the original "Shop All").
 export async function getProducts() {
@@ -21,6 +24,7 @@ export async function getProducts() {
     const { data, error } = await supabase
       .from('products')
       .select('*, product_variants(*)')
+      .eq('is_visible', true)
       .order('id', { ascending: false });
     if (error) console.error('Supabase products error, using local data:', error.message);
     else if (data?.length) rows = data;
@@ -48,6 +52,7 @@ export async function getReviews(productId) {
     .from('reviews')
     .select('id, rating, name, subject, comments, created_at')
     .eq('product_id', productId)
+    .eq('approved', true)
     .order('created_at', { ascending: false });
   return data || [];
 }
@@ -68,11 +73,12 @@ export const sendContactMessage = (msg) => insert('contact_messages', msg);
 export const submitReview = (review) => insert('reviews', review);
 
 // The signed-in customer's recent orders (row level security limits this to their own).
-export async function getMyOrders() {
+export async function getMyOrders(userId) {
   if (!supabase) return [];
   const { data, error } = await supabase
     .from('orders')
     .select('id, created_at, subtotal, status, order_items(name, option_label, quantity)')
+    .eq('user_id', userId)
     .order('created_at', { ascending: false })
     .limit(10);
   if (error) throw error;

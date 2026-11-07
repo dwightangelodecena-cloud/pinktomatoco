@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { Suspense, lazy, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Layout from './components/Layout.jsx';
 import Home from './pages/Home.jsx';
@@ -14,6 +14,8 @@ import Wishlist from './pages/Wishlist.jsx';
 import Search from './pages/Search.jsx';
 import Sitemap from './pages/Sitemap.jsx';
 import NotFound from './pages/NotFound.jsx';
+
+const Admin = lazy(() => import('./pages/Admin.jsx'));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -41,6 +43,7 @@ export default function App() {
           <Route path="wishlist" element={<Wishlist />} />
           <Route path="search" element={<Search />} />
           <Route path="sitemap" element={<Sitemap />} />
+          <Route path="admin" element={<Suspense fallback={null}><Admin /></Suspense>} />
           <Route path=":slug" element={<Product />} />
           <Route path="*" element={<NotFound />} />
         </Route>

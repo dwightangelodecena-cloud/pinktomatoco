@@ -49,7 +49,7 @@ function AnnouncementBar() {
 
 export default function Header() {
   const { count, openPreview } = useCart();
-  const { user, signOut } = useAuth();
+  const { user, isAdmin, signOut } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const [shopOpen, setShopOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -157,6 +157,11 @@ export default function Header() {
                   <NavLink className="main-menu-link" to={l.to}><span>{l.label}</span></NavLink>
                 </li>
               ))}
+              {isAdmin && (
+                <li className="mobile-only" style={{ '--i': shopLinks.length + 1 }}>
+                  <NavLink className="main-menu-link" to="/admin"><span>Admin</span></NavLink>
+                </li>
+              )}
               {user && (
                 <li className="mobile-only" style={{ '--i': shopLinks.length + 1 }}>
                   <NavLink className="main-menu-link" to="/login"><span>My account</span></NavLink>
@@ -175,6 +180,7 @@ export default function Header() {
           <div className="header-tools">
             {user ? (
               <>
+                {isAdmin && <Link className="tool-link desktop-only" to="/admin"><ShieldCheckIcon size={18} /> Admin</Link>}
                 <button className="tool-link desktop-only" onClick={signOut}>Log out</button>
                 <Link className="icon-button profile-button" to="/login" aria-label="My account" title="My account"><UserIcon /></Link>
               </>

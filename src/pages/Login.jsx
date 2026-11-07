@@ -7,7 +7,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 import { useWishlist } from '../context/WishlistContext.jsx';
 import {
   ArrowRight, CheckIcon, EyeIcon, EyeOffIcon, HeartIcon, LockIcon, LogOutIcon,
-  MailIcon, PackageIcon, UserIcon,
+  MailIcon, PackageIcon, ShieldCheckIcon, UserIcon,
 } from '../components/Icons.jsx';
 
 const NOT_READY = 'Accounts are not available yet. Please try again later.';
@@ -265,14 +265,14 @@ function AuthForms() {
   );
 }
 
-function AccountDashboard({ user, signOut }) {
+function AccountDashboard({ user, isAdmin, signOut }) {
   const { ids } = useWishlist();
   const [orders, setOrders] = useState(null);
   const name = user.user_metadata?.full_name || user.email.split('@')[0];
 
   useEffect(() => {
-    getMyOrders().then(setOrders).catch(() => setOrders([]));
-  }, []);
+    getMyOrders(user.id).then(setOrders).catch(() => setOrders([]));
+  }, [user.id]);
 
   return (
     <div className="container page account-page">
@@ -313,6 +313,13 @@ function AccountDashboard({ user, signOut }) {
         </section>
 
         <aside className="account-side">
+          {isAdmin && (
+            <Link to="/admin" className="account-card account-tile">
+              <span className="account-tile-icon"><ShieldCheckIcon /></span>
+              <span><strong>Store admin</strong><small>Orders, products, reviews and messages</small></span>
+              <ArrowRight />
+            </Link>
+          )}
           <Link to="/wishlist" className="account-card account-tile">
             <span className="account-tile-icon"><HeartIcon /></span>
             <span><strong>Wishlist</strong><small>{ids.length} saved item{ids.length === 1 ? '' : 's'}</small></span>
@@ -335,10 +342,10 @@ function AccountDashboard({ user, signOut }) {
 }
 
 export default function Login() {
-  const { user, signOut } = useAuth();
+  const { user, isAdmin, signOut } = useAuth();
   const [params] = useSearchParams();
 
-  if (user && params.get('mode') !== 'reset') return <AccountDashboard user={user} signOut={signOut} />;
+  if (user && params.get('mode') !== 'reset') return <AccountDashboard user={user} isAdmin={isAdmin} signOut={signOut} />;
 
   return (
     <div className="auth-page container">

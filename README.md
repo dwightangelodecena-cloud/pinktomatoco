@@ -15,6 +15,7 @@ Storefront for [pinktomatoco.com](https://pinktomatoco.com), rebuilt from the or
 | `/cart`, `/checkout` | Cart and checkout (orders saved to Supabase) |
 | `/shipping-returns`, `/contact-us`, `/blog`, `/sitemap` | Content pages |
 | `/login`, `/wishlist`, `/search?q=` | Account, wishlist, search |
+| `/admin` | Store admin: overview, orders, products, reviews, messages, subscribers |
 
 ## Local setup
 
@@ -29,8 +30,9 @@ Without a `.env` the site still runs and shows the products from `src/data/produ
 ## Supabase setup
 
 1. Create a project at [supabase.com](https://supabase.com).
-2. In **SQL Editor**, run `supabase/migrations/0001_init.sql`, then `supabase/seed.sql`.
+2. In **SQL Editor**, run `supabase/migrations/0001_init.sql`, `0002_drop_bulk_pricing.sql`, then `supabase/seed.sql`.
 3. Copy **Project Settings → API → Project URL / anon key** into `.env`.
+4. Create the admin account on the site, then run `supabase/migrations/0003_admin.sql`. It makes that account an admin and adds the admin permissions.
 
 Tables: `products`, `product_variants`, `reviews` (need `approved = true` to show), `newsletter_subscribers`, `contact_messages`, `orders`, `order_items`.
 Orders are created through the `create_order` function, which recalculates prices in the database so prices can't be changed from the browser.
