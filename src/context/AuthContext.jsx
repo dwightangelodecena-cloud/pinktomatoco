@@ -5,6 +5,15 @@ import { supabase } from '../lib/supabase.js';
 const AuthContext = createContext({ user: null });
 
 const INVALID_LOGIN = "That email and password don't match. Try again or reset your password.";
+const SIGN_OUT_WAIT_MS = 2000;
+
+function clearSavedAdminSession() {
+  try {
+    Object.keys(localStorage).filter((key) => /^sb-.*-auth-token/.test(key)).forEach((key) => localStorage.removeItem(key));
+  } catch {
+    /* storage unavailable */
+  }
+}
 
 // Shoppers sign in with BigCommerce. The store admin signs in with Supabase through the same form.
 const asUser = (c) => ({
@@ -67,9 +76,18 @@ export function AuthProvider({ children }) {
     setCustomer(created);
   }, []);
 
+  // Logging out must always work, so nothing here can leave someone signed in: each step has a
+  // time limit, the saved session is removed directly, and the reload starts the page clean.
   const signOut = useCallback(async () => {
     setCustomer(null);
-    await Promise.allSettled([customerRequest({ action: 'logout' }), supabase?.auth.signOut()]);
+    setAdminUser(null);
+    const timeLimit = new Promise((resolve) => setTimeout(resolve, SIGN_OUT_WAIT_MS));
+    await Promise.race([
+      Promise.allSettled([customerRequest({ action: 'logout' }), supabase?.auth.signOut({ scope: 'local' })]),
+      timeLimit,
+    ]);
+    clearSavedAdminSession();
+    window.location.assign('/');
   }, []);
 
   const value = useMemo(() => {
