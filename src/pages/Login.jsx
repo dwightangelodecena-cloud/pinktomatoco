@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase.js';
-import { getMyOrders } from '../lib/api.js';
+import { customerRequest, getMyOrders } from '../lib/api.js';
 import { money } from '../lib/pricing.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useWishlist } from '../context/WishlistContext.jsx';
@@ -10,8 +10,6 @@ import {
   ArrowRight, CheckIcon, EyeIcon, EyeOffIcon, HeartIcon, LockIcon, LogOutIcon,
   MailIcon, PackageIcon, ShieldCheckIcon, UserIcon,
 } from '../components/Icons.jsx';
-
-const NOT_READY = 'Accounts are not available yet. Please try again later.';
 
 const BENEFITS = ['Check out faster', 'Save your shipping details', 'See your order history', 'Keep a wishlist of favourite scents'];
 
@@ -70,8 +68,14 @@ function SubmitButton({ pending, children }) {
   );
 }
 
+function splitName(fullName) {
+  const [firstName, ...rest] = fullName.trim().split(/\s+/);
+  return { firstName, lastName: rest.join(' ') };
+}
+
 function AuthForms() {
   const navigate = useNavigate();
+  const { signIn: logIn, signUp: createAccount } = useAuth();
   const [params, setParams] = useSearchParams();
   const mode = params.get('mode') || 'signin'; // signin | signup | forgot | reset
   const setMode = (m) => {
@@ -95,7 +99,6 @@ function AuthForms() {
   }, [setParams]);
 
   const run = async (fn) => {
-    if (!supabase) return setStatus({ type: 'error', text: NOT_READY });
     setStatus({ type: 'pending' });
     try {
       await fn();
@@ -107,8 +110,7 @@ function AuthForms() {
   const signIn = (e) => {
     e.preventDefault();
     run(async () => {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) throw error;
+      await logIn(email, password);
       navigate('/', { replace: true });
     });
   };
@@ -117,23 +119,18 @@ function AuthForms() {
     e.preventDefault();
     if (!passwordIsValid(password)) return setStatus({ type: 'error', text: PASSWORD_ERROR });
     if (password !== confirm) return setStatus({ type: 'error', text: 'Passwords do not match.' });
+    const { firstName, lastName } = splitName(name);
+    if (!lastName) return setStatus({ type: 'error', text: 'Please enter your first and last name.' });
     run(async () => {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { data: { full_name: name.trim() }, emailRedirectTo: `${window.location.origin}/` },
-      });
-      if (error) throw error;
-      if (data.session) navigate('/', { replace: true });
-      else setStatus({ type: 'sent', text: `We sent a confirmation link to ${email}. Open it to activate your account.` });
+      await createAccount({ firstName, lastName, email, password });
+      navigate('/', { replace: true });
     });
   };
 
   const forgot = (e) => {
     e.preventDefault();
     run(async () => {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/login` });
-      if (error) throw error;
+      await customerRequest({ action: 'forgot', email });
       setStatus({ type: 'sent', text: `If ${email} has an account, a reset link is on its way.` });
     });
   };
@@ -254,8 +251,8 @@ function AccountDashboard({ user, isAdmin, signOut }) {
   const name = user.user_metadata?.full_name || user.email.split('@')[0];
 
   useEffect(() => {
-    getMyOrders(user.id).then(setOrders).catch(() => setOrders([]));
-  }, [user.id]);
+    getMyOrders(user).then(setOrders).catch(() => setOrders([]));
+  }, [user]);
 
   return (
     <div className="container page account-page">
@@ -287,7 +284,7 @@ function AccountDashboard({ user, isAdmin, signOut }) {
                     <strong>Order #{o.id}</strong>
                     <span>{new Date(o.created_at).toLocaleDateString()} · {o.order_items?.reduce((n, i) => n + i.quantity, 0)} items</span>
                   </div>
-                  <span className={`order-status status-${o.status}`}>{o.status}</span>
+                  <span className={`order-status status-${o.status}`}>{o.statusLabel}</span>
                   <span className="order-total">{money(o.subtotal)}</span>
                 </li>
               ))}

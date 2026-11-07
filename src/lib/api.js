@@ -123,17 +123,24 @@ export async function subscribe(email) {
 export const sendContactMessage = (msg) => insert('contact_messages', msg);
 export const submitReview = (review) => insert('reviews', review);
 
-// The signed-in customer's recent orders (row level security limits this to their own).
-export async function getMyOrders(userId) {
-  if (!supabase) return [];
-  const { data, error } = await supabase
-    .from('orders')
-    .select('id, created_at, subtotal, status, order_items(name, option_label, quantity)')
-    .eq('user_id', userId)
-    .order('created_at', { ascending: false })
-    .limit(10);
-  if (error) throw error;
-  return data || [];
+// The signed-in customer's recent orders, from BigCommerce.
+export async function getMyOrders(user) {
+  if (!user.isCustomer) return [];
+  const response = await fetch('/api/customer?orders=1');
+  if (!response.ok) throw new Error('Orders are not available right now.');
+  return response.json();
+}
+
+// Reads the signed-in customer, or sends an account action such as login.
+export async function customerRequest(body) {
+  const response = await fetch('/api/customer', body
+    ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }
+    : undefined);
+  const data = await response.json().catch(() => ({}));
+  if (response.ok) return data;
+  const error = new Error(data.error || 'Something went wrong. Please try again.');
+  error.status = response.status;
+  throw error;
 }
 
 async function postJson(url, body) {

@@ -1,4 +1,5 @@
 import { CHANNEL_ID, bigcommerce, isSameSite, readJson, sendJson } from './_lib/bigcommerce.js';
+import { customerLoginUrl, readSession } from './_lib/session.js';
 
 const MAX_LINES = 50;
 const MAX_QUANTITY = 999;
@@ -21,9 +22,10 @@ export default async function handler(req, res) {
     const lineItems = toLineItems(items);
     if (!lineItems) return sendJson(res, 400, { error: 'Your cart could not be read. Please refresh and try again.' });
 
+    const customerId = readSession(req)?.customer.id;
     const response = await bigcommerce('/v3/carts?include=redirect_urls', {
       method: 'POST',
-      body: JSON.stringify({ channel_id: CHANNEL_ID, line_items: lineItems }),
+      body: JSON.stringify({ channel_id: CHANNEL_ID, line_items: lineItems, ...(customerId ? { customer_id: customerId } : {}) }),
     });
     if (response.status === 422) {
       return sendJson(res, 409, { error: 'An item in your cart has sold out or has fewer left than you selected. Please update your cart and try again.' });
@@ -31,7 +33,10 @@ export default async function handler(req, res) {
     if (!response.ok) throw new Error(`BigCommerce cart request failed: ${response.status}`);
 
     const { data } = await response.json();
-    sendJson(res, 200, { cartId: data.id, url: data.redirect_urls.checkout_url });
+    const checkout = new URL(data.redirect_urls.checkout_url);
+    // A signed-in shopper stays signed in on BigCommerce's checkout.
+    const url = customerId ? customerLoginUrl(checkout.origin, customerId, checkout.pathname + checkout.search) : checkout.href;
+    sendJson(res, 200, { cartId: data.id, url });
   } catch (err) {
     console.error(err);
     sendJson(res, 502, { error: 'Checkout is not available right now. Please try again in a moment.' });

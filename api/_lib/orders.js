@@ -49,8 +49,7 @@ export function toOrder(order, products) {
   };
 }
 
-export async function listOrders() {
-  const orders = await readList(`/v2/orders?limit=${ORDER_LIMIT}&sort=date_created:desc`);
+async function withProducts(orders) {
   const results = [];
   for (let i = 0; i < orders.length; i += LOOKUPS_AT_ONCE) {
     const batch = orders.slice(i, i + LOOKUPS_AT_ONCE);
@@ -58,6 +57,16 @@ export async function listOrders() {
     batch.forEach((o, n) => results.push(toOrder(o, products[n])));
   }
   return results;
+}
+
+export async function listOrders() {
+  return withProducts(await readList(`/v2/orders?limit=${ORDER_LIMIT}&sort=date_created:desc`));
+}
+
+// A customer's own orders, without the billing details the account page doesn't show.
+export async function listCustomerOrders(customerId) {
+  const orders = await withProducts(await readList(`/v2/orders?customer_id=${customerId}&limit=10&sort=date_created:desc`));
+  return orders.map(({ id, created_at, subtotal, status, statusLabel, order_items }) => ({ id, created_at, subtotal, status, statusLabel, order_items }));
 }
 
 export async function countOrdersToHandle() {
