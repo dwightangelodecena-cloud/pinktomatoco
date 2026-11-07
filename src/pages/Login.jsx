@@ -68,6 +68,9 @@ function SubmitButton({ pending, children }) {
   );
 }
 
+// Only pages on this site, so a link can't send someone elsewhere after they sign in.
+const safeNext = (value) => (value?.startsWith('/') && !value.startsWith('//') ? value : '/');
+
 function splitName(fullName) {
   const [firstName, ...rest] = fullName.trim().split(/\s+/);
   return { firstName, lastName: rest.join(' ') };
@@ -78,9 +81,10 @@ function AuthForms() {
   const { signIn: logIn, signUp: createAccount } = useAuth();
   const [params, setParams] = useSearchParams();
   const mode = params.get('mode') || 'signin'; // signin | signup | forgot | reset
+  const next = safeNext(params.get('next'));
   const setMode = (m) => {
     setStatus(null);
-    setParams(m === 'signin' ? {} : { mode: m }, { replace: true });
+    setParams({ ...(m === 'signin' ? {} : { mode: m }), ...(next === '/' ? {} : { next }) }, { replace: true });
   };
 
   const [name, setName] = useState('');
@@ -111,7 +115,7 @@ function AuthForms() {
     e.preventDefault();
     run(async () => {
       await logIn(email, password);
-      navigate('/', { replace: true });
+      navigate(next, { replace: true });
     });
   };
 
@@ -123,7 +127,7 @@ function AuthForms() {
     if (!lastName) return setStatus({ type: 'error', text: 'Please enter your first and last name.' });
     run(async () => {
       await createAccount({ firstName, lastName, email, password });
-      navigate('/', { replace: true });
+      navigate(next, { replace: true });
     });
   };
 
@@ -162,6 +166,7 @@ function AuthForms() {
 
   return (
     <div className="auth-card">
+      {next !== '/' && <p className="auth-note">Sign in or create an account to add items to your cart.</p>}
       {(mode === 'signin' || mode === 'signup') && (
         <div className="auth-tabs" role="tablist" data-active={mode}>
           <span className="auth-tab-indicator" aria-hidden="true" />

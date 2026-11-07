@@ -1134,3 +1134,4 @@ html { -webkit-tap-highlight-color: transparent; }
 .product-thumbs button { width: 68px; height: 68px; padding: 0; overflow: hidden; background: none; border: 2px solid transparent; border-radius: var(--radius-sm); cursor: pointer; }
 .product-thumbs button[aria-pressed='true'] { border-color: var(--accent); }
 .product-thumbs img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.auth-note { margin: 0 0 14px; padding: 10px 12px; font-size: 14px; color: var(--accent-dark); background: var(--blush); border-radius: var(--radius-sm); }

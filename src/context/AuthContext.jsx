@@ -1,5 +1,4 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { clearSavedCart } from './CartContext.jsx';
 import { customerRequest } from '../lib/api.js';
 import { supabase } from '../lib/supabase.js';
 
@@ -91,7 +90,6 @@ export function AuthProvider({ children }) {
       timeLimit,
     ]);
     clearSavedAdminSession();
-    clearSavedCart();
     window.location.assign('/');
   }, []);
 

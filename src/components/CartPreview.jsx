@@ -1,11 +1,13 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
 import { money } from '../lib/pricing.js';
 import { CloseIcon } from './Icons.jsx';
 
 export default function CartPreview() {
   const { items, subtotal, previewOpen, closePreview, remove } = useCart();
+  const { user } = useAuth();
 
   useEffect(() => {
     if (!previewOpen) return;
@@ -24,7 +26,11 @@ export default function CartPreview() {
         </div>
 
         {items.length === 0 ? (
-          <p className="cart-preview-empty">Your cart is empty</p>
+          user ? (
+            <p className="cart-preview-empty">Your cart is empty</p>
+          ) : (
+            <p className="cart-preview-empty"><Link to="/login" onClick={closePreview}>Sign in or create an account</Link> to start your cart.</p>
+          )
         ) : (
           <>
             <ul className="cart-preview-items">

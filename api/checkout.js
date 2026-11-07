@@ -18,14 +18,16 @@ export default async function handler(req, res) {
   if (!isSameSite(req)) return sendJson(res, 403, { error: 'Not allowed' });
 
   try {
+    const customerId = readSession(req)?.customer.id;
+    if (!customerId) return sendJson(res, 401, { error: 'Please sign in or create an account to check out.' });
+
     const { items } = await readJson(req);
     const lineItems = toLineItems(items);
     if (!lineItems) return sendJson(res, 400, { error: 'Your cart could not be read. Please refresh and try again.' });
 
-    const customerId = readSession(req)?.customer.id;
     const response = await bigcommerce('/v3/carts?include=redirect_urls', {
       method: 'POST',
-      body: JSON.stringify({ channel_id: CHANNEL_ID, line_items: lineItems, ...(customerId ? { customer_id: customerId } : {}) }),
+      body: JSON.stringify({ channel_id: CHANNEL_ID, customer_id: customerId, line_items: lineItems }),
     });
     if (response.status === 422) {
       return sendJson(res, 409, { error: 'An item in your cart has sold out or has fewer left than you selected. Please update your cart and try again.' });
@@ -34,8 +36,8 @@ export default async function handler(req, res) {
 
     const { data } = await response.json();
     const checkout = new URL(data.redirect_urls.checkout_url);
-    // A signed-in shopper stays signed in on BigCommerce's checkout.
-    const url = customerId ? customerLoginUrl(checkout.origin, customerId, checkout.pathname + checkout.search) : checkout.href;
+    // The customer stays signed in on BigCommerce's checkout.
+    const url = customerLoginUrl(checkout.origin, customerId, checkout.pathname + checkout.search);
     sendJson(res, 200, { cartId: data.id, url });
   } catch (err) {
     console.error(err);

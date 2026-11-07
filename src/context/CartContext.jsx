@@ -1,38 +1,58 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useAuth } from './AuthContext.jsx';
 import { isCartActive } from '../lib/api.js';
 import { load, save } from '../lib/storage.js';
 
 const CartContext = createContext(null);
-// Size ids changed when the shop moved to BigCommerce, so carts saved before that are not reused.
-const KEY = 'ptc-cart-bc';
-const CHECKOUT_KEY = 'ptc-checkout-cart';
+const OLD_SHARED_KEY = 'ptc-cart-bc';
 
-// Logging out empties the cart, so the next person on a shared computer doesn't see it.
-export function clearSavedCart() {
-  save(KEY, []);
-  save(CHECKOUT_KEY, null);
-}
+// Each customer has their own cart, so it only ever shows while they're signed in.
+const cartKey = (customerId) => `ptc-cart:${customerId}`;
+const checkoutKey = (customerId) => `ptc-checkout-cart:${customerId}`;
 
 export function CartProvider({ children }) {
-  const [items, setItems] = useState(() => load(KEY, []));
+  const { user } = useAuth();
+  const customerId = user?.isCustomer ? user.id : null;
+  const [cart, setCart] = useState({ owner: null, items: [] });
   const [previewOpen, setPreviewOpen] = useState(false);
 
-  useEffect(() => save(KEY, items), [items]);
+  const items = cart.owner === customerId ? cart.items : [];
+  const setItems = useCallback((update) => setCart((c) => ({ ...c, items: update(c.items) })), []);
 
-  const rememberCheckout = useCallback((cartId) => save(CHECKOUT_KEY, cartId), []);
-
-  // A shopper who finished paying on BigCommerce comes back to an empty cart.
   useEffect(() => {
-    const cartId = load(CHECKOUT_KEY, null);
+    try {
+      localStorage.removeItem(OLD_SHARED_KEY);
+    } catch {
+      /* storage unavailable */
+    }
+  }, []);
+
+  useEffect(() => {
+    setCart({ owner: customerId, items: customerId ? load(cartKey(customerId), []) : [] });
+    setPreviewOpen(false);
+  }, [customerId]);
+
+  useEffect(() => {
+    if (cart.owner) save(cartKey(cart.owner), cart.items);
+  }, [cart]);
+
+  const rememberCheckout = useCallback((cartId) => {
+    if (customerId) save(checkoutKey(customerId), cartId);
+  }, [customerId]);
+
+  // A customer who finished paying on BigCommerce comes back to an empty cart.
+  useEffect(() => {
+    if (!customerId) return;
+    const cartId = load(checkoutKey(customerId), null);
     if (!cartId) return;
     isCartActive(cartId)
       .then((active) => {
         if (active) return;
-        save(CHECKOUT_KEY, null);
-        setItems([]);
+        save(checkoutKey(customerId), null);
+        setItems(() => []);
       })
       .catch(() => {});
-  }, []);
+  }, [customerId, setItems]);
 
   const value = useMemo(() => {
     const lines = items.map((i) => {
@@ -80,9 +100,9 @@ export function CartProvider({ children }) {
         );
       },
       remove: (variantId) => setItems((prev) => prev.filter((i) => i.variantId !== variantId)),
-      clear: () => setItems([]),
+      clear: () => setItems(() => []),
     };
-  }, [items, previewOpen, rememberCheckout]);
+  }, [items, previewOpen, rememberCheckout, setItems]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

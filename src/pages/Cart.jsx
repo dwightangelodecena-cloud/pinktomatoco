@@ -1,17 +1,23 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
 import { money } from '../lib/pricing.js';
 import { MinusIcon, PlusIcon } from '../components/Icons.jsx';
 
 export default function Cart() {
   const { items, subtotal, setQuantity, remove } = useCart();
+  const { user } = useAuth();
 
   return (
     <div className="container page">
       <h1 className="page-heading">Your Cart ({items.reduce((n, i) => n + i.quantity, 0)} items)</h1>
 
       {items.length === 0 ? (
-        <p className="cart-empty">Your cart is empty. <Link to="/shop-all">Continue shopping</Link>.</p>
+        user ? (
+          <p className="cart-empty">Your cart is empty. <Link to="/shop-all">Continue shopping</Link>.</p>
+        ) : (
+          <p className="cart-empty"><Link to="/login">Sign in or create an account</Link> to start your cart.</p>
+        )
       ) : (
         <>
           <table className="cart-table">
