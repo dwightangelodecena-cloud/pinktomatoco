@@ -39,7 +39,7 @@ export const getOrders = () =>
       .from('orders')
       .select('id, created_at, email, full_name, address, subtotal, status, order_items(id, name, option_label, quantity, unit_price)')
       .order('created_at', { ascending: false })
-      .limit(500)
+      .limit(1000)
   );
 
 export const setOrderStatus = (id, status) => write(supabase.from('orders').update({ status }).eq('id', id));
@@ -70,5 +70,13 @@ export const deleteReview = (id) => write(supabase.from('reviews').delete().eq('
 
 export const getMessages = () => rows(supabase.from('contact_messages').select('*').order('created_at', { ascending: false }));
 export const setMessageHandled = (id, handled) => write(supabase.from('contact_messages').update({ handled }).eq('id', id));
+
+// Confirms the current password first, so an unattended signed-in screen can't be used to change it.
+export async function changePassword(email, current, next) {
+  const { error: wrong } = await supabase.auth.signInWithPassword({ email, password: current });
+  if (wrong) throw new Error('Your current password is incorrect.');
+  const { error } = await supabase.auth.updateUser({ password: next });
+  if (error) throw error;
+}
 
 export const getSubscribers = () => rows(supabase.from('newsletter_subscribers').select('id, email, created_at').order('created_at', { ascending: false }));

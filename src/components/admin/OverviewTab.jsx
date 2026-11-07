@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom';
 import { getOrders } from '../../lib/adminApi.js';
+import { dailyTotals } from '../../lib/adminStats.js';
 import { money } from '../../lib/pricing.js';
 import { ArrowRight } from '../Icons.jsx';
+import SalesChart from './SalesChart.jsx';
 import { Empty, Loading, Panel, Problem, formatDate, useAdminData } from './shared.jsx';
 
 export default function OverviewTab({ counts }) {
   const { data: orders, error } = useAdminData(getOrders);
-  const value = (orders || []).filter((o) => o.status !== 'cancelled').reduce((n, o) => n + Number(o.subtotal), 0);
 
   const tiles = [
     { label: 'Orders to handle', value: counts?.pendingOrders, to: '?tab=orders' },
@@ -16,7 +17,7 @@ export default function OverviewTab({ counts }) {
   ];
 
   return (
-    <Panel title="Overview" intro="What needs your attention today.">
+    <Panel title="Dashboard" intro="What needs your attention today.">
       <div className="admin-tiles">
         {tiles.map((t) => (
           <Link key={t.label} to={t.to} className="admin-tile">
@@ -30,10 +31,7 @@ export default function OverviewTab({ counts }) {
       {!orders && !error && <Loading />}
       {orders && (
         <>
-          <p className="admin-note">
-            {orders.length} order{orders.length === 1 ? '' : 's'} worth {money(value)}, not counting cancelled orders.
-            Online payment isn't set up yet, so this money hasn't been collected automatically.
-          </p>
+          <SalesChart days={dailyTotals(orders, 14)} title="Order value, last 14 days" />
           <h3 className="admin-subheading">Latest orders</h3>
           {orders.length === 0 ? (
             <Empty>No orders yet.</Empty>

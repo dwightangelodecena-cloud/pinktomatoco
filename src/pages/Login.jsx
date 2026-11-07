@@ -5,6 +5,7 @@ import { getMyOrders } from '../lib/api.js';
 import { money } from '../lib/pricing.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useWishlist } from '../context/WishlistContext.jsx';
+import PasswordRules, { PASSWORD_ERROR, passwordIsValid } from '../components/PasswordRules.jsx';
 import {
   ArrowRight, CheckIcon, EyeIcon, EyeOffIcon, HeartIcon, LockIcon, LogOutIcon,
   MailIcon, PackageIcon, ShieldCheckIcon, UserIcon,
@@ -31,24 +32,6 @@ function passwordScore(pw) {
   return s;
 }
 const STRENGTH = ['Too short', 'Weak', 'Okay', 'Good', 'Strong'];
-
-const PASSWORD_RULES = [
-  { label: 'At least 8 characters', test: (pw) => pw.length >= 8 },
-  { label: 'A number', test: (pw) => /\d/.test(pw) },
-  { label: 'A symbol', test: (pw) => /[^A-Za-z0-9\s]/.test(pw) },
-];
-const passwordIsValid = (pw) => PASSWORD_RULES.every((r) => r.test(pw));
-const PASSWORD_ERROR = 'Your password needs at least 8 characters, a number and a symbol.';
-
-function PasswordRules({ password }) {
-  return (
-    <ul className="password-rules">
-      {PASSWORD_RULES.map((r) => (
-        <li key={r.label} className={r.test(password) ? 'is-met' : ''}><CheckIcon /> {r.label}</li>
-      ))}
-    </ul>
-  );
-}
 
 function Field({ icon: Icon, label, type = 'text', value, onChange, autoComplete, required = true, minLength, children }) {
   const [show, setShow] = useState(false);

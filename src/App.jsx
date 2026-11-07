@@ -30,6 +30,7 @@ export default function App() {
     <>
       <ScrollToTop />
       <Routes>
+        <Route path="admin" element={<Suspense fallback={null}><Admin /></Suspense>} />
         <Route element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="shop-all" element={<ShopAll />} />
@@ -43,7 +44,6 @@ export default function App() {
           <Route path="wishlist" element={<Wishlist />} />
           <Route path="search" element={<Search />} />
           <Route path="sitemap" element={<Sitemap />} />
-          <Route path="admin" element={<Suspense fallback={null}><Admin /></Suspense>} />
           <Route path=":slug" element={<Product />} />
           <Route path="*" element={<NotFound />} />
         </Route>

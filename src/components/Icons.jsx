@@ -24,6 +24,15 @@ export const SearchIcon = (p) => (
 export const CartIcon = (p) => (
   <Icon {...p}><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" /><path d="M3 6h18" /><path d="M16 10a4 4 0 0 1-8 0" /></Icon>
 );
+export const UsersIcon = (p) => (
+  <Icon {...p}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></Icon>
+);
+export const BarChartIcon = (p) => (
+  <Icon {...p}><path d="M3 21h18" /><path d="M7 21v-7" /><path d="M12 21V5" /><path d="M17 21v-11" /></Icon>
+);
+export const StoreIcon = (p) => (
+  <Icon {...p}><path d="M4 10v10a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V10" /><path d="M2.5 9 5 3h14l2.5 6a3.17 3.17 0 0 1-6.33 0 3.17 3.17 0 0 1-6.34 0 3.17 3.17 0 0 1-6.33 0Z" /><path d="M10 21v-6h4v6" /></Icon>
+);
 export const LockIcon = (p) => (
   <Icon {...p}><rect x="4" y="11" width="16" height="10" rx="2.5" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></Icon>
 );

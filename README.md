@@ -15,7 +15,7 @@ Storefront for [pinktomatoco.com](https://pinktomatoco.com), rebuilt from the or
 | `/cart`, `/checkout` | Cart and checkout (orders saved to Supabase) |
 | `/shipping-returns`, `/contact-us`, `/blog`, `/sitemap` | Content pages |
 | `/login`, `/wishlist`, `/search?q=` | Account, wishlist, search |
-| `/admin` | Store admin: overview, orders, products, reviews, messages, subscribers |
+| `/admin` | Store admin dashboard: orders, customers, sales, products, reviews, messages, subscribers, account |
 
 ## Local setup
 
