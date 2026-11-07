@@ -1,23 +1,74 @@
 import { useState } from 'react';
-import { ORDER_STATUSES, getOrders, setOrderStatus } from '../../lib/adminApi.js';
+import { ORDER_FILTERS, ORDER_STATUSES, getOrderDelivery, getOrders, setOrderStatus } from '../../lib/adminApi.js';
 import { money } from '../../lib/pricing.js';
 import { Empty, Filter, Loading, Panel, Problem, formatDate, useAdminData } from './shared.jsx';
 
 function Address({ address }) {
   const a = address || {};
-  const lines = [a.line1, a.line2, [a.city, a.state, a.zip].filter(Boolean).join(', '), a.country, a.phone].filter(Boolean);
+  const lines = [a.name, a.line1, a.line2, [a.city, a.state, a.zip].filter(Boolean).join(', '), a.country, a.phone, a.method].filter(Boolean);
   return <address>{lines.map((l) => <span key={l}>{l}</span>)}</address>;
+}
+
+function OrderCard({ order, onStatus }) {
+  const [delivery, setDelivery] = useState(undefined);
+  const known = ORDER_STATUSES.some((s) => s.id === order.statusId);
+
+  const onToggle = (e) => {
+    if (!e.currentTarget.open || delivery !== undefined) return;
+    setDelivery(null);
+    getOrderDelivery(order.id).then(setDelivery).catch(() => setDelivery(null));
+  };
+
+  return (
+    <details className="admin-card admin-order" onToggle={onToggle}>
+      <summary>
+        <span className="admin-order-id">#{order.id}</span>
+        <span className="admin-order-name">{order.full_name}</span>
+        <span className="admin-muted">{formatDate(order.created_at)}</span>
+        <span className={`admin-pill status-${order.status}`}>{order.statusLabel}</span>
+        <strong>{money(order.subtotal)}</strong>
+      </summary>
+      <div className="admin-order-body">
+        <div>
+          <h3 className="admin-subheading">Customer</h3>
+          {order.email && <p><a href={`mailto:${order.email}`}>{order.email}</a></p>}
+          <h3 className="admin-subheading">Deliver to</h3>
+          <Address address={delivery || order.address} />
+        </div>
+        <div>
+          <h3 className="admin-subheading">Items</h3>
+          <ul className="admin-items">
+            {order.order_items?.map((i) => (
+              <li key={i.id}>
+                <span>{i.quantity} × {i.name} {i.option_label && <small>({i.option_label})</small>}</span>
+                <span>{money(i.unit_price * i.quantity)}</span>
+              </li>
+            ))}
+          </ul>
+          <label className="form-field">
+            <span className="form-field-title">Status</span>
+            <select className="form-input form-select" value={order.statusId} onChange={(e) => onStatus(order, Number(e.target.value))}>
+              {!known && <option value={order.statusId} disabled>{order.statusLabel}</option>}
+              {ORDER_STATUSES.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
+            </select>
+          </label>
+          <p className="admin-muted">BigCommerce may email the customer when the status changes. Cancelling doesn't refund money, so handle refunds in BigCommerce.</p>
+        </div>
+      </div>
+    </details>
+  );
 }
 
 export default function OrdersTab({ onChange }) {
   const { data: orders, setData, error, setError } = useAdminData(getOrders);
   const [filter, setFilter] = useState('all');
 
-  const changeStatus = async (order, status) => {
+  const changeStatus = async (order, statusId) => {
     setError('');
     try {
-      await setOrderStatus(order.id, status);
-      setData((list) => list.map((o) => (o.id === order.id ? { ...o, status } : o)));
+      await setOrderStatus(order.id, statusId);
+      const next = ORDER_STATUSES.find((s) => s.id === statusId);
+      setData((list) => list.map((o) => (o.id === order.id ? { ...o, statusId, statusLabel: next.label, status: next.group } : o)));
       onChange();
     } catch (err) {
       setError(err.message);
@@ -26,52 +77,18 @@ export default function OrdersTab({ onChange }) {
 
   const options = [
     { value: 'all', label: 'All', count: orders?.length },
-    ...ORDER_STATUSES.map((s) => ({ value: s, label: s, count: orders?.filter((o) => o.status === s).length })),
+    ...ORDER_FILTERS.map((f) => ({ ...f, count: orders?.filter((o) => o.status === f.value).length })),
   ];
   const shown = (orders || []).filter((o) => filter === 'all' || o.status === filter);
 
   return (
-    <Panel title="Orders" intro="Open an order to see the customer's details and update its status.">
+    <Panel title="Orders" intro="Orders from BigCommerce. Open one to see the customer's details and update its status.">
       <Filter label="Filter by status" options={options} value={filter} onChange={setFilter} />
       <Problem>{error}</Problem>
       {!orders && !error && <Loading />}
       {orders && shown.length === 0 && <Empty>No orders here.</Empty>}
       <div className="admin-list">
-        {shown.map((o) => (
-          <details key={o.id} className="admin-card admin-order">
-            <summary>
-              <span className="admin-order-id">#{o.id}</span>
-              <span className="admin-order-name">{o.full_name}</span>
-              <span className="admin-muted">{formatDate(o.created_at)}</span>
-              <span className={`admin-pill status-${o.status}`}>{o.status}</span>
-              <strong>{money(o.subtotal)}</strong>
-            </summary>
-            <div className="admin-order-body">
-              <div>
-                <h3 className="admin-subheading">Customer</h3>
-                <p><a href={`mailto:${o.email}`}>{o.email}</a></p>
-                <Address address={o.address} />
-              </div>
-              <div>
-                <h3 className="admin-subheading">Items</h3>
-                <ul className="admin-items">
-                  {o.order_items?.map((i) => (
-                    <li key={i.id}>
-                      <span>{i.quantity} × {i.name} <small>({i.option_label})</small></span>
-                      <span>{money(i.unit_price * i.quantity)}</span>
-                    </li>
-                  ))}
-                </ul>
-                <label className="form-field">
-                  <span className="form-field-title">Status</span>
-                  <select className="form-input form-select" value={o.status} onChange={(e) => changeStatus(o, e.target.value)}>
-                    {ORDER_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
-                  </select>
-                </label>
-              </div>
-            </div>
-          </details>
-        ))}
+        {shown.map((o) => <OrderCard key={o.id} order={o} onStatus={changeStatus} />)}
       </div>
     </Panel>
   );

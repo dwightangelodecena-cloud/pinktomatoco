@@ -19,10 +19,19 @@ export const clearProductCache = () => {
 };
 
 // Homepage picks and similar items are chosen in the admin, so they come from Supabase.
-async function getMerchandising() {
+// The original picks are the starting point until the admin saves their own.
+export async function getMerchandising() {
   if (!supabase) return localProducts;
-  const { data, error } = await supabase.from('products').select('id, is_new, new_rank, related_ids');
-  return error || !data?.length ? localProducts : data;
+  const [{ data, error }, { data: featured }] = await Promise.all([
+    supabase.from('products').select('id, is_new, new_rank, related_ids'),
+    supabase.from('site_content').select('value').eq('key', 'featured').maybeSingle(),
+  ]);
+  const rows = error || !data?.length ? localProducts : data;
+  const ids = featured?.value?.ids;
+  if (!Array.isArray(ids)) return rows;
+  const known = new Map(rows.map((row) => [row.id, row]));
+  const all = [...new Set([...known.keys(), ...ids])];
+  return all.map((id) => ({ ...known.get(id), id, is_new: ids.includes(id), new_rank: ids.includes(id) ? ids.indexOf(id) + 1 : null }));
 }
 
 async function getBigCommerceProducts() {

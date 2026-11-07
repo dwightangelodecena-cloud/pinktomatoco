@@ -40,19 +40,20 @@ export function topProducts(orders, limit = 5) {
   return [...totals.values()].sort((a, b) => b.value - a.value).slice(0, limit);
 }
 
-// Customers are matched by email, so guest and signed-in orders are grouped together.
-export function customersFrom(orders) {
+// BigCommerce accounts plus guests who ordered, matched by email.
+export function mergeCustomers(accounts, orders) {
   const people = new Map();
+  for (const a of accounts) {
+    people.set(a.email.trim().toLowerCase(), { email: a.email, name: a.name, joined: a.joined, orders: 0, spent: 0, lastOrder: null });
+  }
   for (const o of orders) {
+    if (!o.email) continue;
     const key = o.email.trim().toLowerCase();
-    const person = people.get(key) || { email: o.email, name: o.full_name, orders: 0, spent: 0, lastOrder: o.created_at };
+    const person = people.get(key) || { email: o.email, name: o.full_name, joined: null, orders: 0, spent: 0, lastOrder: null };
     person.orders += 1;
     if (o.status !== 'cancelled') person.spent += Number(o.subtotal);
-    if (o.created_at >= person.lastOrder) {
-      person.lastOrder = o.created_at;
-      person.name = o.full_name;
-    }
+    if (!person.lastOrder || o.created_at > person.lastOrder) person.lastOrder = o.created_at;
     people.set(key, person);
   }
-  return [...people.values()].sort((a, b) => b.spent - a.spent);
+  return [...people.values()].sort((a, b) => b.spent - a.spent || a.name.localeCompare(b.name));
 }

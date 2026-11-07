@@ -3,7 +3,7 @@ import { deleteProduct, getAdminProducts, saveProduct, setProductVisible } from 
 import { priceRange } from '../../lib/pricing.js';
 import { descriptionToText, textToDescription } from '../../lib/productText.js';
 import { ArrowRight, PencilIcon, PlusIcon, TrashIcon } from '../Icons.jsx';
-import { ImageUpload, OrderButtons, Section, Text } from './ContentFields.jsx';
+import { ImageUpload, Section, Text } from './ContentFields.jsx';
 import { Empty, Loading, Problem, useAdminData } from './shared.jsx';
 
 // Product pages live at the top of the site, so these names belong to other pages.
@@ -17,23 +17,27 @@ const sizeRow = (v = {}) => ({
   label: v.label ?? '',
   price: v.price != null ? Number(v.price).toFixed(2) : '',
   sku: v.sku ?? '',
-  is_default: Boolean(v.is_default),
+  stock: v.stock ?? 0,
+  onSale: !v.purchasing_disabled,
 });
 
 function ProductEditor({ product, onDone, onCancel, setDirty }) {
   const isNew = !product.id;
+  const tracksSizes = isNew || product.inventory_tracking === 'variant';
+  const tracksProduct = product.inventory_tracking === 'product';
   const startText = descriptionToText(product.description_html);
   const [form, setForm] = useState({
     name: product.name ?? '',
     sku: product.sku ?? '',
+    weight: product.weight ?? '',
+    stock: product.inventory_level ?? 0,
     description: startText,
     images: product.images ?? [],
-    option_name: product.option_name ?? 'Size',
     is_visible: product.is_visible ?? true,
   });
   const [sizes, setSizes] = useState(() => {
     const rows = [...(product.product_variants ?? [])].sort((a, b) => a.sort - b.sort).map(sizeRow);
-    return rows.length ? rows : [sizeRow({ is_default: true })];
+    return rows.length ? rows : [sizeRow()];
   });
   const [status, setStatus] = useState(null);
 
@@ -44,40 +48,34 @@ function ProductEditor({ product, onDone, onCancel, setDirty }) {
 
   const set = (k) => (value) => setForm((f) => ({ ...f, [k]: value }));
   const patchSize = (row, change) => setSizes((list) => list.map((s) => (s.row === row ? { ...s, ...change } : s)));
-  const moveSize = (from, to) => setSizes((list) => {
-    const next = [...list];
-    next.splice(to, 0, next.splice(from, 1)[0]);
-    return next;
-  });
-  const removeSize = (row) => setSizes((list) => {
-    const next = list.filter((s) => s.row !== row);
-    return next.some((s) => s.is_default) || !next.length ? next : next.map((s, i) => ({ ...s, is_default: i === 0 }));
-  });
 
   const submit = async (e) => {
     e.preventDefault();
-    const slug = product.slug ?? slugify(form.name);
-    if (!slug || (isNew && RESERVED.includes(slug))) return setStatus({ type: 'error', text: 'That name clashes with a page on the site. Try a different one.' });
-    if (!sizes.length) return setStatus({ type: 'error', text: 'Add at least one size.' });
-
+    if (isNew && (!slugify(form.name) || RESERVED.includes(slugify(form.name)))) {
+      return setStatus({ type: 'error', text: 'That name clashes with a page on the site. Try a different one.' });
+    }
     setStatus({ type: 'pending' });
     try {
-      await saveProduct(
-        {
-          id: product.id ?? null,
-          slug,
-          name: form.name.trim(),
-          sku: form.sku.trim(),
-          // An unchanged description keeps its original formatting.
-          description_html: form.description === startText ? product.description_html ?? '' : textToDescription(form.description),
-          images: form.images,
-          option_name: form.option_name.trim() || 'Size',
-          is_visible: form.is_visible,
-        },
-        sizes.map((s) => ({ id: s.id, label: s.label.trim(), price: Number(s.price), sku: s.sku.trim(), is_default: s.is_default }))
-      );
+      const saved = await saveProduct(product.id, {
+        name: form.name,
+        sku: form.sku.trim(),
+        weight: Number(form.weight),
+        inventory_level: tracksProduct ? Number(form.stock) : undefined,
+        // An unchanged description keeps its original formatting.
+        description_html: form.description === startText ? product.description_html ?? '' : textToDescription(form.description),
+        images: form.images,
+        is_visible: form.is_visible,
+        sizes: sizes.map((s) => ({
+          id: s.id,
+          label: s.label,
+          price: Number(s.price),
+          sku: s.sku.trim(),
+          stock: tracksSizes ? Number(s.stock) : null,
+          purchasing_disabled: !s.onSale,
+        })),
+      });
       setDirty(false);
-      onDone(`/${slug}`);
+      onDone(`/${saved.slug}`);
     } catch (err) {
       setStatus({ type: 'error', text: err.message });
     }
@@ -89,7 +87,18 @@ function ProductEditor({ product, onDone, onCancel, setDirty }) {
 
       <Section title={isNew ? 'New product' : product.name}>
         <Text label="Name" value={form.name} onChange={set('name')} />
-        <Text label="SKU" value={form.sku} onChange={set('sku')} />
+        {!isNew && <Text label="SKU" value={form.sku} onChange={set('sku')} />}
+        <label className="form-field">
+          <span className="form-field-title">Weight (lb)</span>
+          <input className="form-input" type="number" min="0.01" step="0.01" required value={form.weight} onChange={(e) => set('weight')(e.target.value)} />
+          <small className="content-hint">Used to work out shipping.</small>
+        </label>
+        {tracksProduct && (
+          <label className="form-field">
+            <span className="form-field-title">Stock</span>
+            <input className="form-input" type="number" min="0" step="1" required value={form.stock} onChange={(e) => set('stock')(e.target.value)} />
+          </label>
+        )}
         <Text
           label="Description"
           rows={9}
@@ -120,28 +129,32 @@ function ProductEditor({ product, onDone, onCancel, setDirty }) {
         <ImageUpload label="Add photos" multiple onUploaded={(url) => setForm((f) => ({ ...f, images: [...f.images, url] }))} />
       </Section>
 
-      <Section title="Sizes and prices" intro="The default is picked for shoppers when they open the product.">
-        <Text label="Option name" value={form.option_name} onChange={set('option_name')} />
+      <Section title="Sizes and prices" intro="Turn a size off to stop it being sold without deleting it.">
         <ul className="content-sizes">
-          {sizes.map((s, i) => (
+          {sizes.map((s) => (
             <li key={s.row}>
-              <OrderButtons index={i} count={sizes.length} label={s.label || `size ${i + 1}`} onMove={moveSize} />
-              <label><span>Size</span><input className="form-input" required value={s.label} onChange={(e) => patchSize(s.row, { label: e.target.value })} /></label>
+              <label>
+                <span>Size</span>
+                <input className="form-input" required readOnly={Boolean(s.id)} value={s.label} onChange={(e) => patchSize(s.row, { label: e.target.value })} />
+              </label>
               <label><span>Price ($)</span><input className="form-input" type="number" min="0" step="0.01" required value={s.price} onChange={(e) => patchSize(s.row, { price: e.target.value })} /></label>
               <label><span>SKU</span><input className="form-input" value={s.sku} onChange={(e) => patchSize(s.row, { sku: e.target.value })} /></label>
+              {tracksSizes && (
+                <label><span>Stock</span><input className="form-input" type="number" min="0" step="1" required value={s.stock} onChange={(e) => patchSize(s.row, { stock: e.target.value })} /></label>
+              )}
               <label className="content-default">
-                <input type="radio" name="default-size" checked={s.is_default} onChange={() => setSizes((list) => list.map((x) => ({ ...x, is_default: x.row === s.row })))} />
-                <span>Default</span>
+                <input type="checkbox" checked={s.onSale} onChange={(e) => patchSize(s.row, { onSale: e.target.checked })} />
+                <span>On sale</span>
               </label>
-              <button type="button" className="content-tool is-danger" aria-label={`Remove ${s.label || 'size'}`} onClick={() => removeSize(s.row)}><TrashIcon size={14} /></button>
+              <button type="button" className="content-tool is-danger" aria-label={`Remove ${s.label || 'size'}`} disabled={sizes.length === 1} onClick={() => setSizes((list) => list.filter((x) => x.row !== s.row))}><TrashIcon size={14} /></button>
             </li>
           ))}
         </ul>
-        <button type="button" className="content-tool" onClick={() => setSizes((list) => [...list, sizeRow({ is_default: list.length === 0 })])}><PlusIcon size={14} /> Add size</button>
+        <button type="button" className="content-tool" onClick={() => setSizes((list) => [...list, sizeRow()])}><PlusIcon size={14} /> Add size</button>
       </Section>
 
       <div className="admin-actions content-product-save">
-        <button className="button button-primary button-small" type="submit" disabled={status?.type === 'pending'}>{isNew ? 'Add product' : 'Save product'}</button>
+        <button className="button button-primary button-small" type="submit" disabled={status?.type === 'pending'}>{status?.type === 'pending' ? 'Saving…' : isNew ? 'Add product' : 'Save product'}</button>
         <button type="button" className="link-button" onClick={onCancel}>Cancel</button>
         {status?.text && <p className={`form-message ${status.type}`} role="alert">{status.text}</p>}
       </div>
@@ -176,7 +189,7 @@ export default function ProductManager({ setDirty, onPreview }) {
   };
 
   const remove = async (p) => {
-    if (!window.confirm(`Delete ${p.name}? This can't be undone, and its reviews are deleted too.`)) return;
+    if (!window.confirm(`Permanently delete ${p.name} from BigCommerce? It disappears from every storefront, including the live store. To take it off sale without deleting it, use Hide instead.`)) return;
     setError('');
     try {
       await deleteProduct(p.id);
@@ -207,15 +220,12 @@ export default function ProductManager({ setDirty, onPreview }) {
   const shown = (products || []).filter((p) => !q || p.name.toLowerCase().includes(q));
 
   return (
-    <Section title="Products" intro="Everything for sale. Changes here go live as soon as you save them.">
+    <Section title="Products" intro="Everything for sale in BigCommerce.">
+      <p className="content-notice" role="note">Changes here save to BigCommerce straight away, so they also change the live store at pinktomatoco.com.</p>
       <div className="content-add">
         <input className="form-input" type="search" aria-label="Search products" placeholder="Search products" value={query} onChange={(e) => setQuery(e.target.value)} />
         <button type="button" className="button button-primary button-small" onClick={() => open({})}><PlusIcon size={16} /> Add product</button>
       </div>
-      <p className="content-notice" role="note">
-        The shop now shows products from BigCommerce. Until this tab is connected to it, make product changes in the
-        BigCommerce control panel, because edits here won't appear in the shop.
-      </p>
       <Problem>{error}</Problem>
       {!products && !error && <Loading />}
       {products && shown.length === 0 && <Empty>No products found.</Empty>}

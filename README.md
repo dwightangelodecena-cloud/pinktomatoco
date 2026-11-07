@@ -3,7 +3,7 @@
 Storefront for [pinktomatoco.com](https://pinktomatoco.com), rebuilt from the original BigCommerce store.
 
 - **Frontend:** React 18 + Vite + React Router
-- **Store:** BigCommerce runs products, stock, cart, checkout and payment. The keys stay server-side in the Vercel functions in `api/`.
+- **Store:** BigCommerce runs products, stock, cart, checkout, payment and orders. The keys stay server-side in the Vercel functions in `api/`, and the admin's calls are checked against Supabase's admin list.
 - **Database / auth:** Supabase (page content, homepage picks, reviews, messages, subscribers, accounts)
 
 ## Pages
@@ -41,7 +41,7 @@ Checkout creates a BigCommerce cart in `api/checkout.js`, which works out the pr
 
 ## Not done yet
 
-- **Customer accounts and the admin's Orders, Customers, Sales and Products sections** still use Supabase and need connecting to BigCommerce.
+- **Customer accounts** still use Supabase and need connecting to BigCommerce.
 - **Original product images** are served from `public/images`. Photos uploaded in the admin go to Supabase Storage.
 
 ## Deploy

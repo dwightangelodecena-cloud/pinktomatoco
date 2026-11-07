@@ -7,7 +7,7 @@ function localApi(env) {
     name: 'local-api',
     configureServer(server) {
       for (const [key, value] of Object.entries(env)) {
-        if (key.startsWith('BIGCOMMERCE_')) process.env[key] = value;
+        if (key.startsWith('BIGCOMMERCE_') || key.startsWith('VITE_SUPABASE_')) process.env[key] = value;
       }
       server.middlewares.use('/api', async (req, res, next) => {
         const name = req.url.split('?')[0].replace(/^\//, '');

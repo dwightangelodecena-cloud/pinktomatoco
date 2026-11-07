@@ -29,7 +29,7 @@ export default function SalesTab() {
   ];
 
   return (
-    <Panel title="Sales" intro="Based on orders placed, not counting cancelled orders. Online payment isn't set up yet, so this isn't money collected.">
+    <Panel title="Sales" intro="Based on your latest 250 BigCommerce orders, not counting cancelled, declined or refunded ones.">
       <Filter label="Time period" options={RANGES} value={range} onChange={setRange} />
       <Problem>{error}</Problem>
       {!orders && !error && <Loading />}

@@ -41,7 +41,7 @@ export default function OverviewTab({ counts }) {
                 <li key={o.id}>
                   <span><strong>#{o.id}</strong> {o.full_name}</span>
                   <span className="admin-muted">{formatDate(o.created_at)}</span>
-                  <span className={`admin-pill status-${o.status}`}>{o.status}</span>
+                  <span className={`admin-pill status-${o.status}`}>{o.statusLabel}</span>
                   <span>{money(o.subtotal)}</span>
                 </li>
               ))}
