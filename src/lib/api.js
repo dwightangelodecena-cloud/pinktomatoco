@@ -18,9 +18,42 @@ export const clearProductCache = () => {
   cache = null;
 };
 
+// Homepage picks and similar items are chosen in the admin, so they come from Supabase.
+async function getMerchandising() {
+  if (!supabase) return localProducts;
+  const { data, error } = await supabase.from('products').select('id, is_new, new_rank, related_ids');
+  return error || !data?.length ? localProducts : data;
+}
+
+async function getBigCommerceProducts() {
+  const [response, merchandising] = await Promise.all([fetch('/api/products'), getMerchandising()]);
+  if (!response.ok) throw new Error(`Products request failed: ${response.status}`);
+  const products = await response.json();
+  const extras = new Map(merchandising.map((row) => [row.id, row]));
+  return products.map((p) => {
+    const extra = extras.get(p.id);
+    return {
+      ...p,
+      is_new: extra?.is_new ?? false,
+      new_rank: extra?.new_rank ?? null,
+      related: p.related.length ? p.related : extra?.related_ids ?? extra?.related ?? [],
+    };
+  });
+}
+
 // All visible products, newest first (same order as the original "Shop All").
+// BigCommerce is the source. The older copies are only a fallback if it can't be reached.
 export async function getProducts() {
   if (cache) return cache;
+  try {
+    const products = await getBigCommerceProducts();
+    if (products.length) {
+      cache = products.sort((a, b) => b.id - a.id);
+      return cache;
+    }
+  } catch (err) {
+    console.error('BigCommerce products error, using a saved copy:', err.message);
+  }
   let rows = localProducts;
   if (supabase) {
     const { data, error } = await supabase
@@ -94,14 +127,14 @@ export async function getMyOrders(userId) {
   return data || [];
 }
 
-export async function createOrder({ email, fullName, address, items }) {
-  if (!supabase) throw new Error(NOT_CONFIGURED);
-  const { data, error } = await supabase.rpc('create_order', {
-    p_email: email,
-    p_full_name: fullName,
-    p_address: address,
-    p_items: items.map((i) => ({ variant_id: i.variantId, quantity: i.quantity })),
-  });
-  if (error) throw error;
+async function postJson(url, body) {
+  const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error || 'Something went wrong. Please try again.');
   return data;
 }
+
+export const startCheckout = (items) =>
+  postJson('/api/checkout', { items: items.map((i) => ({ productId: i.productId, variantId: i.variantId, quantity: i.quantity })) });
+
+export const isCartActive = (cartId) => postJson('/api/cart-status', { cartId }).then((r) => r.active);

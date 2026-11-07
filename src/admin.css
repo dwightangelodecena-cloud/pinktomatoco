@@ -228,3 +228,4 @@ a.admin-tile:hover { border-color: var(--accent); transform: translateY(-2px); }
 .store-preview-devices button[aria-pressed='true'] { color: var(--ink); background: var(--surface); box-shadow: var(--shadow-sm); }
 .store-preview-stage { position: relative; flex: 1; min-height: 0; overflow: hidden; background: var(--cream); }
 .store-preview-stage iframe { position: absolute; top: 0; left: 50%; display: block; background: var(--bg); border: 0; transform-origin: top center; }
+.content-notice { margin: 0; padding: 10px 12px; font-size: 13px; color: #7a5200; background: #fbeecb; border-radius: var(--radius-sm); }

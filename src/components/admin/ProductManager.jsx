@@ -212,6 +212,10 @@ export default function ProductManager({ setDirty, onPreview }) {
         <input className="form-input" type="search" aria-label="Search products" placeholder="Search products" value={query} onChange={(e) => setQuery(e.target.value)} />
         <button type="button" className="button button-primary button-small" onClick={() => open({})}><PlusIcon size={16} /> Add product</button>
       </div>
+      <p className="content-notice" role="note">
+        The shop now shows products from BigCommerce. Until this tab is connected to it, make product changes in the
+        BigCommerce control panel, because edits here won't appear in the shop.
+      </p>
       <Problem>{error}</Problem>
       {!products && !error && <Loading />}
       {products && shown.length === 0 && <Empty>No products found.</Empty>}

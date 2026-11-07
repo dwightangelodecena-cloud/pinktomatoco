@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useCart } from '../context/CartContext.jsx';
 import { CartIcon, CheckIcon, MinusIcon, PlusIcon } from './Icons.jsx';
-import { defaultVariant, sortedVariants } from '../lib/pricing.js';
+import { defaultVariant, isAvailable, sortedVariants } from '../lib/pricing.js';
 
 // Size select, quantity and Add To Cart (used on the product page and in Quick View).
 export default function ProductOptions({ product, onPriceChange, onAdded, formId }) {
@@ -12,6 +12,7 @@ export default function ProductOptions({ product, onPriceChange, onAdded, formId
   const [error, setError] = useState('');
   const [added, setAdded] = useState(false);
   const variant = variants.find((v) => v.id === Number(variantId)) || null;
+  const soldOut = variants.length > 0 && !variants.some(isAvailable);
 
   const changeVariant = (id) => {
     setVariantId(id);
@@ -24,6 +25,14 @@ export default function ProductOptions({ product, onPriceChange, onAdded, formId
     e.preventDefault();
     if (!variant) {
       setError('Please choose a ' + (product.option_name || 'Size').toLowerCase() + '.');
+      return;
+    }
+    if (!isAvailable(variant)) {
+      setError('Sorry, this one has sold out.');
+      return;
+    }
+    if (variant.stock != null && qty > variant.stock) {
+      setError(`Only ${variant.stock} left in stock.`);
       return;
     }
     add(product, variant, qty);
@@ -43,7 +52,7 @@ export default function ProductOptions({ product, onPriceChange, onAdded, formId
             <select className="form-input form-select" value={variantId} onChange={(e) => changeVariant(e.target.value)}>
               <option value="">Pick one</option>
               {variants.map((v) => (
-                <option key={v.id} value={v.id}>{v.label}</option>
+                <option key={v.id} value={v.id} disabled={!isAvailable(v)}>{v.label}{isAvailable(v) ? '' : ' (Sold out)'}</option>
               ))}
             </select>
           </span>
@@ -66,8 +75,8 @@ export default function ProductOptions({ product, onPriceChange, onAdded, formId
             <button type="button" className="quantity-control" aria-label="Increase quantity" onClick={() => setQty((q) => q + 1)}><PlusIcon /></button>
           </div>
         </div>
-        <button className={`button button-primary add-to-cart ${added ? 'is-added' : ''}`} type="submit">
-          <span className="add-label"><CartIcon size={18} /> Add To Cart</span>
+        <button className={`button button-primary add-to-cart ${added ? 'is-added' : ''}`} type="submit" disabled={soldOut}>
+          <span className="add-label"><CartIcon size={18} /> {soldOut ? 'Sold Out' : 'Add To Cart'}</span>
           <span className="added-label" aria-hidden={!added}><CheckIcon /> Added</span>
         </button>
       </div>

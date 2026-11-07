@@ -3,7 +3,8 @@
 Storefront for [pinktomatoco.com](https://pinktomatoco.com), rebuilt from the original BigCommerce store.
 
 - **Frontend:** React 18 + Vite + React Router
-- **Database / auth:** Supabase (Postgres, Row Level Security, email/password auth)
+- **Store:** BigCommerce runs products, stock, cart, checkout and payment. The keys stay server-side in the Vercel functions in `api/`.
+- **Database / auth:** Supabase (page content, homepage picks, reviews, messages, subscribers, accounts)
 
 ## Pages
 
@@ -36,14 +37,13 @@ Without a `.env` the site still runs and shows the products from `src/data/produ
 5. Run `supabase/migrations/0005_cms.sql` to turn on the content editor, photo uploads and full product editing.
 
 Tables: `products`, `product_variants`, `reviews` (need `approved = true` to show), `newsletter_subscribers`, `contact_messages`, `orders`, `order_items`.
-Orders are created through the `create_order` function, which recalculates prices in the database so prices can't be changed from the browser.
+Checkout creates a BigCommerce cart in `api/checkout.js`, which works out the prices, then sends the shopper to BigCommerce's checkout.
 
 ## Not done yet
 
-- **Online payment.** Checkout records the order with status `pending`. It doesn't charge a card yet. Stripe or PayPal can be added later.
-- **Shipping rates and tax** are not calculated.
+- **Customer accounts and the admin's Orders, Customers, Sales and Products sections** still use Supabase and need connecting to BigCommerce.
 - **Original product images** are served from `public/images`. Photos uploaded in the admin go to Supabase Storage.
 
 ## Deploy
 
-`npm run build` outputs to `dist/`. `vercel.json` (Vercel) and `public/_redirects` (Netlify) send all routes to `index.html`. Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in the host's environment variables.
+`npm run build` outputs to `dist/`. `vercel.json` (Vercel) and `public/_redirects` (Netlify) send all routes to `index.html`. Set `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` and the `BIGCOMMERCE_*` keys from `.env.example` in Vercel. The `BIGCOMMERCE_*` keys are private and must never start with `VITE_`.
