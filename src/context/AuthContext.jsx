@@ -56,7 +56,10 @@ export function AuthProvider({ children }) {
     if (!adminId) return;
     let alive = true;
     supabase.rpc('is_admin').then(({ data }) => {
-      if (alive) setAdminCheck({ userId: adminId, isAdmin: data === true });
+      if (!alive) return;
+      setAdminCheck({ userId: adminId, isAdmin: data === true });
+      // Supabase is only for the admin. An older shopper account here must not act as a login.
+      if (data === false) supabase.auth.signOut({ scope: 'local' });
     });
     return () => {
       alive = false;
@@ -71,6 +74,11 @@ export function AuthProvider({ children }) {
       if (err.status !== 401) throw err;
       const result = await supabase?.auth.signInWithPassword({ email, password });
       if (!result || result.error) throw new Error(INVALID_LOGIN);
+      const { data: isListedAdmin } = await supabase.rpc('is_admin');
+      if (isListedAdmin !== true) {
+        await supabase.auth.signOut({ scope: 'local' });
+        throw new Error(INVALID_LOGIN);
+      }
     }
   }, []);
 
@@ -96,7 +104,8 @@ export function AuthProvider({ children }) {
   const value = useMemo(() => {
     const isAdmin = Boolean(adminId) && adminCheck.userId === adminId && adminCheck.isAdmin;
     return {
-      user: adminUser ?? (customer ? asUser(customer) : null),
+      // A customer session comes first, so someone signed in as both can still shop.
+      user: customer ? asUser(customer) : isAdmin ? adminUser : null,
       isAdmin,
       ready: sessionReady && customerReady && (!adminId || adminCheck.userId === adminId),
       signIn,
