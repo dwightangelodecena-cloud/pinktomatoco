@@ -59,8 +59,8 @@ export default function ReviewModal({ product, onClose }) {
                 ))}
               </div>
             </div>
-            <Field label="Name" value={form.name} onChange={set('name')} />
-            <Field label="Email Address" type="email" value={form.email} onChange={set('email')} />
+            <Field label="Name" autoComplete="name" value={form.name} onChange={set('name')} />
+            <Field label="Email Address" type="email" autoComplete="email" value={form.email} onChange={set('email')} />
             <Field label="Subject" value={form.subject} onChange={set('subject')} />
             <label className="form-field">
               <span className="form-field-title">Comments <span className="required-text">Required</span></span>
@@ -76,11 +76,11 @@ export default function ReviewModal({ product, onClose }) {
   );
 }
 
-function Field({ label, type = 'text', value, onChange }) {
+function Field({ label, type = 'text', autoComplete, value, onChange }) {
   return (
     <label className="form-field">
       <span className="form-field-title">{label} <span className="required-text">Required</span></span>
-      <input className="form-input" type={type} required value={value} onChange={onChange} />
+      <input className="form-input" type={type} required autoComplete={autoComplete} value={value} onChange={onChange} />
     </label>
   );
 }

@@ -219,6 +219,7 @@ textarea.form-input { resize: vertical; }
   position: fixed; top: 0; left: 0; bottom: 0; z-index: 60; width: 86%; max-width: 340px;
   background: var(--bg); padding: 84px 12px 30px; border-radius: 0 var(--radius-lg) var(--radius-lg) 0; box-shadow: var(--shadow-lg);
   transform: translateX(-105%); visibility: hidden; transition: transform .45s var(--ease), visibility .45s;
+  overflow-y: auto; overscroll-behavior: contain;
 }
 .main-menu.is-open { transform: none; visibility: visible; }
 .menu-backdrop { position: fixed; inset: 0; z-index: 55; background: rgba(43, 32, 36, .4); opacity: 0; pointer-events: none; transition: opacity .3s; }
@@ -307,7 +308,7 @@ body.menu-open { overflow: hidden; }
 .cart-preview-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
 .cart-preview-title { margin: 0; font-size: 24px; }
 .cart-preview-empty { text-align: center; margin-top: 60px; color: var(--muted); }
-.cart-preview-items { list-style: none; margin: 0; padding: 0; overflow-y: auto; flex: 1; }
+.cart-preview-items { list-style: none; margin: 0; padding: 0; overflow-y: auto; overscroll-behavior: contain; flex: 1; }
 .cart-preview-item { display: grid; grid-template-columns: 76px 1fr; gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--line); }
 .cart-preview-item img { width: 76px; height: 76px; object-fit: cover; border-radius: 12px; }
 .cart-preview-item-name { font-family: var(--font-display); font-size: 17px; color: var(--ink); }
@@ -769,6 +770,15 @@ html { -webkit-tap-highlight-color: transparent; }
   }
   .tab-badge.bump { animation: bump .55s var(--spring); }
 
+  /* The header is its own stacking layer, so its slide-out menu can't rise above the tab bar: hide the bar instead */
+  .mobile-tab-bar { transition: transform .35s var(--ease); }
+  body.menu-open .mobile-tab-bar { transform: translateY(110%); pointer-events: none; }
+
+  /* Bigger hit areas for small links without changing the layout */
+  .product-item-title a { padding: 10px 0; margin: -10px 0; background-origin: content-box; background-clip: content-box; }
+  .auth-forgot, .auth-switch button { min-height: 44px; }
+  .text-link { min-height: 44px; }
+
   /* Things that sit above the tab bar */
   .back-to-top { bottom: calc(var(--tabbar-h) + 14px); width: 44px; height: 44px; }
   .cart-preview { border-radius: 0; max-width: none; padding-bottom: calc(22px + env(safe-area-inset-bottom)); }
@@ -843,7 +853,7 @@ html { -webkit-tap-highlight-color: transparent; }
   /* Pop-ups become bottom sheets */
   .modal-overlay { align-items: flex-end; padding: 0; }
   .modal {
-    max-height: 92vh; overflow-y: auto; border-radius: 24px 24px 0 0;
+    max-height: 92vh; max-height: 92dvh; overflow-y: auto; overscroll-behavior: contain; border-radius: 24px 24px 0 0;
     padding: 30px 20px calc(24px + env(safe-area-inset-bottom)); animation: sheet-in .45s var(--ease) both;
   }
   .modal::before { content: ''; position: absolute; top: 10px; left: 50%; width: 40px; height: 4px; margin-left: -20px; border-radius: 2px; background: var(--line-strong); }
@@ -1003,7 +1013,7 @@ html { -webkit-tap-highlight-color: transparent; }
 /* ==========================================================
    Sign in / create account / account dashboard
    ========================================================== */
-.auth-page { display: grid; gap: 20px; padding-top: 24px; padding-bottom: 80px; }
+.auth-page { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; padding-top: 24px; padding-bottom: 80px; }
 @media (min-width: 992px) { .auth-page { grid-template-columns: 1fr 1fr; gap: 28px; align-items: stretch; min-height: 680px; } }
 
 .auth-visual { position: relative; overflow: hidden; border-radius: 32px; min-height: 240px; display: flex; align-items: flex-end; color: #fff; }
@@ -1026,9 +1036,9 @@ html { -webkit-tap-highlight-color: transparent; }
   animation: rise .7s var(--ease) both;
 }
 
-.auth-tabs { position: relative; display: grid; grid-template-columns: 1fr 1fr; padding: 5px; margin-bottom: 28px; border-radius: 999px; background: var(--cream); }
+.auth-tabs { position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 5px; margin-bottom: 28px; border-radius: 999px; background: var(--cream); }
 .auth-tabs button {
-  position: relative; z-index: 1; min-height: 44px; border: 0; background: none; border-radius: 999px; cursor: pointer;
+  position: relative; z-index: 1; min-height: 44px; padding: 0 6px; border: 0; background: none; border-radius: 999px; cursor: pointer; line-height: 1.2;
   font: inherit; font-size: 14px; font-weight: 600; color: var(--muted); transition: color .3s;
 }
 .auth-tabs button[aria-selected='true'] { color: var(--ink); }

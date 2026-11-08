@@ -29,15 +29,15 @@ export default function ContactUs() {
 
       <form className="form contact-form" onSubmit={submit}>
         <div className="form-row">
-          <Field label="Full Name" required value={form.full_name} onChange={set('full_name')} />
-          <Field label="Phone Number" type="tel" value={form.phone} onChange={set('phone')} />
+          <Field label="Full Name" required autoComplete="name" value={form.full_name} onChange={set('full_name')} />
+          <Field label="Phone Number" type="tel" autoComplete="tel" value={form.phone} onChange={set('phone')} />
         </div>
         <div className="form-row">
-          <Field label="Email Address" type="email" required value={form.email} onChange={set('email')} />
+          <Field label="Email Address" type="email" required autoComplete="email" value={form.email} onChange={set('email')} />
           <Field label="Order Number" value={form.order_number} onChange={set('order_number')} />
         </div>
         <div className="form-row">
-          <Field label="Company Name" value={form.company_name} onChange={set('company_name')} />
+          <Field label="Company Name" autoComplete="organization" value={form.company_name} onChange={set('company_name')} />
           <Field label="RMA Number" value={form.rma_number} onChange={set('rma_number')} />
         </div>
         <label className="form-field">
@@ -51,13 +51,13 @@ export default function ContactUs() {
   );
 }
 
-function Field({ label, required, type = 'text', value, onChange }) {
+function Field({ label, required, type = 'text', autoComplete, value, onChange }) {
   return (
     <label className="form-field">
       <span className="form-field-title">
         {label} {required && <span className="required-text">Required</span>}
       </span>
-      <input className="form-input" type={type} required={required} value={value} onChange={onChange} />
+      <input className="form-input" type={type} required={required} autoComplete={autoComplete} value={value} onChange={onChange} />
     </label>
   );
 }

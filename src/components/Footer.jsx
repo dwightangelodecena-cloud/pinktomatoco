@@ -35,8 +35,9 @@ export default function Footer() {
             className="form-input"
             id="nl_email"
             type="email"
+            autoComplete="email"
             required
-            placeholder="Sign up for our newsletter"
+            placeholder="Your email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />

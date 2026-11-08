@@ -44,6 +44,7 @@ export default function Cart() {
                       <input
                         className="form-input quantity-input"
                         type="number"
+                        inputMode="numeric"
                         min="1"
                         aria-label="Quantity"
                         value={i.quantity}

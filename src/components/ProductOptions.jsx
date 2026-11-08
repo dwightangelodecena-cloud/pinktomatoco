@@ -79,6 +79,7 @@ export default function ProductOptions({ product, onPriceChange, onAdded, formId
             <input
               className="form-input quantity-input"
               type="number"
+              inputMode="numeric"
               min="1"
               aria-label="Quantity"
               value={qty}
