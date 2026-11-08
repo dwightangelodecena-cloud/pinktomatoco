@@ -20,6 +20,10 @@ const REQUEST_RESET = `mutation RequestReset($input: RequestResetPasswordInput!)
   customer { requestResetPassword(input: $input) { errors { __typename ... on Error { message } } } }
 }`;
 
+const RESET = `mutation Reset($input: ResetPasswordInput!) {
+  customer { resetPassword(input: $input) { errors { __typename ... on Error { message } } } }
+}`;
+
 const LOGOUT = 'mutation Logout { logout { result } }';
 
 const toCustomer = (c) => ({ id: c.entityId, firstName: c.firstName, lastName: c.lastName, email: c.email });
@@ -56,6 +60,20 @@ async function requestReset(res, email) {
   sendJson(res, 200, { ok: true });
 }
 
+async function resetPassword(res, { customerId, token, password }) {
+  if (!Number.isInteger(customerId) || customerId < 1 || typeof token !== 'string' || !token || typeof password !== 'string' || !password) {
+    return sendJson(res, 400, { error: 'This reset link is not complete. Please ask for a new one.' });
+  }
+  const { data, errors } = await storefront(RESET, { input: { customerEntityId: customerId, token, newPassword: password } });
+  const problem = errors?.[0] ?? data?.customer?.resetPassword?.errors?.[0];
+  if (!problem) return sendJson(res, 200, { ok: true });
+  // A weak password is worth explaining. Anything else means the link can't be used.
+  const badLink = /token|customerEntityId/i.test(problem.message ?? '');
+  if (problem.__typename === 'CustomerPasswordError' && !badLink) return sendJson(res, 400, { error: problem.message });
+  console.error('Password reset refused:', problem.__typename ?? problem.message);
+  sendJson(res, 400, { error: 'This reset link has expired or was already used. Please ask for a new one.' });
+}
+
 async function logout(req, res) {
   const session = readSession(req);
   endSession(req, res);
@@ -78,6 +96,7 @@ export default async function handler(req, res) {
     const body = await readJson(req);
     const email = typeof body.email === 'string' ? body.email.trim() : '';
     if (body.action === 'logout') return await logout(req, res);
+    if (body.action === 'reset') return await resetPassword(res, body);
     if (!email) return sendJson(res, 400, { error: 'Please enter your email.' });
     if (body.action === 'login') return await login(req, res, email, String(body.password ?? ''));
     if (body.action === 'register') return await register(req, res, { ...body, email });

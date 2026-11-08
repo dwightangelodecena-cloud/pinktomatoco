@@ -14,6 +14,7 @@ import Wishlist from './pages/Wishlist.jsx';
 import Search from './pages/Search.jsx';
 import Sitemap from './pages/Sitemap.jsx';
 import NotFound from './pages/NotFound.jsx';
+import ResetPassword from './pages/ResetPassword.jsx';
 
 const Admin = lazy(() => import('./pages/Admin.jsx'));
 
@@ -39,6 +40,9 @@ export default function App() {
           <Route path="contact-us" element={<ContactUs />} />
           <Route path="blog" element={<Blog />} />
           <Route path="login" element={<Login />} />
+          {/* BigCommerce's reset email links to /login.php?action=change_password&c=...&t=... */}
+          <Route path="login.php" element={<ResetPassword />} />
+          <Route path="reset-password" element={<ResetPassword />} />
           <Route path="cart" element={<Cart />} />
           <Route path="checkout" element={<Checkout />} />
           <Route path="wishlist" element={<Wishlist />} />
