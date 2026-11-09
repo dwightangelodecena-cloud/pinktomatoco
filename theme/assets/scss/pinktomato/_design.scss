@@ -748,7 +748,7 @@ html { -webkit-tap-highlight-color: transparent; }
   /* Bottom tab bar */
   .mobile-tab-bar {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 38;
-    display: grid; grid-template-columns: repeat(5, 1fr);
+    display: grid; grid-template-columns: repeat(4, 1fr);
     height: var(--tabbar-h); padding: 6px 4px env(safe-area-inset-bottom);
     background: rgba(253, 248, 245, .97); border-top: 1px solid var(--line);
     box-shadow: 0 -6px 24px rgba(43, 32, 36, .06);

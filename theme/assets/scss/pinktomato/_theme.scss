@@ -1,0 +1,6 @@
+// Stencil-only additions to the design from the React site.
+body { padding-top: 0; } // Cornerstone reserves room for its own fixed phone header.
+.pt-i { flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.marquee-chip .pt-i, .marquee-sep .pt-i { stroke-width: 2; }
+.navigation-toggle [hidden] { display: none; }
+.subscription-form .form-input { height: auto; margin: 0; }

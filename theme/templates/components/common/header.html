@@ -10,25 +10,92 @@
     {{/each}}
 </div>
 {{/if}}
-<header class="header" role="banner">
-    <a href="#" class="mobileMenu-toggle" data-mobile-menu-toggle="menu">
-        <span class="mobileMenu-toggleIcon">Toggle menu</span>
-    </a>
-    {{> components/common/navigation}}
 
-    {{#if page_type '===' 'default'}}
-        <h1 class="header-logo header-logo--{{theme_settings.logo-position}}">
-            {{> components/common/store-logo}}
-        </h1>
-    {{else}}
-        <div class="header-logo header-logo--{{theme_settings.logo-position}}">
-            {{> components/common/store-logo}}
+<div class="announcement-bar">
+    <p class="sr-only">Hand-poured in North Dakota. Clean-burning coconut soy wax. Toxic-free &amp; vegan fragrances</p>
+    <div class="marquee-viewport" aria-hidden="true">
+        <div class="marquee">
+            <div class="marquee-track">
+                {{> components/pinktomato/marquee-row}}
+                {{> components/pinktomato/marquee-row}}
+            </div>
+            <div class="marquee-track">
+                {{> components/pinktomato/marquee-row}}
+                {{> components/pinktomato/marquee-row}}
+            </div>
         </div>
-    {{/if}}
-    <div class="navPages-container" id="menu" data-menu>
-        {{> components/common/navigation-menu}}
     </div>
+</div>
+
+<header class="main-header" role="banner" data-pt-header>
+    <div class="header-search" data-pt-search>
+        <form class="search-form" action="{{urls.search}}" method="get" role="search">
+            {{> components/pinktomato/icon name="search" size="20"}}
+            <label class="sr-only" for="header-search">{{lang 'common.search'}}</label>
+            <input id="header-search" class="search-input" type="search" name="search_query" placeholder="Search candles, wax melts, scents…" tabindex="-1">
+            <button type="button" class="icon-button" tabindex="-1" aria-label="Close search" data-pt-search-close>
+                {{> components/pinktomato/icon name="close" size="20"}}
+            </button>
+        </form>
+    </div>
+
+    <div class="primary-navigation">
+        <button type="button" class="icon-button navigation-toggle" aria-label="Menu" aria-expanded="false" data-pt-menu-toggle>
+            <span class="toggle-icon" data-pt-icon-open>{{> components/pinktomato/icon name="menu" size="20"}}</span>
+            <span class="toggle-icon" data-pt-icon-close hidden>{{> components/pinktomato/icon name="close" size="20"}}</span>
+        </button>
+
+        <a href="{{urls.home}}" class="nav-logo" aria-label="Pink Tomato home" aria-hidden="true" tabindex="-1" data-pt-nav-logo>
+            <img src="{{cdn 'img/pinktomato-logo.webp'}}" alt="">
+        </a>
+
+        <nav class="main-menu" aria-label="Main" data-pt-menu>
+            <ul class="main-menu-list">
+                <li class="has-dropdown" data-pt-shop>
+                    <button type="button" class="main-menu-link" aria-expanded="false">
+                        <span>Shop</span> {{> components/pinktomato/icon name="chevron" size="14"}}
+                    </button>
+                    <ul class="dropdown">
+                        <li><a href="/shop-all/" data-pt-nav>Shop All</a></li>
+                    </ul>
+                </li>
+                <li style="--i: 1"><a class="main-menu-link" href="/shop-all/" data-pt-nav><span>Shop All</span></a></li>
+                <li style="--i: 2"><a class="main-menu-link" href="/shipping-returns/" data-pt-nav><span>Shipping &amp; Returns</span></a></li>
+                <li style="--i: 3"><a class="main-menu-link" href="/contact-us/" data-pt-nav><span>Contact Us</span></a></li>
+                <li style="--i: 4"><a class="main-menu-link" href="/blog/" data-pt-nav><span>Blog</span></a></li>
+                {{#if customer}}
+                    <li class="mobile-only" style="--i: 5"><a class="main-menu-link" href="{{urls.account.index}}"><span>My account</span></a></li>
+                    <li class="mobile-only" style="--i: 6"><a class="main-menu-link" href="{{urls.auth.logout}}"><span>Log out</span></a></li>
+                {{else}}
+                    <li class="mobile-only" style="--i: 5"><a class="main-menu-link" href="{{urls.auth.login}}"><span>Log in</span></a></li>
+                {{/if}}
+            </ul>
+        </nav>
+
+        <div class="header-tools">
+            {{#if customer}}
+                <a class="tool-link desktop-only" href="{{urls.auth.logout}}">Log out</a>
+                <a class="icon-button profile-button" href="{{urls.account.index}}" aria-label="My account" title="My account">{{> components/pinktomato/icon name="user" size="20"}}</a>
+            {{else}}
+                <a class="tool-link desktop-only" href="{{urls.auth.login}}">{{> components/pinktomato/icon name="user" size="18"}} Log in</a>
+            {{/if}}
+            <button type="button" class="icon-button" aria-label="Search" aria-expanded="false" data-pt-search-toggle>
+                {{> components/pinktomato/icon name="search" size="20"}}
+            </button>
+            <a class="icon-button cart-preview-trigger" href="{{urls.cart}}" aria-label="Cart">
+                {{> components/pinktomato/icon name="cart" size="20"}}
+                <span class="cart-preview-quantity cart-quantity">0</span>
+            </a>
+        </div>
+    </div>
+    <div class="menu-backdrop" data-pt-backdrop></div>
     {{{region name="header_navigation_bottom--global"}}}
 </header>
+
+<div class="header-logo">
+    <a href="{{urls.home}}" class="logo">
+        <img src="{{cdn 'img/pinktomato-logo.webp'}}" alt="Pink Tomato Candle &amp; Bath Co. by Len Parent Style" class="logo-image">
+    </a>
+</div>
 {{{region name="header_bottom--global"}}}
 {{{region name="header_bottom"}}}

@@ -9,85 +9,67 @@
         {{/each}}
     </div>
 {{/if}}
-<footer class="footer" role="contentinfo">
-    <h2 class="footer-title-sr-only">{{lang 'footer.title'}}</h2>
-    <div class="container">
-        {{#if theme_settings.social_icon_placement_bottom '!==' 'bottom_none'}}
-            <article class="footer-info-col
-                footer-info-col--social
-                footer-info-col--{{#if theme_settings.social_icon_placement_bottom '===' 'bottom_left'}}left{{else}}right{{/if}}"
-                data-section-type="footer-webPages">
-                    <h3 class="footer-info-heading">{{lang 'social.connect'}}</h3>
-                    {{> components/common/social-links}}
-            </article>
+<footer class="main-footer" role="contentinfo">
+    <section class="footer-site-subscribe">
+        <h2 class="footer-heading">Join our candle club</h2>
+        <p class="footer-sub">New scents and restocks, straight to your inbox.</p>
+        {{#if settings.show_newsletter_box}}
+            <form class="subscription-form" action="{{urls.subscribe.action}}" method="post">
+                <input type="hidden" name="action" value="subscribe">
+                <input type="hidden" name="nl_first_name" value="bc">
+                <input type="hidden" name="check" value="1">
+                <label class="sr-only" for="nl_email">{{lang 'common.email_address'}}</label>
+                <input class="form-input" id="nl_email" name="nl_email" type="email" autocomplete="email" required placeholder="Your email address" value="{{customer.email}}">
+                <button class="button button-primary" type="submit">Subscribe</button>
+            </form>
         {{/if}}
-        <section class="footer-info">
-            <article class="footer-info-col footer-info-col--small" data-section-type="footer-webPages">
-                <h3 class="footer-info-heading">{{lang 'footer.navigate'}}</h3>
-                <ul class="footer-info-list">
-                    {{#each pages}}
-                        <li>
-                            <a href="{{url}}">{{name}}</a>
-                        </li>
-                    {{/each}}
-                    <li>
-                        <a href="{{urls.sitemap}}">{{lang 'sitemap.page_title'}}</a>
-                    </li>
-                </ul>
-            </article>
+    </section>
 
-            <article class="footer-info-col footer-info-col--small" data-section-type="footer-categories">
-                <h3 class="footer-info-heading">{{lang 'footer.categories'}}</h3>
-                <ul class="footer-info-list">
-                    {{#each categories}}
-                        <li>
-                            <a href="{{url}}">{{name}}</a>
-                        </li>
-                    {{/each}}
-                </ul>
-            </article>
+    <section class="footer-branding">
+        <a href="{{urls.home}}" class="logo">
+            <img src="{{cdn 'img/pinktomato-logo.webp'}}" alt="Pink Tomato Candle &amp; Bath Co. by Len Parent Style" class="footer-logo-image">
+        </a>
+        <address>Watford City, ND, United States, 5884</address>
+    </section>
 
-            {{#and theme_settings.shop_by_brand_show_footer shop_by_brand.length}}
-            <article class="footer-info-col footer-info-col--small" data-section-type="footer-brands">
-                <h3 class="footer-info-heading">{{lang 'footer.brands'}}</h3>
-                <ul class="footer-info-list">
-                    {{#each shop_by_brand}}
-                        <li>
-                            <a href="{{url}}">{{name}}</a>
-                        </li>
-                    {{/each}}
-                    <li><a href="{{urls.brands}}">{{lang 'common.view_all'}}</a></li>
-                </ul>
-            </article>
-            {{/and}}
-
-            {{#if settings.address}}
-            <article class="footer-info-col footer-info-col--small" data-section-type="storeInfo">
-                <h3 class="footer-info-heading">{{lang 'footer.info'}}</h3>
-                <address>{{nl2br settings.address}}</address>
-                {{#if settings.phone_number}}
-                    <strong>{{lang 'footer.call_us' phone_number=settings.phone_number}}</strong>
-                {{/if}}
-            </article>
+    <nav class="footer-navigation" aria-label="Footer">
+        <ul class="footer-menu">
+            <li class="footer-menu-header">Pages</li>
+            <li><a href="/shipping-returns/">Shipping &amp; Returns</a></li>
+            <li><a href="/contact-us/">Contact Us</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="{{urls.sitemap}}">Sitemap</a></li>
+        </ul>
+        <ul class="footer-menu">
+            <li class="footer-menu-header">Categories</li>
+            <li><a href="/shop-all/">Shop All</a></li>
+        </ul>
+        <ul class="footer-menu">
+            <li class="footer-menu-header">Account</li>
+            {{#if customer}}
+                <li><a href="{{urls.account.index}}">My account</a></li>
+                <li><a href="{{urls.auth.logout}}">Log out</a></li>
+            {{else}}
+                <li><a href="{{urls.auth.login}}">Log in</a></li>
             {{/if}}
+            <li><a href="{{urls.account.wishlists.all}}">Wishlist</a></li>
+        </ul>
+    </nav>
 
-            <article class="footer-info-col" data-section-type="newsletterSubscription">
-                {{#if settings.show_newsletter_box}}
-                    {{> components/common/subscription-form}}
-                {{/if}}
-                {{> components/common/payment-icons}}
-            </article>
-        </section>
-        {{#if theme_settings.show_powered_by}}
-            <div class="footer-copyright">
-                <p class="powered-by">{{lang 'footer.powered_by'}} <a href="https://www.bigcommerce.com?utm_source=merchant&amp;utm_medium=poweredbyBC" rel="nofollow">BigCommerce</a></p>
-            </div>
-        {{/if}}
-        {{#if theme_settings.show_copyright_footer}}
-            <div class="footer-copyright">
-                <p class="powered-by">&copy; {{moment format="YYYY"}} {{settings.store_name}} </p>
-            </div>
-        {{/if}}
+    <div class="footer-bottom-row">
+        {{> components/pinktomato/payment-icons}}
+        <span class="footer-copyright">&copy; {{moment format="YYYY"}} Pink Tomato Enterprises</span>
     </div>
-    {{{region name="ssl_site_seal--global"}}}
 </footer>
+{{{region name="ssl_site_seal--global"}}}
+
+<button type="button" class="back-to-top" aria-label="Back to top" tabindex="-1" data-pt-back-to-top>
+    {{> components/pinktomato/icon name="arrow-up" size="18"}}
+</button>
+
+<nav class="mobile-tab-bar" aria-label="Quick navigation">
+    <a href="{{urls.home}}" class="tab-item" data-pt-nav>{{> components/pinktomato/icon name="home" size="22"}}<span>Home</span></a>
+    <a href="/shop-all/" class="tab-item" data-pt-nav>{{> components/pinktomato/icon name="grid" size="22"}}<span>Shop</span></a>
+    <a href="{{urls.search}}" class="tab-item" data-pt-open-search>{{> components/pinktomato/icon name="search" size="22"}}<span>Search</span></a>
+    <a href="{{urls.account.wishlists.all}}" class="tab-item">{{> components/pinktomato/icon name="heart" size="22"}}<span>Wishlist</span></a>
+</nav>
