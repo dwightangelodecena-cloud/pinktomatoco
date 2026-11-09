@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
 import { CartIcon, CheckIcon, MinusIcon, PlusIcon } from './Icons.jsx';
 import { defaultVariant, isAvailable, sortedVariants } from '../lib/pricing.js';
@@ -8,8 +6,6 @@ import { defaultVariant, isAvailable, sortedVariants } from '../lib/pricing.js';
 // Size select, quantity and Add To Cart (used on the product page and in Quick View).
 export default function ProductOptions({ product, onPriceChange, onAdded, formId }) {
   const { add } = useCart();
-  const { user } = useAuth();
-  const navigate = useNavigate();
   const variants = sortedVariants(product);
   const [variantId, setVariantId] = useState(defaultVariant(product)?.id ?? '');
   const [qty, setQty] = useState(1);
@@ -27,14 +23,6 @@ export default function ProductOptions({ product, onPriceChange, onAdded, formId
 
   const submit = (e) => {
     e.preventDefault();
-    if (!user) {
-      navigate(`/login?next=${encodeURIComponent(`/${product.slug}`)}`);
-      return;
-    }
-    if (!user.isCustomer) {
-      setError('The admin account can\'t shop. Log out and sign in with a customer account.');
-      return;
-    }
     if (!variant) {
       setError('Please choose a ' + (product.option_name || 'Size').toLowerCase() + '.');
       return;

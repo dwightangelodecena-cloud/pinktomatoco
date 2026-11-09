@@ -6,17 +6,28 @@ import { load, save } from '../lib/storage.js';
 const CartContext = createContext(null);
 const OLD_SHARED_KEY = 'ptc-cart-bc';
 
-// Each customer has their own cart, so it only ever shows while they're signed in.
-const cartKey = (customerId) => `ptc-cart:${customerId}`;
-const checkoutKey = (customerId) => `ptc-checkout-cart:${customerId}`;
+// Guests have one cart and each customer has their own, so a customer's cart only shows while they're signed in.
+const GUEST = 'guest';
+const cartKey = (owner) => `ptc-cart:${owner}`;
+const checkoutKey = (owner) => `ptc-checkout-cart:${owner}`;
+
+function mergeItems(items, extra) {
+  const merged = items.map((i) => ({ ...i }));
+  for (const item of extra) {
+    const same = merged.find((i) => i.variantId === item.variantId);
+    if (same) same.quantity += item.quantity;
+    else merged.push(item);
+  }
+  return merged;
+}
 
 export function CartProvider({ children }) {
   const { user } = useAuth();
-  const customerId = user?.isCustomer ? user.id : null;
+  const owner = user?.isCustomer ? user.id : GUEST;
   const [cart, setCart] = useState({ owner: null, items: [] });
   const [previewOpen, setPreviewOpen] = useState(false);
 
-  const items = cart.owner === customerId ? cart.items : [];
+  const items = cart.owner === owner ? cart.items : [];
   const setItems = useCallback((update) => setCart((c) => ({ ...c, items: update(c.items) })), []);
 
   useEffect(() => {
@@ -28,31 +39,35 @@ export function CartProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    setCart({ owner: customerId, items: customerId ? load(cartKey(customerId), []) : [] });
-    setPreviewOpen(false);
-  }, [customerId]);
+    let saved = load(cartKey(owner), []);
+    if (owner !== GUEST) {
+      const guestItems = load(cartKey(GUEST), []);
+      if (guestItems.length) {
+        saved = mergeItems(saved, guestItems);
+        save(cartKey(GUEST), []);
+      }
+    }
+    setCart({ owner, items: saved });
+  }, [owner]);
 
   useEffect(() => {
     if (cart.owner) save(cartKey(cart.owner), cart.items);
   }, [cart]);
 
-  const rememberCheckout = useCallback((cartId) => {
-    if (customerId) save(checkoutKey(customerId), cartId);
-  }, [customerId]);
+  const rememberCheckout = useCallback((cartId) => save(checkoutKey(owner), cartId), [owner]);
 
   // A customer who finished paying on BigCommerce comes back to an empty cart.
   useEffect(() => {
-    if (!customerId) return;
-    const cartId = load(checkoutKey(customerId), null);
+    const cartId = load(checkoutKey(owner), null);
     if (!cartId) return;
     isCartActive(cartId)
       .then((active) => {
         if (active) return;
-        save(checkoutKey(customerId), null);
+        save(checkoutKey(owner), null);
         setItems(() => []);
       })
       .catch(() => {});
-  }, [customerId, setItems]);
+  }, [owner, setItems]);
 
   const value = useMemo(() => {
     const lines = items.map((i) => {

@@ -166,7 +166,6 @@ function AuthForms() {
 
   return (
     <div className="auth-card">
-      {next !== '/' && <p className="auth-note">Sign in or create an account to add items to your cart.</p>}
       {(mode === 'signin' || mode === 'signup') && (
         <div className="auth-tabs" role="tablist" data-active={mode}>
           <span className="auth-tab-indicator" aria-hidden="true" />
