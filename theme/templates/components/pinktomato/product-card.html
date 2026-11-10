@@ -1,0 +1,25 @@
+<article class="reveal product-item" data-pt-reveal="{{multiply (mod index 4) 90}}">
+    <div class="product-item-thumbnail">
+        <a href="{{product.url}}" class="product-item-image" tabindex="-1" aria-hidden="true">
+            <img src="{{getImage product.image 'productgallery_size' (cdn theme_settings.default_image_product)}}" alt="" loading="lazy">
+        </a>
+        {{#if badge}}<span class="product-badge">New</span>{{/if}}
+        <form action="/wishlist.php?action=add&amp;product_id={{product.id}}" method="post">
+            <button type="submit" class="card-wishlist" aria-label="Add {{product.name}} to wishlist">{{> components/pinktomato/icon name="heart" size="18"}}</button>
+        </form>
+        <button type="button" class="quick-view-button quickview" data-product-id="{{product.id}}">{{> components/pinktomato/icon name="eye" size="16"}} Quick View</button>
+    </div>
+    <div class="product-item-details">
+        <h3 class="product-item-title"><a href="{{product.url}}">{{product.name}}</a></h3>
+        <div class="product-item-price">
+            {{#or customer (unless settings.hide_price_from_guests)}}
+                {{#if product.price.price_range}}
+                    {{#if product.price.price_range.min.with_tax}}{{product.price.price_range.min.with_tax.formatted}} - {{product.price.price_range.max.with_tax.formatted}}{{else}}{{product.price.price_range.min.without_tax.formatted}} - {{product.price.price_range.max.without_tax.formatted}}{{/if}}
+                {{else}}
+                    {{#if product.price.with_tax}}{{product.price.with_tax.formatted}}{{else}}{{product.price.without_tax.formatted}}{{/if}}
+                {{/if}}
+            {{/or}}
+        </div>
+        <a href="{{product.url}}" class="product-item-action">Pick Options {{> components/pinktomato/icon name="arrow-right" size="16"}}</a>
+    </div>
+</article>
