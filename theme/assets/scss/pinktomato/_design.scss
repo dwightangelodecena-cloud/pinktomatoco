@@ -563,7 +563,7 @@ body.menu-open { overflow: hidden; }
   display: flex; align-items: flex-start; justify-content: center; padding: 40px 16px; overflow-y: auto;
   backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); animation: fade-in .25s ease both;
 }
-.modal {
+.pt-modal {
   position: relative; width: 100%; max-width: 940px; padding: 28px 22px; border-radius: var(--radius-lg);
   background: var(--bg); box-shadow: var(--shadow-lg); animation: modal-in .45s var(--ease) both;
 }
@@ -852,11 +852,11 @@ html { -webkit-tap-highlight-color: transparent; }
 
   /* Pop-ups become bottom sheets */
   .modal-overlay { align-items: flex-end; padding: 0; }
-  .modal {
+  .pt-modal {
     max-height: 92vh; max-height: 92dvh; overflow-y: auto; overscroll-behavior: contain; border-radius: 24px 24px 0 0;
     padding: 30px 20px calc(24px + env(safe-area-inset-bottom)); animation: sheet-in .45s var(--ease) both;
   }
-  .modal::before { content: ''; position: absolute; top: 10px; left: 50%; width: 40px; height: 4px; margin-left: -20px; border-radius: 2px; background: var(--line-strong); }
+  .pt-modal::before { content: ''; position: absolute; top: 10px; left: 50%; width: 40px; height: 4px; margin-left: -20px; border-radius: 2px; background: var(--line-strong); }
 
   /* Bigger tap targets */
   .breadcrumbs a { display: inline-block; padding: 8px 2px; }
