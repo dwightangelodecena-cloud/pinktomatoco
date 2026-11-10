@@ -1,0 +1,10 @@
+{{#or customer (unless settings.hide_price_from_guests)}}
+    {{#if product.price.with_tax}}
+        <div class="product-price price--withTax" data-product-price-with-tax>{{product.price.with_tax.formatted}}</div>
+    {{/if}}
+    {{#if product.price.without_tax}}
+        <div class="product-price price--withoutTax" data-product-price-without-tax>{{product.price.without_tax.formatted}}</div>
+    {{/if}}
+{{else}}
+    {{> components/common/login-for-pricing}}
+{{/or}}

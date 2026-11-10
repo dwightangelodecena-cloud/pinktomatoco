@@ -1,0 +1,44 @@
+{{!-- Size, quantity and Add To Cart. Keeps Cornerstone's data hooks so BigCommerce handles price, stock and the cart. --}}
+<form class="product-options" method="post" action="{{product.cart_url}}" enctype="multipart/form-data" id="{{form_id}}" data-cart-item-add>
+    <input type="hidden" name="action" value="add">
+    <input type="hidden" name="product_id" value="{{product.id}}">
+    {{#if product.cart_order_source}}
+        <input type="hidden" name="cart_order_source" value="{{product.cart_order_source}}">
+    {{/if}}
+    <div data-product-option-change style="display:none;">
+        {{#each product.options}}
+            {{{dynamicComponent 'components/products/options'}}}
+        {{/each}}
+    </div>
+    <div class="form-field--stock u-hiddenVisually"><span data-product-stock>{{product.stock_level}}</span></div>
+    <p data-product-backordered style="display:none;"><span data-qty-backordered-message></span> <span data-backorder-message></span></p>
+    <span data-backorder-prompt style="display:none;"></span>
+    <ul data-picklist-backorder-list style="display:none;"></ul>
+
+    <div id="add-to-cart-wrapper" class="add-to-cart-wrapper">
+        {{inject 'productQuantityErrorMessage' (lang 'products.quantity_error_message')}}
+        <div class="form-submit-container">
+            {{#if product.show_quantity_input}}
+                <div class="form-field form-field--increments">
+                    <span class="form-field-title">Quantity</span>
+                    <div class="quantity-control-wrap" data-quantity-change>
+                        <button type="button" class="quantity-control" data-action="dec" aria-label="Decrease quantity">{{> components/pinktomato/icon name="minus" size="16"}}</button>
+                        <input class="form-input quantity-input form-input--incrementTotal" id="qty[]" name="qty[]" type="tel" inputmode="numeric" aria-label="Quantity"
+                               value="{{#if product.min_purchase_quantity}}{{product.min_purchase_quantity}}{{else}}1{{/if}}"
+                               data-quantity-min="{{product.min_purchase_quantity}}" data-quantity-max="{{product.max_purchase_quantity}}" min="1" pattern="[0-9]*">
+                        <button type="button" class="quantity-control" data-action="inc" aria-label="Increase quantity">{{> components/pinktomato/icon name="plus" size="16"}}</button>
+                    </div>
+                </div>
+            {{/if}}
+            {{#or customer (unless settings.hide_price_from_guests)}}
+                <button id="form-action-addToCart" class="button button-primary add-to-cart" type="submit" data-wait-message="Adding…" {{#unless product.can_purchase}}disabled{{/unless}}>
+                    <span class="add-label">{{> components/pinktomato/icon name="cart" size="18"}} {{#if product.out_of_stock}}Sold Out{{else}}Add To Cart{{/if}}</span>
+                    <span class="added-label" aria-hidden="true">{{> components/pinktomato/icon name="check" size="16"}} Added</span>
+                </button>
+            {{/or}}
+        </div>
+        <div class="alertBox productAttributes-message form-message error" style="display:none" role="alert">
+            <p class="alertBox-message"></p>
+        </div>
+    </div>
+</form>

@@ -6,3 +6,28 @@ body { padding-top: 0; } // Cornerstone reserves room for its own fixed phone he
 [data-pt-mood][hidden] { display: none; }
 .navigation-toggle [hidden] { display: none; }
 .subscription-form .form-input { height: auto; margin: 0; }
+
+// Product page
+.pt-solid { fill: currentColor; stroke: none; }
+.pt-star.is-filled { fill: currentColor; }
+.productView { padding: 0; margin: 0; max-width: none; }
+.productView::before, .productView::after { content: none; display: none; } // Cornerstone's clearfix would take a grid cell.
+.product-image-frame { margin: 0; }
+.product-image { position: relative; }
+.easyzoom-flyout, .easyzoom-notice { display: none !important; } // The design zooms the photo itself.
+.product-thumbs { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.product-thumb { width: 72px; height: 72px; border-radius: 12px; overflow: hidden; border: 2px solid transparent; transition: border-color .2s; }
+.product-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.product-thumb.is-active, .product-thumb:hover { border-color: var(--accent); }
+.product-options .form-field, .product-options .add-to-cart-wrapper { margin: 0; }
+.product-options [data-product-option-change] { display: grid; gap: 22px; }
+.product-options [data-product-backordered], .product-options [data-backorder-prompt], .product-options [data-picklist-backorder-list] { margin: 0; }
+.form-select.form-input { height: auto; line-height: 1.4; }
+.breadcrumbs ol li { display: inline-flex; align-items: center; margin: 0; font-size: 13px; line-height: 1.4; }
+.quantity-input.form-input { height: 40px; margin: 0; }
+.add-to-cart[disabled] { cursor: not-allowed; }
+.productAttributes-message p { margin: 0; }
+.product-share form { margin: 0; }
+.quickView .quick-view { padding: 0; }
+.quickView .product-detail-list[hidden] { display: none; }
+.quickView .quick-view-image figure { margin: 0; }

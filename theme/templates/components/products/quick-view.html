@@ -1,7 +1,20 @@
+{{inject 'availableToSell' product.available_to_sell}}
+{{inject 'outOfStockDefaultMessage' (lang 'products.out_of_stock_default_message')}}
 <div class="modal-body quickView">
-    {{> components/products/product-view}}
-
-    {{#all settings.show_product_reviews theme_settings.show_product_reviews (if theme_settings.show_product_details_tabs '!==' true)}}
-        {{> components/products/reviews reviews=product.reviews product=product urls=urls}}
-    {{/all}}
+    <div class="productView quick-view" data-event-type="product" data-entity-id="{{product.id}}" data-name="{{product.title}}">
+        <div class="quick-view-image" data-image-gallery>
+            <figure data-image-gallery-main data-zoom-image="{{getImage product.main_image 'zoom_size' (cdn theme_settings.default_image_product)}}">
+                <a href="{{product.url}}"><img src="{{getImage product.main_image 'zoom_size' (cdn theme_settings.default_image_product)}}" alt="{{product.title}}" data-main-image></a>
+            </figure>
+        </div>
+        <div class="quick-view-details">
+            <h2 class="product-title productView-title">{{product.title}}</h2>
+            {{> components/pinktomato/product-price}}
+            <dl class="product-detail-list" hidden>
+                <div><dt class="sku-label">SKU</dt><dd data-product-sku>{{product.sku}}</dd></div>
+            </dl>
+            {{> components/pinktomato/product-form form_id="quick-view-form"}}
+            <a href="{{product.url}}" class="view-details">View Full Details</a>
+        </div>
+    </div>
 </div>

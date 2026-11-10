@@ -15,6 +15,7 @@ import carousel from './common/carousel';
 import svgInjector from './global/svg-injector';
 import pinkTomatoLayout from './global/pinktomato-layout';
 import pinkTomatoHome from './global/pinktomato-home';
+import pinkTomatoProduct from './global/pinktomato-product';
 
 export default class Global extends PageManager {
     onReady() {
@@ -31,5 +32,6 @@ export default class Global extends PageManager {
         svgInjector();
         pinkTomatoLayout();
         pinkTomatoHome(this.context);
+        pinkTomatoProduct(this.context);
     }
 }

@@ -5,36 +5,74 @@ product:
     reviews:
         limit: {{theme_settings.productpage_reviews_count}}
     related_products:
-        limit: {{theme_settings.productpage_related_products_count}}
-    similar_by_views:
-        limit: {{theme_settings.productpage_similar_by_views_count}}
+        limit: 8
 ---
 {{inject 'productId' product.id}}
 
 {{#partial "page"}}
-
-    {{> components/common/breadcrumbs breadcrumbs=breadcrumbs}}
+<div class="page product-page">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <ol>
+            <li><a href="/shop-all/">Shop All</a></li>
+            <li aria-current="page">{{product.title}}</li>
+        </ol>
+    </nav>
 
     {{#each product.shipping_messages}}
         {{> components/common/alert/alert-info message}}
     {{/each}}
 
-    <div>
-        {{> components/products/product-view}}
+    {{> components/products/product-view}}
 
-        {{{region name="product_below_content"}}}
+    {{{region name="product_below_content"}}}
 
-        {{#if product.videos.list.length}}
-            {{> components/products/videos product.videos}}
-        {{/if}}
+    <section class="product-tabs">
+        <nav class="product-tabs-menu"><span class="product-tab-link is-active">Overview</span></nav>
+        <div class="product-description rte" data-pt-description>{{{product.description}}}</div>
+    </section>
 
-        {{#all settings.show_product_reviews theme_settings.show_product_reviews (if theme_settings.show_product_details_tabs '!==' true)}}
-            {{> components/products/reviews reviews=product.reviews product=product urls=urls}}
-        {{/all}}
+    {{#if product.videos.list.length}}
+        {{> components/products/videos product.videos}}
+    {{/if}}
 
-        {{> components/products/tabs}}
+    {{#if product.reviews.total}}
+        <section class="product-reviews" id="product-reviews">
+            <h2 class="section-title">Reviews</h2>
+            <ul>
+                {{#each product.reviews.list}}
+                    <li class="review-item">
+                        {{> components/pinktomato/stars rating=rating}}
+                        <h3>{{{sanitize title}}}</h3>
+                        <p class="review-meta">Posted by {{#if name}}{{{sanitize name}}}{{else}}{{lang 'products.reviews.anonymous_poster'}}{{/if}} on {{date}}</p>
+                        <p>{{{sanitize text}}}</p>
+                    </li>
+                {{/each}}
+            </ul>
+            {{> components/common/paginator pagination.reviews reload=true}}
+        </section>
+    {{/if}}
+
+    {{#if product.related_products.length}}
+        <section class="products-related">
+            <h2 class="section-title">Similar Items</h2>
+            <div class="product-grid">
+                {{#each product.related_products}}
+                    {{> components/pinktomato/product-card product=this index=@index}}
+                {{/each}}
+            </div>
+        </section>
+    {{/if}}
+
+    <div class="sticky-buy-bar" aria-hidden="true" data-pt-sticky-buy>
+        <img src="{{getImage product.main_image 'productview_thumb_size' (cdn theme_settings.default_image_product)}}" alt="">
+        <div class="sticky-buy-info">
+            <span class="sticky-buy-name">{{product.title}}</span>
+            <span class="sticky-buy-price" data-pt-sticky-price></span>
+        </div>
+        <button type="button" class="button button-primary" tabindex="-1" data-pt-sticky-add>Add To Cart</button>
     </div>
+</div>
 
-    {{> components/products/schema}}
+{{> components/products/schema}}
 {{/partial}}
 {{> layout/base}}
