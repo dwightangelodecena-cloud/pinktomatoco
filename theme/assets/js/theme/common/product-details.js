@@ -494,8 +494,10 @@ export default class ProductDetails extends ProductDetailsBase {
                 return showAlertModal(tmp.textContent || tmp.innerText);
             }
 
-            // Open preview modal and update content
-            if (this.previewModal) {
+            // Pink Tomato: open the slide-out cart drawer instead of the preview modal.
+            if (window.ptOpenCart) {
+                window.ptOpenCart();
+            } else if (this.previewModal) {
                 this.previewModal.open();
 
                 if (window.ApplePaySession) {

@@ -7,6 +7,14 @@ body { padding-top: 0; } // Cornerstone reserves room for its own fixed phone he
 .navigation-toggle [hidden] { display: none; }
 .subscription-form .form-input { height: auto; margin: 0; }
 
+// Cart drawer
+.cart-preview { z-index: 70; }
+.drawer-overlay { z-index: 69; }
+.cart-drawer-body { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.cart-drawer-content { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.cart-drawer-body.is-loading { opacity: .5; pointer-events: none; transition: opacity .2s; }
+.cart-preview-item > a { display: block; }
+
 // Product page
 .pt-solid { fill: currentColor; stroke: none; }
 .pt-star.is-filled { fill: currentColor; }

@@ -1,0 +1,33 @@
+<div class="cart-drawer-content" data-cart-quantity="{{cart.quantity}}">
+{{#if cart.items.length}}
+    <ul class="cart-preview-items">
+        {{#each cart.items}}
+            <li class="cart-preview-item">
+                <a href="{{url}}">
+                    {{#if type '==' 'GiftCertificate'}}
+                        <img src="{{cdn ../theme_settings.default_image_gift_certificate}}" alt="Gift certificate">
+                    {{else}}
+                        <img src="{{getImage image 'productthumb_size' (cdn ../theme_settings.default_image_product)}}" alt="{{name}}">
+                    {{/if}}
+                </a>
+                <div>
+                    <a href="{{url}}" class="cart-preview-item-name">{{name}}</a>
+                    {{#each options}}<div class="cart-preview-item-meta">{{name}}: {{value}}</div>{{/each}}
+                    <div class="cart-preview-item-meta">{{quantity}} &times; {{price.formatted}}</div>
+                    <button type="button" class="link-button" data-pt-remove="{{id}}">Remove</button>
+                </div>
+            </li>
+        {{/each}}
+    </ul>
+    <div class="cart-preview-footer">
+        <div class="cart-preview-subtotal">
+            <span>Subtotal</span>
+            <span>{{cart.sub_total.formatted}}</span>
+        </div>
+        <a href="{{urls.cart}}" class="button button-secondary">View Cart</a>
+        <a href="{{urls.checkout.single_address}}" class="button button-primary">Check Out</a>
+    </div>
+{{else}}
+    <p class="cart-preview-empty">Your cart is empty</p>
+{{/if}}
+</div>

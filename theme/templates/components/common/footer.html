@@ -63,6 +63,15 @@
 </footer>
 {{{region name="ssl_site_seal--global"}}}
 
+<div class="drawer-overlay" data-pt-cart-overlay></div>
+<aside class="cart-preview" aria-hidden="true" aria-label="Your Cart" data-pt-cart>
+    <div class="cart-preview-header">
+        <h2 class="cart-preview-title">Your Cart</h2>
+        <button type="button" class="icon-button" aria-label="Close cart" data-pt-cart-close>{{> components/pinktomato/icon name="close" size="20"}}</button>
+    </div>
+    <div class="cart-drawer-body" data-pt-cart-body></div>
+</aside>
+
 <button type="button" class="back-to-top" aria-label="Back to top" tabindex="-1" data-pt-back-to-top>
     {{> components/pinktomato/icon name="arrow-up" size="18"}}
 </button>
