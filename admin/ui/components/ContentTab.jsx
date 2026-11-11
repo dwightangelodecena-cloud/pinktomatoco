@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { DEFAULT_CONTENT } from '../lib/siteContent.js';
-import { STORE_URL, getContent, saveContent } from '../lib/adminApi.js';
-import { ArrowRight, FileIcon, GridIcon, ImageIcon, MegaphoneIcon, RefreshIcon, SaveIcon, UndoIcon } from '../Icons.jsx';
+import { STORE_URL, getAdminProducts, getContent, saveContent } from '../lib/adminApi.js';
+import ContentPreview from './ContentPreview.jsx';
+import { ArrowRight, EyeIcon, EyeOffIcon, FileIcon, GridIcon, ImageIcon, MegaphoneIcon, RefreshIcon, SaveIcon, UndoIcon } from '../Icons.jsx';
 import { Cards, Messages, PhotoSlots, PolicySections, Section, Text } from './ContentFields.jsx';
 import HomepageProducts from './HomepageProducts.jsx';
 import { Filter, Loading, Problem } from './shared.jsx';
@@ -118,23 +119,35 @@ function merge(saved) {
 
 export default function ContentTab({ setDirty }) {
   const [content, setContent] = useState(null);
+  const [featuredIds, setFeaturedIds] = useState([]);
+  const [products, setProducts] = useState(null);
   const [loadError, setLoadError] = useState('');
 
+  const loadFeatured = () => getContent().then((saved) => setFeaturedIds(saved.featured?.ids || [])).catch(() => {});
+
   useEffect(() => {
-    getContent().then((saved) => setContent(merge(saved))).catch((err) => setLoadError(err.message));
+    getContent()
+      .then((saved) => {
+        setContent(merge(saved));
+        setFeaturedIds(saved.featured?.ids || []);
+      })
+      .catch((err) => setLoadError(err.message));
+    // Products are only for the preview, so a failure here doesn't stop editing.
+    getAdminProducts().then(setProducts).catch(() => setProducts([]));
   }, []);
 
   if (loadError) return <section className="content-tab"><Problem>{loadError}</Problem></section>;
   if (!content) return <section className="content-tab"><Loading /></section>;
-  return <ContentEditor content={content} onSaved={setContent} setDirty={setDirty} />;
+  return <ContentEditor content={content} onSaved={setContent} setDirty={setDirty} products={products} featuredIds={featuredIds} onFeaturedSaved={loadFeatured} />;
 }
 
-function ContentEditor({ content, onSaved, setDirty }) {
+function ContentEditor({ content, onSaved, setDirty, products, featuredIds, onFeaturedSaved }) {
   const [draft, setDraft] = useState(content);
   const [history, setHistory] = useState([]);
   const [card, setCard] = useState('banners');
   const [page, setPage] = useState('shipping');
   const [status, setStatus] = useState(null);
+  const [showPreview, setShowPreview] = useState(() => window.matchMedia('(min-width: 1180px)').matches);
   const lastEdit = useRef({ field: null, time: 0 });
 
   const dirty = !same(draft, content);
@@ -207,6 +220,9 @@ function ContentEditor({ content, onSaved, setDirty }) {
           <button type="button" className="content-action" disabled={history.length === 0} onClick={undo}><UndoIcon size={15} /> Undo</button>
           <button type="button" className="content-action" disabled={!dirty} onClick={reset}><RefreshIcon size={15} /> Reset</button>
           <button type="button" className="content-action is-primary" disabled={!dirty || status?.type === 'pending'} onClick={save}><SaveIcon size={15} /> {status?.type === 'pending' ? 'Saving…' : 'Save changes'}</button>
+          <button type="button" className="content-action" onClick={() => setShowPreview((s) => !s)}>
+            {showPreview ? <EyeOffIcon size={15} /> : <EyeIcon size={15} />} {showPreview ? 'Hide preview' : 'Show preview'}
+          </button>
           <a className="content-action" href={STORE_URL + viewPath} target="_blank" rel="noreferrer">View on store <ArrowRight size={14} /></a>
         </div>
       </header>
@@ -222,14 +238,23 @@ function ContentEditor({ content, onSaved, setDirty }) {
         ))}
       </div>
 
-      <div className="content-split">
+      <div className={`content-split ${showPreview ? 'has-preview' : ''}`}>
         <div className="content-editor">
           {card === 'pages' && <Filter label="Choose a page" options={PAGES} value={page} onChange={setPage} />}
           {card === 'banners' && <HeroBanners draft={draft} edit={edit} />}
-          {card === 'homepage' && <Homepage draft={draft} edit={edit} onProductsSaved={() => {}} />}
+          {card === 'homepage' && <Homepage draft={draft} edit={edit} onProductsSaved={onFeaturedSaved} />}
           {card === 'pages' && <PageEditor page={page} draft={draft} edit={edit} />}
           <button type="button" className="link-button content-restore" onClick={restoreOriginal}>Restore original wording</button>
         </div>
+        {showPreview && (
+          <ContentPreview
+            title={card === 'pages' ? pageInfo.label : 'Homepage'}
+            view={card === 'pages' ? page : 'home'}
+            draft={draft}
+            products={products}
+            featuredIds={featuredIds}
+          />
+        )}
       </div>
     </section>
   );
