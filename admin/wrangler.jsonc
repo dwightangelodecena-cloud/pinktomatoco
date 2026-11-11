@@ -14,7 +14,7 @@
   // Holds the store's access token from the app install. Create it with
   // `npx wrangler kv namespace create STORE` and put its id here before the first deploy.
   "kv_namespaces": [
-    { "binding": "STORE", "id": "REPLACE_WITH_KV_NAMESPACE_ID" }
+    { "binding": "STORE", "id": "5c306f9fbf7a4c408baabc6a83b81d5b" }
   ],
   "vars": {
     "STORE_HASH": "v7sdscf7vw",
