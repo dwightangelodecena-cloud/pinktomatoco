@@ -1,7 +1,7 @@
 {{#if settings.account_creation_enabled}}
 <div class="auth-tabs" role="tablist" data-active="{{active}}">
     <span class="auth-tab-indicator" aria-hidden="true"></span>
-    <a href="{{urls.auth.login}}" role="tab" aria-selected="{{#if active '===' 'signin'}}true{{else}}false{{/if}}">Sign in</a>
+    <a href="{{urls.auth.login}}?from=index.php" role="tab" aria-selected="{{#if active '===' 'signin'}}true{{else}}false{{/if}}">Sign in</a>
     <a href="{{urls.auth.create_account}}" role="tab" aria-selected="{{#if active '===' 'signup'}}true{{else}}false{{/if}}">Create account</a>
 </div>
 {{/if}}

@@ -67,7 +67,7 @@
                     <li class="mobile-only" style="--i: 5"><a class="main-menu-link" href="{{urls.account.index}}"><span>My account</span></a></li>
                     <li class="mobile-only" style="--i: 6"><a class="main-menu-link" href="{{urls.auth.logout}}"><span>Log out</span></a></li>
                 {{else}}
-                    <li class="mobile-only" style="--i: 5"><a class="main-menu-link" href="{{urls.auth.login}}"><span>Log in</span></a></li>
+                    <li class="mobile-only" style="--i: 5"><a class="main-menu-link" href="{{urls.auth.login}}?from=index.php"><span>Log in</span></a></li>
                 {{/if}}
             </ul>
         </nav>
@@ -77,7 +77,7 @@
                 <a class="tool-link desktop-only" href="{{urls.auth.logout}}">Log out</a>
                 <a class="icon-button profile-button" href="{{urls.account.index}}" aria-label="My account" title="My account">{{> components/pinktomato/icon name="user" size="20"}}</a>
             {{else}}
-                <a class="tool-link desktop-only" href="{{urls.auth.login}}">{{> components/pinktomato/icon name="user" size="18"}} Log in</a>
+                <a class="tool-link desktop-only" href="{{urls.auth.login}}?from=index.php">{{> components/pinktomato/icon name="user" size="18"}} Log in</a>
             {{/if}}
             <button type="button" class="icon-button" aria-label="Search" aria-expanded="false" data-pt-search-toggle>
                 {{> components/pinktomato/icon name="search" size="20"}}

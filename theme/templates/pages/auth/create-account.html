@@ -37,7 +37,7 @@
                     {{inject 'state_error' (lang 'errors.state_error')}}
                     {{{forms.create_account.recaptcha.markup}}}
                     <input type="submit" class="button button-primary auth-submit" value="Create account">
-                    <p class="auth-switch">Already have an account? <a href="{{urls.auth.login}}">Sign in</a></p>
+                    <p class="auth-switch">Already have an account? <a href="{{urls.auth.login}}?from=index.php">Sign in</a></p>
                 </form>
             {{/if}}
         </div>
