@@ -11,8 +11,13 @@
 {{/if}}
 <footer class="main-footer" role="contentinfo">
     <section class="footer-site-subscribe">
-        <h2 class="footer-heading">Join our candle club</h2>
-        <p class="footer-sub">New scents and restocks, straight to your inbox.</p>
+        <div class="pt-slot">
+            {{{region name="pt_footer_newsletter--global"}}}
+            <div class="pt-default">
+                <h2 class="footer-heading">Join our candle club</h2>
+                <p class="footer-sub">New scents and restocks, straight to your inbox.</p>
+            </div>
+        </div>
         {{#if settings.show_newsletter_box}}
             <form class="subscription-form" action="{{urls.subscribe.action}}" method="post">
                 <input type="hidden" name="action" value="subscribe">
@@ -29,7 +34,10 @@
         <a href="{{urls.home}}" class="logo">
             <img src="{{cdn 'img/pinktomato-logo.webp'}}" alt="Pink Tomato Candle &amp; Bath Co. by Len Parent Style" class="footer-logo-image">
         </a>
-        <address>Watford City, ND, United States, 5884</address>
+        <div class="pt-slot">
+            {{{region name="pt_footer_address--global"}}}
+            <div class="pt-default"><address>Watford City, ND, United States, 5884</address></div>
+        </div>
     </section>
 
     <nav class="footer-navigation" aria-label="Footer">
@@ -58,7 +66,10 @@
 
     <div class="footer-bottom-row">
         {{> components/pinktomato/payment-icons}}
-        <span class="footer-copyright">&copy; {{moment format="YYYY"}} Pink Tomato Enterprises</span>
+        <div class="pt-slot footer-copyright">
+            {{{region name="pt_footer_copyright--global"}}}
+            <span class="pt-default">&copy; {{moment format="YYYY"}} Pink Tomato Enterprises</span>
+        </div>
     </div>
 </footer>
 {{{region name="ssl_site_seal--global"}}}

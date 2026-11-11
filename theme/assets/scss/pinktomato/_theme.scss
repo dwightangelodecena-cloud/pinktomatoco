@@ -228,3 +228,9 @@ body:has(.account-shell) .breadcrumbs { display: none; }
 .quickView .quick-view { padding: 0; }
 .quickView .product-detail-list[hidden] { display: none; }
 .quickView .quick-view-image figure { margin: 0; }
+
+// Content slots: each shows its built-in wording until the admin's Content tab saves a version,
+// which BigCommerce renders inside the slot's region. Then the built-in version hides.
+.pt-slot > [data-content-region]:empty { display: none; }
+.pt-slot:has(> [data-content-region] > *) > .pt-default { display: none; }
+.footer-copyright.pt-slot { display: inline; }

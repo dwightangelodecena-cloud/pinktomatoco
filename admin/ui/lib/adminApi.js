@@ -47,13 +47,18 @@ export const deleteReview = (review) => api('/api/reviews', { action: 'delete', 
 const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
-// Returns a web address BigCommerce can copy the photo from.
-export async function uploadImage(file) {
+// Content tab: saved wording and photos for each section (missing sections use the built-in wording).
+export const getContent = () => api('/api/content');
+export const saveContent = (pages) => api('/api/content', { pages });
+
+// Returns a web address for the photo. Product photos are copied by BigCommerce, so they're kept
+// for a week; Content tab photos are shown on the store from this address, so they're kept (keep).
+export async function uploadImage(file, keep = false) {
   if (!IMAGE_TYPES.includes(file.type)) throw new Error('Please choose a JPG, PNG or WebP photo.');
   if (file.size > MAX_IMAGE_BYTES) throw new Error('That photo is over 5 MB. Please choose a smaller one.');
   const form = new FormData();
   form.append('file', file);
-  const response = await fetch('/api/images', { method: 'POST', headers: { Authorization: `Bearer ${session()}` }, body: form });
+  const response = await fetch(keep ? '/api/images?keep=1' : '/api/images', { method: 'POST', headers: { Authorization: `Bearer ${session()}` }, body: form });
   const result = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(result.error || 'The photo could not be uploaded. Please try again.');
   return result.url;

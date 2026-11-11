@@ -105,7 +105,7 @@ export function Messages({ items, onChange }) {
   );
 }
 
-export function ImageUpload({ label = 'Upload photo', multiple, onUploaded }) {
+export function ImageUpload({ label = 'Upload photo', multiple, onUploaded, keep = false }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
 
@@ -115,7 +115,7 @@ export function ImageUpload({ label = 'Upload photo', multiple, onUploaded }) {
     setError('');
     setBusy(true);
     try {
-      for (const file of files) onUploaded(await uploadImage(file));
+      for (const file of files) onUploaded(await uploadImage(file, keep));
     } catch (err) {
       setError(err.message);
     }
@@ -141,7 +141,7 @@ export function PhotoSlots({ images, labels, onChange }) {
         <div key={label} className="content-photo">
           <img src={images[i]} alt="" />
           <span>{label}</span>
-          <ImageUpload label="Replace" onUploaded={(url) => onChange(images.map((src, n) => (n === i ? url : src)))} />
+          <ImageUpload label="Replace" keep onUploaded={(url) => onChange(images.map((src, n) => (n === i ? url : src)))} />
         </div>
       ))}
     </div>

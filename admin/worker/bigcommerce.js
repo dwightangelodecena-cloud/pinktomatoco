@@ -13,10 +13,13 @@ export async function storeToken(env) {
 }
 
 export function client(env, token) {
+  // Local development only: the installed app has one token with every permission, but locally the
+  // store's Products/Orders key has no Content permission, so widget and page calls use the Content key.
+  const tokenFor = (path) => (env.DEV_MODE === '1' && env.DEV_CONTENT_TOKEN && path.startsWith('/v3/content') ? env.DEV_CONTENT_TOKEN : token);
   async function call(path, options = {}) {
     const response = await fetch(`${API}/${env.STORE_HASH}${path}`, {
       ...options,
-      headers: { 'X-Auth-Token': token, Accept: 'application/json', 'Content-Type': 'application/json', ...options.headers },
+      headers: { 'X-Auth-Token': tokenFor(path), Accept: 'application/json', 'Content-Type': 'application/json', ...options.headers },
     });
     if (response.status === 204) return null;
     const body = await response.json().catch(() => null);

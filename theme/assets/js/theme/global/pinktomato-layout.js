@@ -115,6 +115,11 @@ export default function pinkTomatoLayout() {
         }
     } catch (err) { /* private mode */ }
 
+    // The footer's saved copyright line leaves the year for the page to fill in.
+    document.querySelectorAll('[data-pt-year]').forEach((el) => {
+        el.textContent = String(new Date().getFullYear());
+    });
+
     // Shop All sort box reloads the page with BigCommerce's own sort.
     const sortSelect = document.querySelector('[data-pt-sort-select]');
     if (sortSelect) sortSelect.addEventListener('change', () => sortSelect.form.submit());

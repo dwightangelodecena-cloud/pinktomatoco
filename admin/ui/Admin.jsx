@@ -7,9 +7,10 @@ import CustomersTab from './components/CustomersTab.jsx';
 import SalesTab from './components/SalesTab.jsx';
 import ProductManager from './components/ProductManager.jsx';
 import ReviewsTab from './components/ReviewsTab.jsx';
+import ContentTab from './components/ContentTab.jsx';
 import SubscribersTab from './components/SubscribersTab.jsx';
 import { Panel } from './components/shared.jsx';
-import { BarChartIcon, CloseIcon, GridIcon, HeartIcon, MenuIcon, PackageIcon, Star, StoreIcon, TagIcon, UsersIcon } from './Icons.jsx';
+import { BarChartIcon, CloseIcon, FileIcon, GridIcon, HeartIcon, MenuIcon, PackageIcon, Star, StoreIcon, TagIcon, UsersIcon } from './Icons.jsx';
 
 // Products sits on its own tab here. On the React site it lived inside Content, which comes back with the CMS.
 function ProductsTab({ setDirty }) {
@@ -33,6 +34,7 @@ const GROUPS = [
   {
     label: 'Website',
     tabs: [
+      { id: 'content', label: 'Content', Icon: FileIcon, Panel: ContentTab },
       { id: 'products', label: 'Products', Icon: TagIcon, Panel: ProductsTab },
       { id: 'reviews', label: 'Reviews', Icon: Star, Panel: ReviewsTab, badge: 'waitingReviews' },
     ],

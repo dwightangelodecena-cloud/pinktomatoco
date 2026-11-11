@@ -6,6 +6,9 @@ products:
 {{#partial "hero"}}
     {{{region name="home_below_menu"}}}
 
+    <div class="pt-slot">
+    {{{region name="pt_home_hero"}}}
+    <div class="pt-default">
     <section class="mosaic container">
         <div class="mosaic-item mosaic-item-0" style="--i: 0">
             <div class="mosaic-item-bg" style="background-image: url('{{cdn 'img/hero/hero-1.jpg'}}')"></div>
@@ -19,7 +22,12 @@ products:
         <div class="mosaic-item mosaic-item-2" style="--i: 2"><div class="mosaic-item-bg" style="background-image: url('{{cdn 'img/hero/hero-3.jpg'}}')"></div></div>
         <div class="mosaic-item mosaic-item-3" style="--i: 3"><div class="mosaic-item-bg" style="background-image: url('{{cdn 'img/hero/hero-4.jpg'}}')"></div></div>
     </section>
+    </div>
+    </div>
 
+    <div class="pt-slot">
+    {{{region name="pt_home_values"}}}
+    <div class="pt-default">
     <section class="value-props container" aria-label="Why Pink Tomato">
         <ul class="value-props-list">
             <li class="reveal value-prop" data-pt-reveal="0"><span class="value-prop-icon">{{> components/pinktomato/icon name="map-pin" size="24"}}</span><div><h3>Hand-poured in North Dakota</h3><p>Small batches, made by hand in Watford City.</p></div></li>
@@ -28,16 +36,23 @@ products:
             <li class="reveal value-prop" data-pt-reveal="270"><span class="value-prop-icon">{{> components/pinktomato/icon name="flame" size="24"}}</span><div><h3>Crackling wooden wicks</h3><p>A soft fireside crackle in a reusable glass vessel.</p></div></li>
         </ul>
     </section>
+    </div>
+    </div>
 
     <section class="products-home container">
-        <div class="reveal section-head" data-pt-reveal="0">
+        <div class="pt-slot">
+    {{{region name="pt_home_products"}}}
+    <div class="pt-default">
+    <div class="reveal section-head" data-pt-reveal="0">
             <div>
                 <p class="eyebrow">Just poured</p>
                 <h2 class="section-title">New Products</h2>
             </div>
             <a href="/shop-all/" class="text-link">View all products {{> components/pinktomato/icon name="arrow-right" size="16"}}</a>
         </div>
-        <div class="product-grid">
+    </div>
+    </div>
+        <div class="product-grid" data-pt-product-grid>
             {{#each products.new}}
                 {{> components/pinktomato/product-card product=this index=@index badge=true}}
             {{/each}}
@@ -48,14 +63,22 @@ products:
     <section class="mood-finder container" data-pt-mood hidden>
         <div class="mood-inner">
             <div class="reveal mood-head" data-pt-reveal="0">
-                <p class="eyebrow">Find your mood</p>
+                <div class="pt-slot">
+    {{{region name="pt_home_mood"}}}
+    <div class="pt-default">
+    <p class="eyebrow">Find your mood</p>
                 <h2 class="section-title">How do you want to feel tonight?</h2>
+    </div>
+    </div>
                 <div class="mood-chips" role="tablist" aria-label="Moods" data-pt-mood-chips></div>
             </div>
             <div class="mood-stage" role="tabpanel" aria-live="polite" data-pt-mood-stage></div>
         </div>
     </section>
 
+    <div class="pt-slot">
+    {{{region name="pt_home_process"}}}
+    <div class="pt-default">
     <section class="process container">
         <div class="reveal process-head" data-pt-reveal="0">
             <p class="eyebrow">From pour to glow</p>
@@ -69,7 +92,12 @@ products:
             <li class="process-step" style="--d: 860ms"><span class="process-icon">{{> components/pinktomato/icon name="map-pin" size="24"}}<span class="process-num">4</span></span><h3>Hand-poured</h3><p>Every candle is poured by hand in small batches in North Dakota.</p></li>
         </ol>
     </section>
+    </div>
+    </div>
 
+    <div class="pt-slot">
+    {{{region name="pt_home_journal"}}}
+    <div class="pt-default">
     <section class="latest-blog-posts container">
         <div class="reveal blog-card" data-pt-reveal="0">
             <p class="eyebrow">Journal</p>
@@ -78,6 +106,8 @@ products:
             <a href="/shop-all/" class="button button-primary">Shop the collection {{> components/pinktomato/icon name="arrow-right" size="16"}}</a>
         </div>
     </section>
+    </div>
+    </div>
 {{/partial}}
 
 {{#partial "page"}}

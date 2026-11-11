@@ -167,7 +167,62 @@ async function initMoodFinder(token) {
     observer.observe(section);
 }
 
+const FEATURED_QUERY = `query Featured($ids: [Int!]) {
+  site { products(entityIds: $ids, first: 50) { edges { node {
+    entityId name path
+    defaultImage { url(width: 640) }
+    prices { price { value } priceRange { min { value } max { value } } }
+  } } } }
+}`;
+
+const card = (p, i) => {
+    const name = escapeHtml(p.name);
+    const href = escapeHtml(p.path);
+    const { min, max } = p.prices.priceRange;
+    const price = min.value === max.value ? money(p.prices.price.value) : `${money(min.value)} - ${money(max.value)}`;
+    return `<article class="reveal product-item is-visible" style="transition-delay:${(i % 4) * 90}ms">
+        <div class="product-item-thumbnail">
+            <a href="${href}" class="product-item-image" tabindex="-1" aria-hidden="true"><img src="${escapeHtml(p.defaultImage ? p.defaultImage.url : '')}" alt="" loading="lazy"></a>
+            <span class="product-badge">New</span>
+            <form action="/wishlist.php?action=add&amp;product_id=${p.entityId}" method="post">
+                <button type="submit" class="card-wishlist" aria-label="Add ${name} to wishlist">${icon('heart', 18)}</button>
+            </form>
+            <button type="button" class="quick-view-button quickview" data-product-id="${p.entityId}">${icon('eye', 16)} Quick View</button>
+        </div>
+        <div class="product-item-details">
+            <h3 class="product-item-title"><a href="${href}">${name}</a></h3>
+            <div class="product-item-price">${price}</div>
+            <a href="${href}" class="product-item-action">Pick Options ${icon('arrow-right', 16)}</a>
+        </div>
+    </article>`;
+};
+
+// The admin's Content tab can choose the homepage products. Its saved list arrives as
+// data-pt-featured="12,7,3"; without one, the newest products the theme rendered stay.
+async function initFeatured(token) {
+    const marker = document.querySelector('[data-pt-featured]');
+    const grid = document.querySelector('[data-pt-product-grid]');
+    const ids = marker ? marker.dataset.ptFeatured.split(',').map(Number).filter(Boolean) : [];
+    if (!grid || !ids.length || !token) return;
+    try {
+        const response = await fetch('/graphql', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+            body: JSON.stringify({ query: FEATURED_QUERY, variables: { ids } }),
+        });
+        const { data } = await response.json();
+        const byId = new Map(data.site.products.edges.map((e) => [e.node.entityId, e.node]));
+        const chosen = ids.map((id) => byId.get(id)).filter(Boolean);
+        if (chosen.length) grid.innerHTML = chosen.map(card).join('');
+    } catch (err) {
+        // Keep the newest products if the list can't load.
+    }
+}
+
 export default function pinkTomatoHome(context) {
     initReveals();
-    initMoodFinder(context.storefrontApiToken);
+    // A saved "hide the mood finder" choice arrives as a marker in its content slot.
+    if (!document.querySelector('[data-pt-hide-mood]')) initMoodFinder(context.storefrontApiToken);
+    initFeatured(context.storefrontApiToken);
 }

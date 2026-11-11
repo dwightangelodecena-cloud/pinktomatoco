@@ -7,6 +7,7 @@ import { createProduct, deleteProduct, listAdminProducts, setProductVisible, upd
 import { SETTABLE_STATUSES, countOrdersToHandle, getOrderDetails, listOrders, salesSummary, setOrderStatus } from './orders.js';
 import { deleteReview, listCustomers, listReviews, listSubscribers, setReviewApproved } from './customers.js';
 import { saveUpload, serveUpload } from './media.js';
+import { getContent, saveContent } from './content.js';
 
 const json = (body, status = 200) => new Response(JSON.stringify(body), {
   status,
@@ -116,6 +117,11 @@ async function api(request, env, path) {
       return json(await salesSummary(bc, new Date(Date.now() - days * 864e5).toUTCString()));
     }
 
+    case 'GET /api/content': return json(await getContent(env));
+    case 'POST /api/content': {
+      if (!Array.isArray(body.pages) || body.pages.length === 0) return json({ error: 'Nothing to save.' }, 400);
+      return json(await saveContent(bc, env, url.origin, body.pages));
+    }
     case 'GET /api/customers': return json(await listCustomers(bc));
     case 'GET /api/subscribers': return json(await listSubscribers(bc));
     case 'GET /api/reviews': return json(await listReviews(bc));
