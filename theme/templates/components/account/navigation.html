@@ -13,17 +13,17 @@
     <nav class="account-tabs" aria-label="My account">
         <a href="{{urls.account.orders.all}}" {{#if account_page '===' 'orders'}}aria-current="page"{{/if}}>{{> components/pinktomato/icon name="package" size="18"}} Orders</a>
         {{#if settings.returns_enabled}}
-            <a href="{{urls.account.returns}}" {{#if account_page '===' 'returns'}}aria-current="page"{{/if}}>Returns</a>
+            <a href="{{urls.account.returns}}" {{#if account_page '===' 'returns'}}aria-current="page"{{/if}}>{{> components/pinktomato/icon name="return" size="18"}} Returns</a>
         {{/if}}
         <a href="{{urls.account.inbox}}" {{#if account_page '===' 'messages'}}aria-current="page"{{/if}}>{{> components/pinktomato/icon name="mail" size="18"}} Messages{{#if customer.num_new_messages}} ({{customer.num_new_messages}}){{/if}}</a>
         <a href="{{urls.account.addresses}}" {{#if account_page '===' 'addresses'}}aria-current="page"{{/if}}>{{> components/pinktomato/icon name="map-pin" size="18"}} Addresses</a>
         {{#if settings.show_payment_methods}}
-            <a href="{{urls.account.payment_methods.all}}" {{#if account_page '===' 'payment_methods'}}aria-current="page"{{/if}}>Payment methods</a>
+            <a href="{{urls.account.payment_methods.all}}" {{#if account_page '===' 'payment_methods'}}aria-current="page"{{/if}}>{{> components/pinktomato/icon name="card" size="18"}} Payment methods</a>
         {{/if}}
         {{#if settings.show_wishlist}}
             <a href="{{urls.account.wishlists.all}}" {{#if account_page '===' 'wishlists'}}aria-current="page"{{/if}}>{{> components/pinktomato/icon name="heart" size="18"}} Wishlist</a>
         {{/if}}
-        <a href="{{urls.account.recent_items}}" {{#if account_page '===' 'recent_items'}}aria-current="page"{{/if}}>Recently viewed</a>
+        <a href="{{urls.account.recent_items}}" {{#if account_page '===' 'recent_items'}}aria-current="page"{{/if}}>{{> components/pinktomato/icon name="clock" size="18"}} Recently viewed</a>
         <a href="{{urls.account.details}}" {{#if account_page '===' 'settings'}}aria-current="page"{{/if}}>{{> components/pinktomato/icon name="user" size="18"}} Account settings</a>
     </nav>
 </div>
