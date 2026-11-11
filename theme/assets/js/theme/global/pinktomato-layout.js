@@ -98,7 +98,8 @@ export default function pinkTomatoLayout() {
         // A failed sign-in comes back here, so start clean each time.
         try { sessionStorage.removeItem('pt-login-home'); } catch (err) { /* private mode */ }
     }
-    if (loginForm && !/[?&]from=/.test(window.location.search)) {
+    // No return page, or the homepage as the return page: either way, go home after signing in.
+    if (loginForm && (!/[?&]from=/.test(window.location.search) || /[?&]from=index\.php(&|$)/.test(window.location.search))) {
         loginForm.addEventListener('submit', () => {
             try { sessionStorage.setItem('pt-login-home', '1'); } catch (err) { /* private mode */ }
         });

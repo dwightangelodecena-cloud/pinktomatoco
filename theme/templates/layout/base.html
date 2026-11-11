@@ -11,6 +11,18 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <script nonce="{{nonce}}">
+            {{!-- Pink Tomato: right after sign-in BigCommerce opens an account page; go home before it is drawn. --}}
+            (function () {
+                try {
+                    if (sessionStorage.getItem('pt-login-home') && /^\/account\.php/.test(location.pathname)) {
+                        sessionStorage.removeItem('pt-login-home');
+                        document.documentElement.style.visibility = 'hidden';
+                        location.replace('/');
+                    }
+                } catch (e) {}
+            })();
+        </script>
+        <script nonce="{{nonce}}">
             {{!-- Change document class from no-js to js so we can detect this in css --}}
             document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
         </script>
