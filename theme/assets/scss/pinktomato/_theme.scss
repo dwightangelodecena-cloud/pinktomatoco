@@ -26,6 +26,40 @@ body { padding-top: 0; } // Cornerstone reserves room for its own fixed phone he
 .cart-total-grandTotal { font-weight: 600; color: var(--ink); font-size: 18px; padding-top: 10px; border-top: 1px solid var(--line); }
 .cart-table .quantity-input.form-input { width: 46px; }
 
+// Content pages
+.page-narrow { max-width: 880px; margin-left: auto; margin-right: auto; }
+.contact-form .form-row:empty { display: none; }
+.contact-form .form-input { margin: 0; height: auto; }
+.blog-posts { display: grid; gap: 24px; }
+@media (min-width: 768px) { .blog-posts { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.blog-post { padding: 24px; border-radius: var(--radius-lg); background: var(--surface); border: 1px solid var(--line); }
+.blog-post-image img { width: 100%; border-radius: var(--radius); margin-bottom: 14px; }
+.blog-post-title { font-size: 22px; margin: 0 0 8px; }
+.blog-post-title a { color: var(--ink); }
+
+// Sign in, create account and password pages
+.auth-tabs a {
+    position: relative; z-index: 1; display: grid; place-items: center; min-height: 44px; padding: 0 6px; border-radius: 999px; line-height: 1.2;
+    font-size: 14px; font-weight: 600; color: var(--muted); transition: color .3s;
+}
+.auth-tabs a[aria-selected='true'] { color: var(--ink); }
+.auth-form .form-field { margin: 0; }
+// Cornerstone gives .login-form its own half-width bordered box.
+.auth-card .login-form, .auth-card .forgot-password-form, .auth-card .new-password-form { width: auto; max-width: none; float: none; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
+.auth-input.form-input, .auth-input { height: 50px; margin: 0; padding: 0; border: 0; box-shadow: none; background: none; }
+.auth-switch a { font-weight: 600; color: var(--accent-dark); }
+.auth-form input.auth-submit { cursor: pointer; }
+// Fields BigCommerce generates on the sign-up form, styled like the design's inputs.
+.auth-dynamic .form-field { display: grid; gap: 7px; }
+.auth-dynamic .form-label { font-size: 13px; font-weight: 600; color: var(--ink); margin: 0; }
+.auth-dynamic .form-label small { font-weight: 400; font-size: 12px; color: var(--muted); margin-left: 4px; }
+.auth-dynamic .form-input, .auth-dynamic .form-select {
+    height: 50px; margin: 0; padding: 0 14px; border-radius: 14px; font-size: 16px;
+    background: var(--bg); border: 1.5px solid var(--line-strong); color: var(--ink);
+}
+.auth-dynamic .form-input:focus, .auth-dynamic .form-select:focus { border-color: var(--accent); background: var(--surface); box-shadow: 0 0 0 4px var(--accent-soft); outline: none; }
+.form-inlineMessage { display: block; margin-top: 4px; font-size: 13px; color: var(--error); }
+
 // Cart drawer
 .cart-preview { z-index: 70; }
 .drawer-overlay { z-index: 69; }

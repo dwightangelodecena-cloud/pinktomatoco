@@ -1,50 +1,39 @@
 {{#partial "page"}}
-<div class="login">
-    {{> components/common/breadcrumbs breadcrumbs=breadcrumbs}}
-    <h1 class="page-heading">{{lang 'login.heading' }}</h1>
-    {{#if forms.login.error}}
-        {{> components/common/alert/alert-error forms.login.error}}
-    {{/if}}
-    {{#if forms.login.success}}
-        {{> components/common/alert/alert-success forms.login.success}}
-    {{/if}}
-    <div class="login-row">
-        <form class="login-form form" action="{{urls.auth.check_login}}" method="post">
-            {{inject 'useValidEmail' (lang 'forms.validate.common.email_address')}}
-            {{inject 'enterPass' (lang 'forms.validate.common.password')}}
-            <div class="form-field">
-                <label class="form-label" for="login_email">{{lang 'login.field_email'}}</label>
-                <input class="form-input" name="login_email" id="login_email" type="email">
-            </div>
-            <div class="form-field">
-                <label class="form-label" for="login_pass">{{lang 'login.field_password'}}</label>
-                <input class="form-input" id="login_pass" type="password" name="login_pass" autocomplete="off">
-            </div>
-            <div class="form-actions">
-                <input type="submit" class="button button--primary" value="{{lang 'login.submit_value' }}">
-                <a class="forgot-password" href="{{urls.auth.forgot_password}}">{{lang 'login.forgot_password' }}</a>
-            </div>
-        </form>
-        {{#if settings.account_creation_enabled}}
-            <div class="new-customer">
-                <div class="panel">
-                    <div class="panel-header">
-                        <h2 class="panel-title">{{lang 'login.new_customer.heading' }}</h2>
-                    </div>
-                    <div class="panel-body">
-                        <p class="new-customer-intro">{{lang 'login.new_customer.intro' }}</p>
-                        <ul class="new-customer-fact-list">
-                            <li class="new-customer-fact">{{lang 'login.new_customer.fact1' }}</li>
-                            <li class="new-customer-fact">{{lang 'login.new_customer.fact2' }}</li>
-                            <li class="new-customer-fact">{{lang 'login.new_customer.fact3' }}</li>
-                            <li class="new-customer-fact">{{lang 'login.new_customer.fact4' }}</li>
-                            <li class="new-customer-fact">{{lang 'login.new_customer.fact5' }}</li>
-                        </ul>
-                        <a href="{{urls.auth.create_account}}"><button class="button button--primary">{{lang 'login.new_customer.create_account' }}</button></a>
-                    </div>
+<div class="auth-page">
+    {{> components/pinktomato/auth-visual}}
+    <div class="auth-card">
+        {{> components/pinktomato/auth-tabs active="signin"}}
+        <div class="auth-panel">
+            {{!-- .login-form and the field names are BigCommerce's, so its own sign-in and checks run. --}}
+            <form class="auth-form login-form form" action="{{urls.auth.check_login}}" method="post">
+                {{inject 'useValidEmail' (lang 'forms.validate.common.email_address')}}
+                {{inject 'enterPass' (lang 'forms.validate.common.password')}}
+                <div class="auth-heading">
+                    <h1>Welcome back</h1>
+                    <p>Sign in to check out faster and see your orders.</p>
                 </div>
-            </div>
-        {{/if}}
+                {{#if forms.login.error}}<p class="auth-error shake" role="alert">{{forms.login.error}}</p>{{/if}}
+                {{#if forms.login.success}}<p class="form-message success" role="status">{{forms.login.success}}</p>{{/if}}
+                <label class="auth-field form-field">
+                    <span class="form-field-title">Email address</span>
+                    <span class="auth-input-wrap">{{> components/pinktomato/icon name="mail" size="18"}}
+                        <input class="auth-input" name="login_email" id="login_email" type="email" autocomplete="email" required placeholder=" ">
+                    </span>
+                </label>
+                <label class="auth-field form-field">
+                    <span class="form-field-title">Password</span>
+                    <span class="auth-input-wrap">{{> components/pinktomato/icon name="lock" size="18"}}
+                        <input class="auth-input" name="login_pass" id="login_pass" type="password" autocomplete="current-password" required placeholder=" ">
+                        <button type="button" class="auth-eye" aria-label="Show password" data-pt-eye>{{> components/pinktomato/icon name="eye" size="16"}}</button>
+                    </span>
+                    <a class="auth-forgot" href="{{urls.auth.forgot_password}}">Forgot password?</a>
+                </label>
+                <input type="submit" class="button button-primary auth-submit" value="Sign in">
+                {{#if settings.account_creation_enabled}}
+                    <p class="auth-switch">New here? <a href="{{urls.auth.create_account}}">Create an account</a></p>
+                {{/if}}
+            </form>
+        </div>
     </div>
 </div>
 {{/partial}}

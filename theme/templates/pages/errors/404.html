@@ -1,17 +1,8 @@
 {{#partial "page"}}
-
-{{> components/common/breadcrumbs breadcrumbs=breadcrumbs}}
-
-<main class="page">
-    <section class="page-content page-content--centered">
-        <h1 class="page-heading">{{lang 'page_not_found.page_heading'}}</h1>
-        <p class="u-textAlignCenter">
-            {{lang 'page_not_found.message'}}
-        </p>
-
-        {{> components/common/search-box}}
-    </section>
-</main>
-
+<div class="page page-narrow">
+    <h1 class="page-heading">404 Error - Page not found</h1>
+    <p>The page you were looking for does not exist.</p>
+    <a href="{{urls.home}}" class="button button-primary">Continue Shopping</a>
+</div>
 {{/partial}}
 {{> layout/base}}

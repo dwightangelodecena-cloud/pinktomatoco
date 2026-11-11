@@ -1,34 +1,59 @@
 {{#partial "page"}}
+<div class="page page-narrow">
+    <h1 class="page-heading">{{page.title}}</h1>
 
-{{> components/common/breadcrumbs breadcrumbs=breadcrumbs}}
+    {{#if forms.contact.success}}
+        <p class="form-message success" role="status">Thank you. We've received your message and will respond shortly.</p>
+        <p><a href="{{urls.home}}" class="button button-primary">Continue Shopping</a></p>
+    {{else}}
+        {{#if page.content}}<div class="rte">{{{page.content}}}</div>{{else}}<p>We're happy to answer questions or help you with returns.</p>{{/if}}
 
-<main class="page">
-    {{#unless theme_settings.hide_contact_us_page_heading }}
-        <h1 class="page-heading">{{page.title}}</h1>
-    {{/unless}}
-
-    {{#if page.sub_pages}}
-        <nav class="navBar navBar--sub">
-            <ul class="navBar-section account-navigation">
-                {{#each page.sub_pages}}
-                    <li class="navBar-item"><a class="navBar-action" href="{{url}}">{{title}}</a></li>
-                {{/each}}
-            </ul>
-        </nav>
+        {{!-- Field names and data-contact-form are BigCommerce's, so its own form handling and spam checks still apply. --}}
+        <form class="form contact-form" action="{{urls.contact_us_submit}}" method="post" data-contact-form>
+            {{inject 'contactEmail' (lang 'forms.validate.contact.email_address')}}
+            {{inject 'contactQuestion' (lang 'forms.validate.contact.question')}}
+            {{#if forms.contact.error}}<p class="form-message error" role="alert">{{forms.contact.error}}</p>{{/if}}
+            <input type="hidden" name="page_id" value="{{forms.contact.page_id}}">
+            <div class="form-row">
+                {{#if forms.contact.name}}
+                    <label class="form-field"><span class="form-field-title">Full Name</span>
+                        <input class="form-input" type="text" name="contact_fullname" autocomplete="name" value="{{customer.name}}"></label>
+                {{/if}}
+                {{#if forms.contact.phone}}
+                    <label class="form-field"><span class="form-field-title">Phone Number</span>
+                        <input class="form-input" type="tel" name="contact_phone" autocomplete="tel" value="{{customer.phone}}"></label>
+                {{/if}}
+            </div>
+            <div class="form-row">
+                <label class="form-field"><span class="form-field-title">Email Address <span class="required-text">Required</span></span>
+                    <input class="form-input" type="email" name="contact_email" autocomplete="email" required value="{{customer.email}}"></label>
+                {{#if forms.contact.order}}
+                    <label class="form-field"><span class="form-field-title">Order Number</span>
+                        <input class="form-input" type="text" name="contact_orderno"></label>
+                {{/if}}
+            </div>
+            <div class="form-row">
+                {{#if forms.contact.company}}
+                    <label class="form-field"><span class="form-field-title">Company Name</span>
+                        <input class="form-input" type="text" name="contact_companyname" autocomplete="organization"></label>
+                {{/if}}
+                {{#if forms.contact.rma}}
+                    <label class="form-field"><span class="form-field-title">RMA Number</span>
+                        <input class="form-input" type="text" name="contact_rma"></label>
+                {{/if}}
+            </div>
+            <label class="form-field"><span class="form-field-title">Comments/Questions <span class="required-text">Required</span></span>
+                <textarea class="form-input" name="contact_question" rows="6" required></textarea></label>
+            {{#if forms.contact.manualcaptcha}}
+                <label class="form-field"><span class="form-field-title">{{forms.contact.manualcaptcha.question}} <span class="required-text">Required</span></span>
+                    <input class="form-input" type="text" name="{{forms.contact.manualcaptcha.name}}" autocomplete="off" required></label>
+            {{/if}}
+            {{{forms.contact.recaptcha.markup}}}
+            <div class="form-actions">
+                <button class="button button-primary" type="submit">Submit Form</button>
+            </div>
+        </form>
     {{/if}}
-
-    <div id="contact-us-page" class="page-content page-content--centered">
-        {{#if forms.contact.success}}
-            <div id="contact-us-success">{{{lang 'forms.contact_us.successful' shopPath=urls.home}}}</div>
-        {{else}}
-            <p>{{{page.content}}}</p>
-            {{> components/page/contact-us-form}}
-        {{/if}}
-
-    </div>
-
-</main>
-
+</div>
 {{/partial}}
-
 {{> layout/base}}

@@ -80,6 +80,17 @@ export default function pinkTomatoLayout() {
         backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
     }
 
+    // Show or hide a password, as on the React site's sign-in page.
+    document.querySelectorAll('[data-pt-eye]').forEach((button) => {
+        button.addEventListener('click', () => {
+            const input = button.parentElement.querySelector('input');
+            const show = input.type === 'password';
+            input.type = show ? 'text' : 'password';
+            button.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+            button.querySelector('use').setAttribute('href', show ? '#pt-eye-off' : '#pt-eye');
+        });
+    });
+
     // Shop All sort box reloads the page with BigCommerce's own sort.
     const sortSelect = document.querySelector('[data-pt-sort-select]');
     if (sortSelect) sortSelect.addEventListener('change', () => sortSelect.form.submit());

@@ -6,29 +6,27 @@ blog:
         summary: 200
 ---
 {{#partial "head"}}
-    {{#if pagination.blog.previous}}
-        <link rel="prev" href="{{{pagination.blog.previous}}}">
-    {{/if}}
-    {{#if pagination.blog.next}}
-        <link rel="next" href="{{{pagination.blog.next}}}">
-    {{/if}}
+    {{#if pagination.blog.previous}}<link rel="prev" href="{{{pagination.blog.previous}}}">{{/if}}
+    {{#if pagination.blog.next}}<link rel="next" href="{{{pagination.blog.next}}}">{{/if}}
 {{/partial}}
 
 {{#partial "page"}}
-
-{{> components/common/breadcrumbs breadcrumbs=breadcrumbs}}
-
-<main class="page">
-    {{#unless theme_settings.hide_blog_page_heading }}
-        <h1 class="page-heading">{{ blog.name }}</h1>
-    {{/unless}}
-
-    {{#each blog.posts}}
-        {{> components/blog/post post=this theme_settings=../theme_settings}}
-    {{/each}}
-
-    {{> components/common/paginator pagination.blog}}
-</main>
-
+<div class="page">
+    <h1 class="page-heading">{{blog.name}}</h1>
+    {{#if blog.posts.length}}
+        <div class="blog-posts">
+            {{#each blog.posts}}
+                <article class="reveal blog-post" data-pt-reveal="{{multiply (mod @index 3) 90}}">
+                    {{#if thumbnail}}<a href="{{url}}" class="blog-post-image"><img src="{{getImage thumbnail 'blog_size'}}" alt="{{thumbnail.alt}}" loading="lazy"></a>{{/if}}
+                    <p class="eyebrow">{{date_published}}</p>
+                    <h2 class="blog-post-title"><a href="{{url}}">{{title}}</a></h2>
+                    <p>{{{summary}}}</p>
+                    <a href="{{url}}" class="text-link">Read more {{> components/pinktomato/icon name="arrow-right" size="16"}}</a>
+                </article>
+            {{/each}}
+        </div>
+        {{> components/pinktomato/pagination pagination.blog}}
+    {{/if}}
+</div>
 {{/partial}}
 {{> layout/base}}
