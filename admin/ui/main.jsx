@@ -29,6 +29,9 @@ function App() {
         <img src="/logo.webp" alt="Pink Tomato" />
         <h1>Pink Tomato admin</h1>
         <p>{state.status === 'error' ? state.message : 'Please open the admin from Apps in the BigCommerce control panel.'}</p>
+        {['localhost', '127.0.0.1'].includes(window.location.hostname) && (
+          <a className="button button-primary" href="/dev-login">Open the local admin</a>
+        )}
       </div>
     );
   }
