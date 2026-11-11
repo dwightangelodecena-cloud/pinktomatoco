@@ -9,7 +9,7 @@
     "binding": "ASSETS",
     "not_found_handling": "single-page-application",
     // These paths are handled by the Worker, not served as files.
-    "run_worker_first": ["/api/*", "/auth", "/load", "/uninstall", "/dev-login"]
+    "run_worker_first": ["/api/*", "/auth", "/load", "/uninstall", "/dev-login", "/media/*"]
   },
   // Holds the store's access token from the app install. Create it with
   // `npx wrangler kv namespace create STORE` and put its id here before the first deploy.

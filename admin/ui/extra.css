@@ -1,0 +1,8 @@
+/* Admin-app additions to the React site's admin styles. */
+.admin-gate { min-height: 100vh; display: grid; place-content: center; justify-items: center; gap: 12px; padding: 24px; text-align: center; }
+.admin-gate img { width: 200px; height: auto; mix-blend-mode: multiply; }
+.admin-gate h1 { margin: 0; font-size: 28px; }
+.admin-gate p { margin: 0; max-width: 420px; color: var(--muted); }
+.admin-gate .skeleton-block { width: 320px; }
+.admin-pager { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 24px; }
+.admin-signed-in { margin: 10px 0 0; font-size: 12px; word-break: break-all; }

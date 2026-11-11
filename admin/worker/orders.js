@@ -65,20 +65,22 @@ export async function countOrdersToHandle(bc) {
 
 export const setOrderStatus = (bc, id, statusId) => bc.put(`/v2/orders/${id}`, { status_id: statusId });
 
-// Totals for the Dashboard and Sales tabs. 250 orders per request, no items, so it stays well
-// under the request limit until the store has thousands of orders.
+// Orders for the Dashboard, Sales and Customers tabs: 250 per request without items, then the
+// items of the newest orders (for Best sellers), keeping each call under the request limit.
+const ITEMS_FOR_NEWEST = 30;
+
 export async function salesSummary(bc, since) {
-  const orders = [];
-  for (let page = 1; page <= 20; page++) {
+  const raw = [];
+  for (let page = 1; page <= 8; page++) {
     const batch = await bc.list(`/v2/orders?limit=250&page=${page}&min_date_created=${encodeURIComponent(since)}&sort=date_created:desc`);
-    orders.push(...batch);
+    raw.push(...batch);
     if (batch.length < 250) break;
   }
-  return orders.map((o) => ({
-    id: o.id,
-    created_at: new Date(o.date_created).toISOString(),
-    subtotal: Number(o.total_inc_tax),
-    status: STATUS_GROUPS[o.status_id] ?? 'pending',
-    items: o.items_total,
-  }));
+  const orders = raw.map(toOrder);
+  const newest = orders.slice(0, ITEMS_FOR_NEWEST);
+  const items = await Promise.all(newest.map((o) => bc.list(`/v2/orders/${o.id}/products?limit=250`)));
+  newest.forEach((o, i) => {
+    o.order_items = items[i].map((p) => ({ id: p.id, name: p.name, quantity: p.quantity, unit_price: Number(p.price_inc_tax) }));
+  });
+  return { orders, itemsCoverAll: orders.length <= ITEMS_FOR_NEWEST };
 }

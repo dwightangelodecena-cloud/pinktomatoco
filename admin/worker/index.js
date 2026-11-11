@@ -6,6 +6,7 @@ import { createSession, readSession, verifyBigCommerceJwt } from './crypto.js';
 import { createProduct, deleteProduct, listAdminProducts, setProductVisible, updateProduct } from './catalog.js';
 import { SETTABLE_STATUSES, countOrdersToHandle, getOrderDetails, listOrders, salesSummary, setOrderStatus } from './orders.js';
 import { deleteReview, listCustomers, listReviews, listSubscribers, setReviewApproved } from './customers.js';
+import { saveUpload, serveUpload } from './media.js';
 
 const json = (body, status = 200) => new Response(JSON.stringify(body), {
   status,
@@ -63,13 +64,30 @@ async function devLogin(request, env) {
 async function api(request, env, path) {
   const session = await readSession(request, env);
   if (!session) return json({ error: 'Your session has ended. Open the admin again from the BigCommerce control panel.' }, 401);
+  if (request.method === 'POST' && path === '/api/images') {
+    const saved = await saveUpload(request, env);
+    return json(saved, saved.error ? 400 : 200);
+  }
   const bc = client(env, await storeToken(env));
   const url = new URL(request.url);
   const body = request.method === 'POST' ? await request.json().catch(() => ({})) : null;
 
   switch (`${request.method} ${path}`) {
     case 'GET /api/me': return json({ email: session.email, store: env.STORE_HASH });
-    case 'GET /api/counts': return json({ pendingOrders: await countOrdersToHandle(bc) });
+    case 'GET /api/counts': {
+      const [pendingOrders, reviews, subscribers, customers] = await Promise.all([
+        countOrdersToHandle(bc),
+        listReviews(bc),
+        bc.get('/v3/customers/subscribers?limit=1'),
+        bc.get('/v3/customers?limit=1'),
+      ]);
+      return json({
+        pendingOrders,
+        waitingReviews: reviews.filter((r) => !r.approved).length,
+        subscribers: subscribers.meta.pagination.total,
+        customers: customers.meta.pagination.total,
+      });
+    }
 
     case 'GET /api/products': return json(await listAdminProducts(bc));
     case 'POST /api/products': {
@@ -120,6 +138,7 @@ export default {
       if (pathname === '/load') return await load(request, env);
       if (pathname === '/uninstall') return await uninstall(request, env);
       if (pathname === '/dev-login') return await devLogin(request, env);
+      if (pathname.startsWith('/media/')) return await serveUpload(env, pathname.slice(7));
       if (pathname.startsWith('/api/')) return await api(request, env, pathname);
       return env.ASSETS.fetch(request);
     } catch (err) {

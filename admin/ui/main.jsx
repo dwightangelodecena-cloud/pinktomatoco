@@ -1,8 +1,12 @@
 import { StrictMode, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
 import { api, setSession, takeSession } from './api.js';
+import Admin from './Admin.jsx';
+import './site.css';
+import './admin.css';
+import './extra.css';
 
-// Starter screen: proves the session and the BigCommerce connection. The full admin replaces it.
 function App() {
   const [state, setState] = useState({ status: 'loading' });
 
@@ -13,20 +17,22 @@ function App() {
       return;
     }
     setSession(session);
-    Promise.all([api('/api/me'), api('/api/counts')])
-      .then(([me, counts]) => setState({ status: 'ready', me, counts }))
+    api('/api/me')
+      .then((me) => setState({ status: 'ready', me }))
       .catch((err) => setState({ status: 'error', message: err.message }));
   }, []);
 
-  if (state.status === 'loading') return <p>Loading…</p>;
-  if (state.status === 'signed-out') return <p>Please open the admin from Apps in the BigCommerce control panel.</p>;
-  if (state.status === 'error') return <p role="alert">{state.message}</p>;
-  return (
-    <main>
-      <h1>Pink Tomato admin</h1>
-      <p>Signed in as {state.me.email}. Orders to handle: {state.counts.pendingOrders}.</p>
-    </main>
-  );
+  if (state.status === 'loading') return <div className="admin-gate"><div className="skeleton skeleton-block" aria-label="Loading" /></div>;
+  if (state.status !== 'ready') {
+    return (
+      <div className="admin-gate">
+        <img src="/logo.webp" alt="Pink Tomato" />
+        <h1>Pink Tomato admin</h1>
+        <p>{state.status === 'error' ? state.message : 'Please open the admin from Apps in the BigCommerce control panel.'}</p>
+      </div>
+    );
+  }
+  return <BrowserRouter><Admin me={state.me} /></BrowserRouter>;
 }
 
 createRoot(document.getElementById('root')).render(<StrictMode><App /></StrictMode>);
