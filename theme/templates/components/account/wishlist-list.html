@@ -1,53 +1,26 @@
-<table class="table table--line wishlists-table">
-    <thead class="table-thead">
-        <tr>
-            <th>{{lang 'account.wishlists.name'}}</th>
-            <th>{{lang 'account.wishlists.num_items'}}</th>
-            <th>{{lang 'account.wishlists.shared'}}</th>
-            <th>{{lang 'account.wishlists.action'}}</th>
-        </tr>
-    </thead>
-    <tbody class="table-tbody">
-    {{#each customer.wishlists}}
-        <tr>
-            <td><a href="{{view_url}}">{{name}}</a></td>
-            <td>{{num_items}}</td>
-            <td>
-                {{#if is_public }}
-                    {{lang 'common.yes'}}
-                {{else}}
-                    {{lang 'common.no'}}
-                {{/if}}
-            </td>
-            <td class="table-actions">
-                <form method="post" action="{{delete_url}}" class="form">
-                    <fieldset class="form-fieldset">
-                        {{#if is_public}}
-                            <a href="{{share_url}}" class="button button--primary button--small"
-                           role="button">{{lang 'common.share'}}</a>
-                        {{/if}}
-                        <a href="{{edit_url}}" class="button button--small" data-wishlist>{{lang 'common.edit'}}</a>
-                        <input type="submit" value="{{lang 'common.delete'}}" class="button button--small" data-wishlist-delete>
-                    </fieldset>
+{{inject 'wishlistDelete' (lang 'account.wishlists.delete_alert')}}
+{{#if customer.wishlists}}
+    <ul class="account-list wishlist-cards">
+        {{#each customer.wishlists}}
+            <li class="account-listItem wishlist-card">
+                <a href="{{view_url}}" class="wishlist-card-main">
+                    <span class="account-empty-icon">{{> components/pinktomato/icon name="heart" size="20"}}</span>
+                    <span>
+                        <strong>{{name}}</strong>
+                        <small>{{num_items}} item{{#if num_items '!==' 1}}s{{/if}} · {{#if is_public}}Shared{{else}}Private{{/if}}</small>
+                    </span>
+                </a>
+                <form method="post" action="{{delete_url}}" class="wishlist-card-actions">
+                    {{#if is_public}}<a href="{{share_url}}" class="button button-secondary button-small">Share</a>{{/if}}
+                    <a href="{{edit_url}}" class="button button-secondary button-small" data-wishlist>Edit</a>
+                    <input type="submit" value="Delete" class="button button-secondary button-small" data-wishlist-delete>
                 </form>
-            </td>
-        </tr>
-    {{/each}}
-    </tbody>
-</table>
-<form method="post" action="{{this.urls.account.wishlists.delete}}" class="form">
-    {{#unless customer.wishlists}}
-        <p class="form-actions">{{> components/common/alert/alert-info (lang 'account.wishlists.you_have_none')}}</p>
-
-    {{/unless}}
-    <div class="form-actions">
-        <a href="{{this.urls.account.wishlists.add}}" class="button button--primary" role="button" data-wishlist>{{lang 'account.wishlists.new'}}</a>
-        {{inject 'wishlistDelete' (lang 'account.wishlists.delete_alert')}}
-        {{#if customer.wishlists}}
-            {{#each customer.wishlists}}
-                <input type="hidden" value="{{this.id}}" name="deletewishlist[]">
-            {{/each}}
-            <input type="submit" value="{{lang 'account.wishlists.delete_all'}}" class="button" data-wishlist-delete>
-        {{/if}}
+            </li>
+        {{/each}}
+    </ul>
+    <div class="form-actions account-actions">
+        <a href="{{this.urls.account.wishlists.add}}" class="button button-primary" role="button" data-wishlist>{{> components/pinktomato/icon name="plus" size="16"}} New wishlist</a>
     </div>
-</form>
+{{else}}
+    {{> components/pinktomato/account-empty icon="heart" title="No wishlists yet" text="Create a wishlist, then tap the heart on any candle to save it." button="Create a wishlist" button_url=this.urls.account.wishlists.add}}
+{{/if}}

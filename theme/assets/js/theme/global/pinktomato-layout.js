@@ -91,6 +91,28 @@ export default function pinkTomatoLayout() {
         });
     });
 
+    // After signing in, go to the homepage (BigCommerce goes to My account), unless the shopper
+    // was sent to sign in from somewhere specific, such as checkout or the wishlist.
+    const loginForm = document.querySelector('.login-form');
+    if (loginForm) {
+        // A failed sign-in comes back here, so start clean each time.
+        try { sessionStorage.removeItem('pt-login-home'); } catch (err) { /* private mode */ }
+    }
+    if (loginForm && !/[?&]from=/.test(window.location.search)) {
+        loginForm.addEventListener('submit', () => {
+            try { sessionStorage.setItem('pt-login-home', '1'); } catch (err) { /* private mode */ }
+        });
+    }
+    try {
+        if (sessionStorage.getItem('pt-login-home')) {
+            sessionStorage.removeItem('pt-login-home');
+            if (/^\/account\.php/.test(window.location.pathname) && !/[?&]action=/.test(window.location.search)) {
+                window.location.replace('/');
+                return;
+            }
+        }
+    } catch (err) { /* private mode */ }
+
     // Shop All sort box reloads the page with BigCommerce's own sort.
     const sortSelect = document.querySelector('[data-pt-sort-select]');
     if (sortSelect) sortSelect.addEventListener('change', () => sortSelect.form.submit());

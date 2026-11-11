@@ -24,7 +24,7 @@ customer:
                 {{> components/account/orders-list orders=customer.orders}}
                 {{> components/common/small-paginator pagination.orders}}
             {{else}}
-                {{> components/common/alert/alert-info (lang 'account.orders.none')}}
+                {{> components/pinktomato/account-empty icon="package" title="No orders yet" text="When you place an order, you can follow it here." button="Start shopping" button_url="/shop-all/"}}
             {{/if}}
         </section>
     </div>

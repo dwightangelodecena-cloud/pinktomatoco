@@ -23,7 +23,7 @@
     {{#if wishlist.items}}
         {{> components/account/wishlist-item-list show_remove=wishlist.is_editable}}
     {{else}}
-        {{> components/common/alert/alert-info (lang 'account.wishlists.empty_wishlist')}}
+        {{> components/pinktomato/account-empty icon="heart" title="This wishlist is empty" text="Tap the heart on any candle to save it here." button="Browse candles" button_url="/shop-all/"}}
     {{/if}}
 
 </div>

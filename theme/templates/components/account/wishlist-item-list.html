@@ -1,14 +1,13 @@
-<ul class="productGrid">
+<div class="product-grid wishlist-grid">
     {{#each wishlist.items}}
-    <li class="product">
-        {{> components/products/card id=product_id theme_settings=../theme_settings}}
-        
-        {{#if ../show_remove}}
-            <form action="{{remove_url}}" class="form" method="post">
-                <input type="submit" class="button button--primary button--small" value="{{lang 'account.wishlists.remove_item'}}" />
-            </form>
-        {{/if}}
-    </li>
+        <div class="wishlist-grid-item">
+            {{> components/pinktomato/product-card product=this index=@index}}
+            {{#if ../show_remove}}
+                <form action="{{remove_url}}" method="post">
+                    <button type="submit" class="link-button">Remove from wishlist</button>
+                </form>
+            {{/if}}
+        </div>
     {{/each}}
-</ul>
-{{> components/common/paginator wishlist.pagination}}
+</div>
+{{> components/pinktomato/pagination wishlist.pagination}}

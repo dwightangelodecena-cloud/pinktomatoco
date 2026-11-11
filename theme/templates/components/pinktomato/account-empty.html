@@ -1,0 +1,6 @@
+<div class="account-empty">
+    <span class="account-empty-icon">{{> components/pinktomato/icon name=icon size="26"}}</span>
+    <h2>{{title}}</h2>
+    {{#if text}}<p>{{text}}</p>{{/if}}
+    {{#if button_url}}<a href="{{button_url}}" class="button button-primary button-small" {{#if button_attr}}{{button_attr}}{{/if}}>{{button}} {{> components/pinktomato/icon name="arrow-right" size="16"}}</a>{{/if}}
+</div>

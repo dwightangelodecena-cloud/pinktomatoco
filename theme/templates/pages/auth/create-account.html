@@ -3,7 +3,7 @@
 {{#partial "page"}}
 <div class="auth-page">
     {{> components/pinktomato/auth-visual}}
-    <div class="auth-card">
+    <div class="auth-card auth-card--wide">
         {{> components/pinktomato/auth-tabs active="signup"}}
         <div class="auth-panel">
             <div class="auth-heading">
@@ -14,12 +14,25 @@
             {{#if settings.account_creation_enabled}}
                 {{!-- BigCommerce decides which fields an account needs, so they come from the store settings. --}}
                 <form action="{{urls.auth.save_new_account}}" data-create-account-form method="post" class="auth-form auth-dynamic form">
-                    {{#each forms.create_account.account_fields}}
-                        {{{dynamicComponent 'components/common/forms'}}}
-                    {{/each}}
-                    {{#each forms.create_account.address_fields}}
-                        {{{dynamicComponent 'components/common/forms'}}}
-                    {{/each}}
+                    <fieldset class="auth-section">
+                        <legend class="auth-section-title">{{> components/pinktomato/icon name="user" size="18"}} Your details</legend>
+                        <div class="auth-section-grid">
+                            {{#each forms.create_account.account_fields}}
+                                {{{dynamicComponent 'components/common/forms'}}}
+                            {{/each}}
+                        </div>
+                    </fieldset>
+                    {{#if forms.create_account.address_fields}}
+                        <fieldset class="auth-section">
+                            <legend class="auth-section-title">{{> components/pinktomato/icon name="map-pin" size="18"}} Your address</legend>
+                            <p class="auth-section-note">We'll use this for shipping, so checkout is quicker.</p>
+                            <div class="auth-section-grid">
+                                {{#each forms.create_account.address_fields}}
+                                    {{{dynamicComponent 'components/common/forms'}}}
+                                {{/each}}
+                            </div>
+                        </fieldset>
+                    {{/if}}
                     {{inject 'required' (lang 'common.required')}}
                     {{inject 'state_error' (lang 'errors.state_error')}}
                     {{{forms.create_account.recaptcha.markup}}}

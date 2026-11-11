@@ -4,13 +4,15 @@
     <h2 class="page-heading">{{lang 'account.recent_items.heading' }}</h2>
     {{> components/account/navigation account_page='recent_items'}}
 
-    {{#unless customer.recently_viewed_products.items}}
-        {{> components/common/alert/alert-info (lang 'account.recent_items.no_items')}}
-    {{/unless}}
-
-    <div>
-        {{> components/products/grid products=customer.recently_viewed_products.items show_compare=customer.recently_viewed_products.show_compare}}
-    </div>
+    {{#if customer.recently_viewed_products.items}}
+        <div class="product-grid">
+            {{#each customer.recently_viewed_products.items}}
+                {{> components/pinktomato/product-card product=this index=@index}}
+            {{/each}}
+        </div>
+    {{else}}
+        {{> components/pinktomato/account-empty icon="eye" title="Nothing viewed yet" text="The candles you look at will appear here, so you can find them again." button="Browse candles" button_url="/shop-all/"}}
+    {{/if}}
 </div>
 {{/partial}}
 {{> layout/base}}

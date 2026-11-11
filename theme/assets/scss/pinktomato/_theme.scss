@@ -99,6 +99,90 @@ body { padding-top: 0; } // Cornerstone reserves room for its own fixed phone he
 .addressList { list-style: none; padding: 0; display: grid; gap: 14px; }
 @media (min-width: 768px) { .addressList { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 
+// Account area, round 2: one width and one card style for every tab.
+body:has(.account-shell) .breadcrumbs { display: none; }
+.account, .account--fixed, .account--fixedLarge, .account--fixedSmall { width: 100%; max-width: none; margin: 0 0 80px; padding: 0; }
+.account-body, .account-content, .account-head { width: 100%; max-width: none; float: none; padding: 0; margin: 0; }
+.account-shell + .account, .account-shell ~ .account-body { margin-top: 0; }
+.account-content > .account-heading { display: none; } // the active tab already names the section
+.account-empty {
+    display: grid; justify-items: center; gap: 10px; padding: clamp(36px, 6vw, 64px) 24px; text-align: center;
+    border-radius: var(--radius-lg); background: radial-gradient(120% 140% at 0% 0%, var(--blush) 0%, var(--cream) 60%, var(--surface) 100%);
+    border: 1px solid var(--line);
+}
+.account-empty h2 { margin: 6px 0 0; font-size: clamp(22px, 2.4vw, 28px); }
+.account-empty p { margin: 0 0 8px; max-width: 420px; color: var(--muted); }
+.account-empty-icon {
+    display: inline-grid; place-items: center; width: 56px; height: 56px; border-radius: 50%; flex-shrink: 0;
+    background: var(--surface); color: var(--accent-dark); box-shadow: var(--shadow-sm);
+}
+.wishlist-card { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.wishlist-card-main { display: flex; align-items: center; gap: 14px; color: var(--ink); }
+.wishlist-card-main .account-empty-icon { width: 44px; height: 44px; background: var(--blush); box-shadow: none; }
+.wishlist-card-main strong { display: block; font-family: var(--font-display); font-size: 18px; font-weight: 500; }
+.wishlist-card-main small { color: var(--muted); font-size: 13px; }
+.wishlist-card-actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 0; }
+.wishlist-card-actions input.button { cursor: pointer; }
+.account-actions { margin-top: 20px; }
+.wishlist-grid-item { display: grid; gap: 8px; align-content: start; }
+.wishlist-grid-item form { margin: 0; }
+// Addresses
+.addressList { margin: 0; }
+.address { padding: 0; border: 0; background: none; }
+.panel--address { height: 100%; margin: 0; padding: 22px; border-radius: var(--radius-lg); background: var(--surface); border: 1px solid var(--line); box-shadow: none; }
+.panel--address .panel-body { padding: 0; border: 0; }
+.address-title { font-size: 18px; margin: 0 0 8px; }
+.address-details { list-style: none; margin: 0 0 14px; padding: 0; color: var(--muted); font-size: 14px; }
+.panel--newAddress { display: grid; place-items: center; min-height: 180px; border: 1.5px dashed var(--line-strong); background: var(--bg); color: var(--accent-dark); transition: border-color .2s, background-color .2s; }
+.panel--newAddress:hover { border-color: var(--accent); background: var(--blush); }
+.panel--newAddress .panel-body, .address-addNew { display: grid; justify-items: center; gap: 6px; border: 0; padding: 0; background: none; }
+.address-symbol { font-size: 32px; line-height: 1; color: var(--accent); }
+.panel--newAddress .address-title { margin: 0; font-size: 16px; }
+// Account settings and other account forms: a card with two columns on computers.
+.account form[data-edit-account-form], .account .form[action*="address"], .account-content > .form {
+    padding: clamp(22px, 3vw, 36px); border-radius: var(--radius-lg); background: var(--surface); border: 1px solid var(--line);
+}
+.account .form-fieldset { margin: 0; padding: 0; border: 0; }
+.account .form-row { display: grid; gap: 18px; margin: 0 0 18px; }
+@media (min-width: 768px) { .account .form-row--half { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.account .form-field { width: auto; float: none; padding: 0; margin: 0; display: grid; gap: 7px; }
+.account .form-label { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin: 0; }
+.account .form-label small { font-weight: 400; color: var(--muted); font-size: 12px; text-transform: none; }
+.account .form-input, .account .form-select { width: 100%; background: var(--bg); }
+.account .form-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+.account input.button, .account .button { min-height: 46px; padding: 12px 24px; font-family: var(--font-body); font-weight: 600; font-size: 14px; border-radius: 999px; }
+.account .button:not(.button--primary):not(.button-primary) { background: transparent; color: var(--ink); border: 1.5px solid var(--ink); }
+.account .button:not(.button--primary):not(.button-primary):hover { background: var(--ink); color: #fff; }
+
+// Notices: soft cards instead of Cornerstone's grey bars.
+.alertBox {
+    display: flex; align-items: center; gap: 14px; margin: 0 0 20px; padding: 14px 18px; border-radius: var(--radius);
+    background: var(--cream); border: 1px solid var(--line); color: var(--text); font-size: 15px; box-shadow: none;
+}
+.alertBox-column { padding: 0; float: none; display: block; }
+.alertBox-icon { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--surface); flex-shrink: 0; }
+.alertBox-icon .icon, .alertBox-icon svg { width: 18px; height: 18px; }
+.alertBox-icon svg { fill: var(--accent-dark); }
+.alertBox-message { margin: 0; color: inherit; }
+.alertBox--info { background: var(--blush); border-color: var(--blush-2); }
+.alertBox--success { background: #eef4ec; border-color: #d3e2cf; }
+.alertBox--success .alertBox-icon svg { fill: var(--sage); }
+.alertBox--error { background: #fdecec; border-color: #f6d0d0; color: var(--error); }
+.alertBox--error .alertBox-icon svg { fill: var(--error); }
+
+// Sign-up: details and address sections side by side on computers.
+.auth-card--wide { max-width: 680px; }
+.auth-section { margin: 0; padding: 0; border: 0; display: grid; gap: 14px; }
+.auth-section + .auth-section { padding-top: 8px; }
+.auth-section + .auth-section::before { content: ''; height: 1px; margin-bottom: 14px; background: var(--line); } // a fieldset border would cut through its title
+.auth-section-title { display: flex; align-items: center; gap: 8px; padding: 0; margin: 0 0 4px; font-family: var(--font-display); font-size: 20px; color: var(--ink); }
+.auth-section-title .pt-i { color: var(--accent-dark); }
+.auth-section-note { margin: -8px 0 0; font-size: 14px; color: var(--muted); }
+.auth-section-grid { display: grid; gap: 14px; }
+@media (min-width: 640px) { .auth-section-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.auth-dynamic .form-label { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.auth-dynamic .form-label small { text-transform: none; letter-spacing: 0; }
+
 // Cart drawer
 .cart-preview { z-index: 70; }
 .drawer-overlay { z-index: 69; }
