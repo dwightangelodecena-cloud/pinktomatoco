@@ -5,6 +5,8 @@ body { padding-top: 0; } // Cornerstone reserves room for its own fixed phone he
 .container { max-width: none; } // The design runs full width; Cornerstone caps this.
 [data-pt-mood][hidden] { display: none; }
 .navigation-toggle [hidden] { display: none; }
+// On computers the menu is an inline bar: no scrolling, so the hidden Shop dropdown can't add a scrollbar.
+@media (min-width: 992px) { .main-menu, .main-menu.is-open { overflow: visible; } }
 .subscription-form .form-input { height: auto; margin: 0; }
 
 // Cornerstone makes .page a nested grid row (negative margins and a clearfix); the design's .page is a plain block.
@@ -59,6 +61,43 @@ body { padding-top: 0; } // Cornerstone reserves room for its own fixed phone he
 }
 .auth-dynamic .form-input:focus, .auth-dynamic .form-select:focus { border-color: var(--accent); background: var(--surface); box-shadow: 0 0 0 4px var(--accent-soft); outline: none; }
 .form-inlineMessage { display: block; margin-top: 4px; font-size: 13px; color: var(--error); }
+
+// Account pages: Cornerstone's screens inside the React site's account header.
+.page-heading:has(+ .account-shell) { display: none; } // the account header replaces each page's own heading
+.account-shell { margin-top: 24px; }
+.account-tabs { display: flex; gap: 8px; overflow-x: auto; margin: 0 0 28px; padding: 2px 2px 6px; scrollbar-width: none; }
+.account-tabs::-webkit-scrollbar { display: none; }
+.account-tabs a {
+    display: inline-flex; align-items: center; gap: 8px; flex-shrink: 0; padding: 10px 16px; border-radius: 999px;
+    background: var(--surface); border: 1px solid var(--line); color: var(--ink); font-size: 14px; font-weight: 500;
+    transition: background-color .2s, color .2s, border-color .2s;
+}
+.account-tabs a:hover { border-color: var(--accent); color: var(--accent-dark); }
+.account-tabs a[aria-current='page'] { background: var(--ink); border-color: var(--ink); color: #fff; }
+.account { max-width: none; margin: 0 auto 80px; }
+.account-heading { font-size: 22px; margin: 0 0 16px; }
+.account-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.account-listItem { padding: 20px 22px; border-radius: var(--radius-lg); background: var(--surface); border: 1px solid var(--line); }
+.account-product { display: flex; gap: 16px; }
+.account-product-figure img { width: 80px; height: 80px; object-fit: cover; border-radius: 14px; }
+.account-product-title { font-size: 18px; margin: 4px 0; }
+.account-product-title a { color: var(--ink); }
+.account-orderStatus-label { display: inline-block; margin: 0; padding: 4px 10px; border-radius: 999px; background: var(--blush); color: var(--accent-dark); font-size: 12px; font-weight: 600; }
+.account-product-details { display: flex; gap: 24px; flex-wrap: wrap; font-size: 14px; color: var(--muted); }
+.account-product-detail-heading { margin: 8px 0 2px; font-family: var(--font-body); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.account .form-label { font-size: 13px; font-weight: 600; color: var(--ink); }
+.account .form-input, .account .form-select {
+    height: 50px; padding: 0 14px; border-radius: 14px; font-size: 16px; background: var(--surface); border: 1.5px solid var(--line-strong); color: var(--ink);
+}
+.account textarea.form-input { height: auto; padding: 12px 14px; }
+.account .form-input:focus, .account .form-select:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); outline: none; }
+.account .button--primary, .account input.button--primary { background: var(--accent); border-color: var(--accent); color: #fff; border-radius: 999px; }
+.account .button--primary:hover { background: var(--accent-dark); }
+.account .button:not(.button--primary) { border-radius: 999px; }
+.account .alertBox { border-radius: var(--radius); }
+.address { padding: 20px 22px; border-radius: var(--radius-lg); background: var(--surface); border: 1px solid var(--line); }
+.addressList { list-style: none; padding: 0; display: grid; gap: 14px; }
+@media (min-width: 768px) { .addressList { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 
 // Cart drawer
 .cart-preview { z-index: 70; }

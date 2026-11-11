@@ -1,15 +1,8 @@
-<nav aria-label="Breadcrumb">
-    <ol class="breadcrumbs">
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+    <ol>
         {{#unless theme_settings.hide_breadcrumbs }}
             {{#each breadcrumbs}}
-                <li class="breadcrumb {{#if @last}}is-active{{/if}}">
-                    <a class="breadcrumb-label"
-                       href="{{url}}"
-                       {{#if @last}}aria-current="page"{{/if}}
-                    >
-                        <span>{{name}}</span>
-                    </a>
-                </li>
+                <li>{{#if @last}}<span aria-current="page">{{name}}</span>{{else}}<a href="{{url}}">{{name}}</a>{{/if}}</li>
             {{/each}}
         {{/unless}}
     </ol>
