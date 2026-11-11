@@ -7,6 +7,25 @@ body { padding-top: 0; } // Cornerstone reserves room for its own fixed phone he
 .navigation-toggle [hidden] { display: none; }
 .subscription-form .form-input { height: auto; margin: 0; }
 
+// Cornerstone makes .page a nested grid row (negative margins and a clearfix); the design's .page is a plain block.
+.body { margin: 0; }
+.page { margin-left: 0; margin-right: 0; max-width: none; width: auto; }
+.page::before, .page::after { content: none; display: none; }
+
+// Shop All, search and cart page
+.cart-totals a:not(.button), .cart-totals .shipping-estimate-show, .cart-totals .coupon-code-add { color: var(--accent-dark); }
+.cart-table .cart-remove { width: auto; height: auto; float: none; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; overflow: visible; white-space: nowrap; }
+.cart-totals .cart-total-value { text-align: right; }
+.catalog-toolbar .form-select { margin: 0; }
+.cart-page { position: relative; }
+.cart-page .loadingOverlay { display: none; }
+.cart-totals .cart-totals { margin: 0; padding: 0; border: 0; background: none; max-width: none; } // Cornerstone's totals list sits inside the design's box.
+.cart-totals ul.cart-totals { list-style: none; display: grid; gap: 10px; }
+.cart-total { display: flex; justify-content: space-between; gap: 12px; border: 0; padding: 0; }
+.cart-total-label, .cart-total-value { float: none; width: auto; padding: 0; text-align: left; }
+.cart-total-grandTotal { font-weight: 600; color: var(--ink); font-size: 18px; padding-top: 10px; border-top: 1px solid var(--line); }
+.cart-table .quantity-input.form-input { width: 46px; }
+
 // Cart drawer
 .cart-preview { z-index: 70; }
 .drawer-overlay { z-index: 69; }

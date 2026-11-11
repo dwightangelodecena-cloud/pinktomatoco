@@ -80,6 +80,10 @@ export default function pinkTomatoLayout() {
         backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
     }
 
+    // Shop All sort box reloads the page with BigCommerce's own sort.
+    const sortSelect = document.querySelector('[data-pt-sort-select]');
+    if (sortSelect) sortSelect.addEventListener('change', () => sortSelect.form.submit());
+
     const path = window.location.pathname.replace(/\/+$/, '') || '/';
     document.querySelectorAll('[data-pt-nav]').forEach((link) => {
         const target = new URL(link.href).pathname.replace(/\/+$/, '') || '/';

@@ -1,0 +1,15 @@
+{{#if links.length '>' 1}}
+<nav class="pagination" aria-label="Pagination">
+    <ul>
+        {{#if previous}}<li><a href="{{previous}}">Previous</a></li>{{/if}}
+        {{#each links}}
+            {{#if number '==' ../current}}
+                <li class="pagination-current"><span aria-current="page">{{number}}</span></li>
+            {{else}}
+                <li><a href="{{url}}">{{number}}</a></li>
+            {{/if}}
+        {{/each}}
+        {{#if next}}<li><a href="{{next}}">Next</a></li>{{/if}}
+    </ul>
+</nav>
+{{/if}}

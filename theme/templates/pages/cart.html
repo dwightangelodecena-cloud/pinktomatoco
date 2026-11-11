@@ -5,75 +5,53 @@ cart: true
 {{#partial "page"}}
 {{inject 'invalidEntryMessage' (lang 'cart.invalid_entry_message')}}
 {{inject 'multiCouponUIEnabled' cart.multi_coupon_ui_enabled}}
-<div class="page">
+<div class="page cart-page" data-cart>
+    {{> components/cart/page-title}}
 
-    <div class="page-content" data-cart>
-        {{> components/common/breadcrumbs breadcrumbs=breadcrumbs}}
+    <div data-cart-status>
+        {{> components/cart/status-messages}}
+    </div>
 
-        {{> components/cart/page-title}}
+    {{#if cart.items.length}}
+        <div class="loadingOverlay"></div>
 
-        <div data-cart-status>
-            {{> components/cart/status-messages}}
+        <div data-cart-content>
+            {{> components/cart/content}}
         </div>
 
-        {{#if cart.items.length}}
-            <div class="loadingOverlay"></div>
-
-            <div data-cart-content class="cart-content-padding-right">
-                {{> components/cart/content}}
-            </div>
-
+        <div class="cart-totals">
             {{#if cart.multi_coupon_ui_enabled}}
-                <div data-cart-coupons class="cart-content-padding-right">
+                <div data-cart-coupons>
                     {{> components/cart/coupons}}
                 </div>
             {{/if}}
 
-            <div data-cart-totals class="cart-content-padding-right">
+            <div data-cart-totals>
                 {{> components/cart/totals}}
             </div>
 
             {{{region name="cart_below_totals"}}}
 
+            <p class="cart-note">Shipping and taxes are calculated at checkout.</p>
+
             {{#or customer (unless settings.hide_price_from_guests)}}
                 {{#if cart.show_primary_checkout_button}}
-                    <div class="cart-actions cart-content-padding-right">
-                        <a
-                            class="button button--primary"
-                            href="{{urls.checkout.single_address}}"
-                            title="{{lang 'cart.checkout.title'}}"
-                            data-primary-checkout-now-action
-                        >
-                            {{lang 'cart.checkout.button'}}
-                        </a>
-                        {{#if cart.show_multiple_address_shipping}}
-                            <a class="checkoutMultiple" href="{{urls.checkout.multiple_address}}">
-                                {{lang 'cart.preview.checkout_multiple'}}
-                            </a>
-                        {{/if}}
-                    </div>
+                    <a class="button button-primary" href="{{urls.checkout.single_address}}" data-primary-checkout-now-action>Check Out</a>
                 {{else}}
-                    <div class="cart-actions cart-content-padding-right">
-                        <a class="button" href="{{urls.home}}" title="{{lang 'cart.continue_shopping'}}">{{lang 'cart.continue_shopping'}}</a>
-                    </div>
+                    <a class="button button-secondary" href="/shop-all/">Continue shopping</a>
                 {{/if}}
-
                 {{#if cart.additional_checkout_buttons}}
-                    <div data-cart-additional-checkout-buttons class="cart-additionalCheckoutButtons cart-content-padding-right">
+                    <div data-cart-additional-checkout-buttons class="cart-additionalCheckoutButtons">
                         {{> components/cart/additional-checkout-buttons}}
                     </div>
                 {{/if}}
             {{else}}
-                <div class="cart-actions cart-content-padding-right">
-                    <a class="button" href="{{urls.auth.login}}" title="{{lang 'cart.login_to_checkout'}}">{{lang 'cart.login_to_checkout'}}</a>
-                </div>
+                <a class="button button-primary" href="{{urls.auth.login}}">Log in to check out</a>
             {{/or}}
-
-        {{else}}
-            <h3 tabindex="0">{{lang 'cart.checkout.empty_cart'}}</h3>
-        {{/if}}
-
-    </div>
+        </div>
+    {{else}}
+        <p class="cart-empty">Your cart is empty. <a href="/shop-all/">Continue shopping</a>.</p>
+    {{/if}}
 </div>
 {{/partial}}
 {{> layout/base}}
