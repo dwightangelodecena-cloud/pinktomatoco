@@ -55,6 +55,13 @@ async function uninstall(request, env) {
   return new Response('Uninstalled');
 }
 
+// With several users allowed, BigCommerce tells the app when a user loses access. Nothing is stored
+// per user (each visit gets a fresh 12-hour session from /load), so this only confirms the call is genuine.
+async function removeUser(request, env) {
+  const claims = await verifyBigCommerceJwt(new URL(request.url).searchParams.get('signed_payload_jwt'), env);
+  return new Response(claims ? 'OK' : 'Not allowed', { status: claims ? 200 : 401 });
+}
+
 // Local development only: opens the admin without BigCommerce, using the token in .dev.vars.
 async function devLogin(request, env) {
   const { hostname } = new URL(request.url);
@@ -143,6 +150,7 @@ export default {
       if (pathname === '/auth') return await auth(request, env);
       if (pathname === '/load') return await load(request, env);
       if (pathname === '/uninstall') return await uninstall(request, env);
+      if (pathname === '/remove_user') return await removeUser(request, env);
       if (pathname === '/dev-login') return await devLogin(request, env);
       if (pathname.startsWith('/media/')) return await serveUpload(env, pathname.slice(7));
       if (pathname.startsWith('/api/')) return await api(request, env, pathname);
