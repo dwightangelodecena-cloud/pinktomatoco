@@ -104,9 +104,10 @@ export default function pinkTomatoLayout() {
         });
     }
     try {
-        if (sessionStorage.getItem('pt-login-home')) {
+        if (sessionStorage.getItem('pt-login-home') && !loginForm) {
             sessionStorage.removeItem('pt-login-home');
-            if (/^\/account\.php/.test(window.location.pathname) && !/[?&]action=/.test(window.location.search)) {
+            // BigCommerce lands on an account page (often Orders) after sign-in; send shoppers home instead.
+            if (document.querySelector('.account-shell') || /^\/account\.php/.test(window.location.pathname)) {
                 window.location.replace('/');
                 return;
             }
