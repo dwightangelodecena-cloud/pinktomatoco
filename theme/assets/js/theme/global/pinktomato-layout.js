@@ -91,6 +91,15 @@ export default function pinkTomatoLayout() {
         });
     });
 
+    // Store admins (see components/pinktomato/admin-check) get a link to the admin dashboard.
+    if (window.ptAdminUrl) {
+        Array.from(document.querySelectorAll('[data-pt-admin-link]')).forEach((el) => {
+            const link = el.tagName === 'A' ? el : el.querySelector('a');
+            link.href = window.ptAdminUrl;
+            el.hidden = false;
+        });
+    }
+
     // After signing in, go to the homepage (BigCommerce goes to My account), unless the shopper
     // was sent to sign in from somewhere specific, such as checkout or the wishlist.
     const loginForm = document.querySelector('.login-form');
@@ -109,7 +118,7 @@ export default function pinkTomatoLayout() {
             sessionStorage.removeItem('pt-login-home');
             // BigCommerce lands on an account page (often Orders) after sign-in; send shoppers home instead.
             if (document.querySelector('.account-shell') || /^\/account\.php/.test(window.location.pathname)) {
-                window.location.replace('/');
+                window.location.replace(window.ptAdminUrl || '/');
                 return;
             }
         }

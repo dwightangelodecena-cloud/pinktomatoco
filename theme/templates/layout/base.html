@@ -11,13 +11,15 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <script nonce="{{nonce}}">
-            {{!-- Pink Tomato: right after sign-in BigCommerce opens an account page; go home before it is drawn. --}}
+            {{!-- Pink Tomato: right after sign-in BigCommerce opens an account page; go home before it is drawn.
+                  Store admins (emails in components/pinktomato/admin-check) go to the admin dashboard instead. --}}
+            window.ptAdminUrl = {{#if customer}}{{> components/pinktomato/admin-check}}{{else}}''{{/if}};
             (function () {
                 try {
                     if (sessionStorage.getItem('pt-login-home') && /^\/account\.php/.test(location.pathname)) {
                         sessionStorage.removeItem('pt-login-home');
                         document.documentElement.style.visibility = 'hidden';
-                        location.replace('/');
+                        location.replace(window.ptAdminUrl || '/');
                     }
                 } catch (e) {}
             })();

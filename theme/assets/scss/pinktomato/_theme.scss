@@ -234,3 +234,6 @@ body:has(.account-shell) .breadcrumbs { display: none; }
 .pt-slot > [data-content-region]:empty { display: none; }
 .pt-slot:has(> [data-content-region] > *) > .pt-default { display: none; }
 .footer-copyright.pt-slot { display: inline; }
+
+// Admin link stays hidden unless the shopper is a store admin (pinktomato-layout.js shows it).
+[data-pt-admin-link][hidden] { display: none !important; }
