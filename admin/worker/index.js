@@ -62,6 +62,25 @@ async function removeUser(request, env) {
   return new Response(claims ? 'OK' : 'Not allowed', { status: claims ? 200 : 401 });
 }
 
+// The shop's Admin button. The storefront asks BigCommerce for a "current customer" token, signed with
+// this app's client secret, and posts it here. Only the customer accounts in ADMIN_CUSTOMER_IDS get in.
+// The client ID is public (it is only an app name), so the shop may read it from /shop-login/config.
+const shopCors = { 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store', 'Content-Type': 'application/json' };
+
+async function shopLogin(request, env) {
+  if (request.method === 'GET') return new Response(JSON.stringify({ clientId: env.BC_CLIENT_ID }), { headers: shopCors });
+  const form = await request.formData().catch(() => null);
+  let token = String(form?.get('token') || '').trim();
+  if (token.startsWith('{')) token = JSON.parse(token).token || ''; // BigCommerce may answer as {"token": "..."}
+  const claims = await verifyBigCommerceJwt(token, env);
+  const allowed = String(env.ADMIN_CUSTOMER_IDS || '').split(',').map((s) => Number(s.trim())).filter(Boolean);
+  const customer = claims?.customer;
+  if (!claims || claims.operation !== 'current_customer' || claims.store_hash !== env.STORE_HASH || !allowed.includes(Number(customer?.id))) {
+    return new Response('This account cannot open the admin. Sign in on the shop with an admin account and try again.', { status: 403 });
+  }
+  return openAdmin(request.url, await createSession(env, { storeHash: env.STORE_HASH, user: { email: customer.email } }));
+}
+
 // Local development only: opens the admin without BigCommerce, using the token in .dev.vars.
 async function devLogin(request, env) {
   const { hostname } = new URL(request.url);
@@ -152,6 +171,7 @@ export default {
       if (pathname === '/uninstall') return await uninstall(request, env);
       if (pathname === '/remove_user') return await removeUser(request, env);
       if (pathname === '/dev-login') return await devLogin(request, env);
+      if (pathname === '/shop-login' || pathname === '/shop-login/config') return await shopLogin(request, env);
       if (pathname.startsWith('/media/')) return await serveUpload(env, pathname.slice(7));
       if (pathname.startsWith('/api/')) return await api(request, env, pathname);
       return env.ASSETS.fetch(request);

@@ -9,7 +9,7 @@
     "binding": "ASSETS",
     "not_found_handling": "single-page-application",
     // These paths are handled by the Worker, not served as files.
-    "run_worker_first": ["/api/*", "/auth", "/load", "/uninstall", "/remove_user", "/dev-login", "/media/*"]
+    "run_worker_first": ["/api/*", "/auth", "/load", "/uninstall", "/remove_user", "/dev-login", "/shop-login", "/shop-login/config", "/media/*"]
   },
   // Holds the store's access token from the app install. Create it with
   // `npx wrangler kv namespace create STORE` and put its id here before the first deploy.
@@ -18,7 +18,10 @@
   ],
   "vars": {
     "STORE_HASH": "v7sdscf7vw",
-    "CHANNEL_ID": "1"
+    "CHANNEL_ID": "1",
+    // Shop customer accounts whose Admin button opens this admin: 3 = Theresa, 8 = Dwight.
+    // Matched by account number, not email, so a new sign-up using someone's email can't get in.
+    "ADMIN_CUSTOMER_IDS": "3,8"
   }
   // Secrets (never in this file): BC_CLIENT_ID, BC_CLIENT_SECRET, SESSION_SECRET.
   // Set with `npx wrangler secret put NAME`. For local work they go in .dev.vars, which git ignores.

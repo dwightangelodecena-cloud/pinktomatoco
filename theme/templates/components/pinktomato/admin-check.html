@@ -1,5 +1,5 @@
-{{!-- Prints the admin dashboard address (as a JS string) when the signed-in shopper uses a store admin's email, else ''.
-      Only true/false reaches the page: the emails themselves are never sent to the browser.
-      The dashboard is inside the BigCommerce control panel, which still asks for a BigCommerce staff login.
-      To add an admin, copy one {{#if}} line with their email (lowercase). --}}
-{{#if customer.email '===' 'dwightangelodecena@gmail.com'}}'https://store-v7sdscf7vw.mybigcommerce.com/manage/app/68664'{{else if customer.email '===' 'theresacobrado@gmail.com'}}'https://store-v7sdscf7vw.mybigcommerce.com/manage/app/68664'{{else}}''{{/if}}
+{{!-- Prints true when the signed-in shopper is a store admin, else false. Only true/false reaches the page.
+      Matched by customer account number (3 = Theresa, 8 = Dwight), not email, so a new sign-up using
+      someone's email doesn't count. This only shows the Admin button: the admin Worker checks the account
+      again (ADMIN_CUSTOMER_IDS in admin/wrangler.jsonc), so keep both lists the same. --}}
+{{#if customer.id '===' 3}}true{{else if customer.id '===' 8}}true{{else}}false{{/if}}

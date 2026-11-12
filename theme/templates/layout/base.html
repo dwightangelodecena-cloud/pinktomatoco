@@ -13,13 +13,37 @@
         <script nonce="{{nonce}}">
             {{!-- Pink Tomato: right after sign-in BigCommerce opens an account page; go home before it is drawn.
                   Store admins (emails in components/pinktomato/admin-check) go to the admin dashboard instead. --}}
-            window.ptAdminUrl = {{#if customer}}{{> components/pinktomato/admin-check}}{{else}}''{{/if}};
+            window.ptIsAdmin = {{#if customer}}{{> components/pinktomato/admin-check}}{{else}}false{{/if}};
+            // Opens the admin on Cloudflare: BigCommerce signs a note saying who is signed in, and the admin checks it.
+            window.ptOpenAdmin = function () {
+                var host = 'https://pinktomato-admin.pinktomato-admin.workers.dev';
+                return fetch(host + '/shop-login/config')
+                    .then(function (r) { return r.json(); })
+                    .then(function (c) { return fetch('/customer/current.jwt?app_client_id=' + encodeURIComponent(c.clientId), { credentials: 'same-origin' }); })
+                    .then(function (r) { if (!r.ok) throw new Error('not signed in'); return r.text(); })
+                    .then(function (token) {
+                        var form = document.createElement('form');
+                        form.method = 'post';
+                        form.action = host + '/shop-login';
+                        var field = document.createElement('input');
+                        field.type = 'hidden';
+                        field.name = 'token';
+                        field.value = token;
+                        form.appendChild(field);
+                        (document.body || document.documentElement).appendChild(form);
+                        form.submit();
+                    });
+            };
             (function () {
                 try {
                     if (sessionStorage.getItem('pt-login-home') && /^\/account\.php/.test(location.pathname)) {
                         sessionStorage.removeItem('pt-login-home');
                         document.documentElement.style.visibility = 'hidden';
-                        location.replace(window.ptAdminUrl || '/');
+                        if (window.ptIsAdmin) {
+                            window.ptOpenAdmin().catch(function () { location.replace('/'); });
+                        } else {
+                            location.replace('/');
+                        }
                     }
                 } catch (e) {}
             })();

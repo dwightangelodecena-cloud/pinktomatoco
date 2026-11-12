@@ -92,10 +92,18 @@ export default function pinkTomatoLayout() {
     });
 
     // Store admins (see components/pinktomato/admin-check) get a link to the admin dashboard.
-    if (window.ptAdminUrl) {
+    if (window.ptIsAdmin && window.ptOpenAdmin) {
         Array.from(document.querySelectorAll('[data-pt-admin-link]')).forEach((el) => {
             const link = el.tagName === 'A' ? el : el.querySelector('a');
-            link.href = window.ptAdminUrl;
+            link.href = 'https://pinktomato-admin.pinktomato-admin.workers.dev/';
+            link.addEventListener('click', (event) => {
+                event.preventDefault();
+                link.style.opacity = '0.6';
+                window.ptOpenAdmin().catch(() => {
+                    link.style.opacity = '';
+                    window.alert('The admin could not open. Please sign in again and try once more.');
+                });
+            });
             el.hidden = false;
         });
     }
@@ -118,7 +126,11 @@ export default function pinkTomatoLayout() {
             sessionStorage.removeItem('pt-login-home');
             // BigCommerce lands on an account page (often Orders) after sign-in; send shoppers home instead.
             if (document.querySelector('.account-shell') || /^\/account\.php/.test(window.location.pathname)) {
-                window.location.replace(window.ptAdminUrl || '/');
+                if (window.ptIsAdmin && window.ptOpenAdmin) {
+                    window.ptOpenAdmin().catch(() => window.location.replace('/'));
+                } else {
+                    window.location.replace('/');
+                }
                 return;
             }
         }
