@@ -7,7 +7,10 @@ body { padding-top: 0; } // Cornerstone reserves room for its own fixed phone he
 .navigation-toggle [hidden] { display: none; }
 // On computers the menu is an inline bar: no scrolling, so the hidden Shop dropdown can't add a scrollbar.
 @media (min-width: 992px) { .main-menu, .main-menu.is-open { overflow: visible; } }
-.subscription-form .form-input { height: auto; margin: 0; }
+.subscription-form { align-items: center; }
+.subscription-form .form-input { height: 42px; margin: 0; line-height: 1.2; }
+// Cornerstone's .button has a bottom margin, which pushed Subscribe above the middle of the pill.
+.subscription-form .button { margin: 0; height: 42px; display: inline-flex; align-items: center; justify-content: center; }
 
 // Cornerstone makes .page a nested grid row (negative margins and a clearfix); the design's .page is a plain block.
 .body { margin: 0; }
