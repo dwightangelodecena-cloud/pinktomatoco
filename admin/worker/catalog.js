@@ -57,6 +57,15 @@ function validate(input) {
   }
 }
 
+// BigCommerce needs a SKU on every size. When the SKU box is left empty, make a unique one
+// from the product and size names, e.g. "LAVENDER-CANDLE-8OZ-K3F9".
+function skuFor(size, productName) {
+  if (size.sku?.trim()) return size.sku.trim();
+  const part = (s) => s.toUpperCase().replace(/[^A-Z0-9]+/g, '-').replace(/^-|-$/g, '');
+  const tail = Math.random().toString(36).slice(2, 6).toUpperCase();
+  return [part(productName).slice(0, 30), part(size.label || '').slice(0, 12), tail].filter(Boolean).join('-');
+}
+
 export async function createProduct(bc, env, input) {
   validate(input);
   const sizes = input.sizes;
@@ -71,7 +80,7 @@ export async function createProduct(bc, env, input) {
     inventory_tracking: 'variant',
     images: input.images.map((image_url, i) => ({ image_url, is_thumbnail: i === 0 })),
     variants: sizes.map((s) => ({
-      sku: s.sku?.trim() || undefined,
+      sku: skuFor(s, input.name),
       price: Number(s.price),
       inventory_level: s.stock ?? 0,
       purchasing_disabled: Boolean(s.purchasing_disabled),
@@ -118,7 +127,7 @@ async function saveSizes(bc, current, sizes) {
   for (const [i, s] of newSizes.entries()) {
     const value = await bc.post(`/v3/catalog/products/${current.id}/options/${option_id}/values`, { label: s.label.trim(), sort_order: current.variants.length + i });
     await bc.post(`/v3/catalog/products/${current.id}/variants`, {
-      sku: s.sku?.trim() || undefined,
+      sku: skuFor(s, current.name),
       price: Number(s.price),
       purchasing_disabled: Boolean(s.purchasing_disabled),
       ...(tracksVariants ? { inventory_level: s.stock ?? 0 } : {}),
