@@ -76,6 +76,21 @@ async function shopLogin(request, env) {
   const allowed = String(env.ADMIN_CUSTOMER_IDS || '').split(',').map((s) => Number(s.trim())).filter(Boolean);
   const customer = claims?.customer;
   if (!claims || claims.operation !== 'current_customer' || claims.store_hash !== env.STORE_HASH || !allowed.includes(Number(customer?.id))) {
+    // Why it was refused, without the token itself. Read with `npx wrangler tail`.
+    let unverified = null;
+    try { unverified = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))); } catch { /* not a JWT */ }
+    console.log('shop-login refused', JSON.stringify({
+      looksLikeJwt: token.split('.').length === 3,
+      alg: (() => { try { return JSON.parse(atob(token.split('.')[0].replace(/-/g, '+').replace(/_/g, '/'))).alg; } catch { return null; } })(),
+      startsWith: token.slice(0, 15).replace(/[A-Za-z0-9_-]{10,}/g, '…'),
+      signatureOk: Boolean(claims),
+      audMatches: unverified ? unverified.aud === env.BC_CLIENT_ID : null,
+      operation: unverified?.operation,
+      storeHash: unverified?.store_hash,
+      customerId: unverified?.customer?.id,
+      expired: unverified?.exp ? unverified.exp < Date.now() / 1000 : null,
+      keys: unverified ? Object.keys(unverified) : null,
+    }));
     return new Response('This account cannot open the admin. Sign in on the shop with an admin account and try again.', { status: 403 });
   }
   return openAdmin(request.url, await createSession(env, { storeHash: env.STORE_HASH, user: { email: customer.email } }));

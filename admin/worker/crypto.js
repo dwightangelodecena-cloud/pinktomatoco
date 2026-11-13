@@ -4,7 +4,9 @@ const encoder = new TextEncoder();
 const base64url = (bytes) => btoa(String.fromCharCode(...new Uint8Array(bytes))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 const fromBase64url = (text) => Uint8Array.from(atob(text.replace(/-/g, '+').replace(/_/g, '/')), (c) => c.charCodeAt(0));
 
-const key = (secret) => crypto.subtle.importKey('raw', encoder.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign', 'verify']);
+const key = (secret, hash = 'SHA-256') => crypto.subtle.importKey('raw', encoder.encode(secret), { name: 'HMAC', hash }, false, ['sign', 'verify']);
+// BigCommerce signs app-load tokens with HS256 and storefront "current customer" tokens with HS512.
+const HMAC_HASH = { HS256: 'SHA-256', HS512: 'SHA-512' };
 
 async function verifyHs256(token, secret) {
   const parts = String(token || '').split('.');
@@ -12,9 +14,10 @@ async function verifyHs256(token, secret) {
   const [header, payload, signature] = parts;
   // Anything malformed is simply "not valid", never a server error.
   try {
-    const ok = await crypto.subtle.verify('HMAC', await key(secret), fromBase64url(signature), encoder.encode(`${header}.${payload}`));
+    const hash = HMAC_HASH[JSON.parse(new TextDecoder().decode(fromBase64url(header))).alg];
+    if (!hash) return null;
+    const ok = await crypto.subtle.verify('HMAC', await key(secret, hash), fromBase64url(signature), encoder.encode(`${header}.${payload}`));
     if (!ok) return null;
-    if (JSON.parse(new TextDecoder().decode(fromBase64url(header))).alg !== 'HS256') return null;
     return JSON.parse(new TextDecoder().decode(fromBase64url(payload)));
   } catch {
     return null;
