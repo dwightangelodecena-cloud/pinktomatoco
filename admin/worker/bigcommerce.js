@@ -27,6 +27,9 @@ export function client(env, token) {
       const detail = body?.errors ? Object.values(body.errors).join(' ') : '';
       throw new AdminError(detail || body?.title || 'BigCommerce refused that change.');
     }
+    if (response.status === 403) {
+      throw new AdminError('The admin app is not allowed to change this yet. In the BigCommerce Developer Portal, give "Pink Tomato Store Admin" the missing permission (OAuth scope), then open the app again from Apps.');
+    }
     if (!response.ok) throw new Error(`BigCommerce request failed: ${response.status} ${path}`);
     return body;
   }

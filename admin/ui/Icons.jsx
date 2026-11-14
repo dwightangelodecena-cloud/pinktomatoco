@@ -75,6 +75,12 @@ export const LogOutIcon = (p) => (
 export const PackageIcon = (p) => (
   <Icon {...p}><path d="M21 8 12 3 3 8v8l9 5 9-5Z" /><path d="m3 8 9 5 9-5" /><path d="M12 13v8" /></Icon>
 );
+export const LayersIcon = (p) => (
+  <Icon {...p}><path d="m12 2 10 5-10 5L2 7Z" /><path d="m2 17 10 5 10-5" /><path d="m2 12 10 5 10-5" /></Icon>
+);
+export const TruckIcon = (p) => (
+  <Icon {...p}><path d="M3 6h11v10H3Z" /><path d="M14 9h4l3 3v4h-7" /><circle cx="7" cy="18" r="2" /><circle cx="17" cy="18" r="2" /></Icon>
+);
 export const TagIcon = (p) => (
   <Icon {...p}><path d="M12.6 2.6A2 2 0 0 0 11.2 2H4a2 2 0 0 0-2 2v7.2a2 2 0 0 0 .6 1.4l8.7 8.7a2.4 2.4 0 0 0 3.4 0l6.6-6.6a2.4 2.4 0 0 0 0-3.4Z" /><circle cx="7.5" cy="7.5" r="1.2" fill="currentColor" /></Icon>
 );

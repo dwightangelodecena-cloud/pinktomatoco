@@ -3,7 +3,8 @@
 // The React screens (built into ./dist) call /api/* with the session from /load.
 import { AdminError, client, storeToken } from './bigcommerce.js';
 import { createSession, readSession, verifyBigCommerceJwt } from './crypto.js';
-import { createProduct, deleteProduct, listAdminProducts, setProductVisible, updateProduct } from './catalog.js';
+import { createProduct, deleteCategory, deleteProduct, listAdminProducts, listCategories, saveCategory, setProductVisible, updateProduct } from './catalog.js';
+import { deleteMethod, deleteTaxRate, deleteZone, getPayments, getShipping, getTax, saveMethod, saveTaxRate, saveZone } from './checkout-settings.js';
 import { SETTABLE_STATUSES, countOrdersToHandle, getOrderDetails, listOrders, salesSummary, setOrderStatus } from './orders.js';
 import { deleteReview, listCustomers, listReviews, listSubscribers, setReviewApproved } from './customers.js';
 import { saveUpload, serveUpload } from './media.js';
@@ -139,6 +140,30 @@ async function api(request, env, path) {
       if (action === 'update') return json(await updateProduct(bc, id, product));
       if (action === 'visibility') { await setProductVisible(bc, id, isVisible); return json({ ok: true }); }
       if (action === 'delete') { await deleteProduct(bc, id); return json({ ok: true }); }
+      return json({ error: 'Unknown action.' }, 400);
+    }
+
+    case 'GET /api/categories': return json(await listCategories(bc));
+    case 'POST /api/categories': {
+      if (body.action === 'save') return json(await saveCategory(bc, body.category));
+      if (body.action === 'delete' && isId(body.id)) { await deleteCategory(bc, body.id); return json({ ok: true }); }
+      return json({ error: 'Unknown action.' }, 400);
+    }
+
+    case 'GET /api/shipping': return json(await getShipping(bc));
+    case 'POST /api/shipping': {
+      const { action, zoneId, id } = body;
+      if (action === 'saveZone') return json(await saveZone(bc, body.zone));
+      if (action === 'deleteZone' && isId(id)) { await deleteZone(bc, id); return json({ ok: true }); }
+      if (action === 'saveMethod' && isId(zoneId)) return json(await saveMethod(bc, zoneId, body.method));
+      if (action === 'deleteMethod' && isId(zoneId) && isId(id)) { await deleteMethod(bc, zoneId, id); return json({ ok: true }); }
+      return json({ error: 'Unknown action.' }, 400);
+    }
+    case 'GET /api/payments': return json(await getPayments(bc));
+    case 'GET /api/tax': return json(await getTax(bc));
+    case 'POST /api/tax': {
+      if (body.action === 'save') return json(await saveTaxRate(bc, body.rate));
+      if (body.action === 'delete' && isId(body.id)) { await deleteTaxRate(bc, body.id); return json({ ok: true }); }
       return json({ error: 'Unknown action.' }, 400);
     }
 

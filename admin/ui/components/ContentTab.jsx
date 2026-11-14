@@ -2,16 +2,22 @@ import { useEffect, useRef, useState } from 'react';
 import { DEFAULT_CONTENT } from '../lib/siteContent.js';
 import { STORE_URL, getAdminProducts, getContent, saveContent } from '../lib/adminApi.js';
 import ContentPreview from './ContentPreview.jsx';
-import { ArrowRight, EyeIcon, EyeOffIcon, FileIcon, GridIcon, ImageIcon, MegaphoneIcon, RefreshIcon, SaveIcon, UndoIcon } from '../Icons.jsx';
+import { ArrowRight, EyeIcon, EyeOffIcon, FileIcon, GridIcon, ImageIcon, LayersIcon, MegaphoneIcon, RefreshIcon, SaveIcon, TagIcon, UndoIcon } from '../Icons.jsx';
 import { Cards, Messages, PhotoSlots, PolicySections, Section, Text } from './ContentFields.jsx';
 import HomepageProducts from './HomepageProducts.jsx';
+import ProductManager from './ProductManager.jsx';
+import CategoryManager from './CategoryManager.jsx';
 import { Filter, Loading, Problem } from './shared.jsx';
 
 const CARDS = [
   { id: 'banners', label: 'Hero & Banners', text: 'Announcement bar, plus the heading and photos at the top of the homepage', Icon: MegaphoneIcon },
   { id: 'homepage', label: 'Homepage', text: 'Featured products and every section below the hero', Icon: GridIcon },
   { id: 'pages', label: 'Pages', text: 'Shipping & Returns, Contact Us, Blog and the footer', Icon: FileIcon },
+  { id: 'categories', label: 'Categories', text: 'The groups in the Shop menu, like Candles or Wax Melts', Icon: LayersIcon },
+  { id: 'products', label: 'Products', text: 'Names, photos, options (vessel, size, wick), prices and stock', Icon: TagIcon },
 ];
+// These cards save each item on its own, straight to BigCommerce, so the page-wide Save and preview don't apply.
+const SELF_SAVING = ['categories', 'products'];
 
 const PAGES = [
   { value: 'shipping', label: 'Shipping & Returns', path: '/shipping-returns' },
@@ -117,7 +123,7 @@ function merge(saved) {
   return merged;
 }
 
-export default function ContentTab({ setDirty }) {
+export default function ContentTab({ setDirty, startCard }) {
   const [content, setContent] = useState(null);
   const [featuredIds, setFeaturedIds] = useState([]);
   const [products, setProducts] = useState(null);
@@ -138,13 +144,14 @@ export default function ContentTab({ setDirty }) {
 
   if (loadError) return <section className="content-tab"><Problem>{loadError}</Problem></section>;
   if (!content) return <section className="content-tab"><Loading /></section>;
-  return <ContentEditor content={content} onSaved={setContent} setDirty={setDirty} products={products} featuredIds={featuredIds} onFeaturedSaved={loadFeatured} />;
+  return <ContentEditor content={content} onSaved={setContent} setDirty={setDirty} products={products} featuredIds={featuredIds} onFeaturedSaved={loadFeatured} startCard={startCard} />;
 }
 
-function ContentEditor({ content, onSaved, setDirty, products, featuredIds, onFeaturedSaved }) {
+function ContentEditor({ content, onSaved, setDirty, products, featuredIds, onFeaturedSaved, startCard }) {
   const [draft, setDraft] = useState(content);
   const [history, setHistory] = useState([]);
-  const [card, setCard] = useState('banners');
+  const [card, setCard] = useState(CARDS.some((c) => c.id === startCard) ? startCard : 'banners');
+  const selfSaving = SELF_SAVING.includes(card);
   const [page, setPage] = useState('shipping');
   const [status, setStatus] = useState(null);
   const [showPreview, setShowPreview] = useState(() => window.matchMedia('(min-width: 1180px)').matches);
@@ -152,9 +159,10 @@ function ContentEditor({ content, onSaved, setDirty, products, featuredIds, onFe
 
   const dirty = !same(draft, content);
   useEffect(() => {
-    setDirty(dirty);
+    // Product and category editors report their own unsaved changes.
+    if (!selfSaving) setDirty(dirty);
     return () => setDirty(false);
-  }, [dirty, setDirty]);
+  }, [dirty, setDirty, selfSaving]);
 
   // Typing in one field counts as a single step for Undo.
   const edit = (key, patch, field = null) => {
@@ -216,7 +224,7 @@ function ContentEditor({ content, onSaved, setDirty, products, featuredIds, onFe
               : 'Edit the wording and photos on your store. Shoppers see your changes once you save.'}
           </p>
         </div>
-        <div className="content-actions">
+        {!selfSaving && <div className="content-actions">
           <button type="button" className="content-action" disabled={history.length === 0} onClick={undo}><UndoIcon size={15} /> Undo</button>
           <button type="button" className="content-action" disabled={!dirty} onClick={reset}><RefreshIcon size={15} /> Reset</button>
           <button type="button" className="content-action is-primary" disabled={!dirty || status?.type === 'pending'} onClick={save}><SaveIcon size={15} /> {status?.type === 'pending' ? 'Saving…' : 'Save changes'}</button>
@@ -224,20 +232,35 @@ function ContentEditor({ content, onSaved, setDirty, products, featuredIds, onFe
             {showPreview ? <EyeOffIcon size={15} /> : <EyeIcon size={15} />} {showPreview ? 'Hide preview' : 'Show preview'}
           </button>
           <a className="content-action" href={STORE_URL + viewPath} target="_blank" rel="noreferrer">View on store <ArrowRight size={14} /></a>
-        </div>
+        </div>}
       </header>
 
       {status?.text && <p className={`form-message ${status.type}`} role="status">{status.text}</p>}
 
       <div className="content-cards-nav">
         {CARDS.map((c) => (
-          <button key={c.id} type="button" aria-pressed={card === c.id} onClick={() => setCard(c.id)}>
+          <button
+            key={c.id}
+            type="button"
+            aria-pressed={card === c.id}
+            onClick={() => {
+              if (card === c.id) return;
+              if (dirty && !selfSaving && SELF_SAVING.includes(c.id) && !window.confirm('You have unsaved wording changes. Leave them unsaved for now? They stay here until you come back and save.')) return;
+              setCard(c.id);
+            }}
+          >
             <c.Icon size={18} />
             <span><strong>{c.label}</strong><small>{c.text}</small></span>
           </button>
         ))}
       </div>
 
+      {selfSaving ? (
+        <div className="content-editor content-editor-wide">
+          {card === 'categories' && <CategoryManager />}
+          {card === 'products' && <ProductManager setDirty={setDirty} />}
+        </div>
+      ) : (
       <div className={`content-split ${showPreview ? 'has-preview' : ''}`}>
         <div className="content-editor">
           {card === 'pages' && <Filter label="Choose a page" options={PAGES} value={page} onChange={setPage} />}
@@ -256,6 +279,7 @@ function ContentEditor({ content, onSaved, setDirty, products, featuredIds, onFe
           />
         )}
       </div>
+      )}
     </section>
   );
 }

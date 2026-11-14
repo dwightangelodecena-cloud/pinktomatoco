@@ -40,6 +40,22 @@ export const saveProduct = (id, product) => api('/api/products', id ? { action: 
 export const setProductVisible = (id, isVisible) => api('/api/products', { action: 'visibility', id, isVisible });
 export const deleteProduct = (id) => api('/api/products', { action: 'delete', id });
 
+export const getCategories = () => api('/api/categories');
+export const saveCategory = (category) => api('/api/categories', { action: 'save', category });
+export const deleteCategory = (id) => api('/api/categories', { action: 'delete', id });
+
+// Shipping, Payments & Tax tab.
+export const getShipping = () => api('/api/shipping');
+export const saveZone = (zone) => api('/api/shipping', { action: 'saveZone', zone });
+export const deleteZone = (id) => api('/api/shipping', { action: 'deleteZone', id });
+export const saveMethod = (zoneId, method) => api('/api/shipping', { action: 'saveMethod', zoneId, method });
+export const deleteMethod = (zoneId, id) => api('/api/shipping', { action: 'deleteMethod', zoneId, id });
+export const getPayments = () => api('/api/payments');
+export const getTax = () => api('/api/tax');
+export const saveTaxRate = (rate) => api('/api/tax', { action: 'save', rate });
+export const deleteTaxRate = (id) => api('/api/tax', { action: 'delete', id });
+export const CONTROL_PANEL = 'https://store-v7sdscf7vw.mybigcommerce.com/manage';
+
 export const getAdminReviews = () => api('/api/reviews');
 export const setReviewApproved = (review, approved) => api('/api/reviews', { action: 'approve', productId: review.product_id, id: review.id, approved });
 export const deleteReview = (review) => api('/api/reviews', { action: 'delete', productId: review.product_id, id: review.id });

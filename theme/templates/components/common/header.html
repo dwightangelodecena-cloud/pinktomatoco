@@ -62,6 +62,12 @@
                     </button>
                     <ul class="dropdown">
                         <li><a href="/shop-all/" data-pt-nav>Shop All</a></li>
+                        {{!-- Visible categories added in the admin (Content → Categories) appear here automatically. --}}
+                        {{#each categories}}
+                            {{#if name '!==' 'Shop All'}}
+                                <li><a href="{{url}}" data-pt-nav>{{name}}</a></li>
+                            {{/if}}
+                        {{/each}}
                     </ul>
                 </li>
                 <li style="--i: 1"><a class="main-menu-link" href="/shop-all/" data-pt-nav><span>Shop All</span></a></li>
