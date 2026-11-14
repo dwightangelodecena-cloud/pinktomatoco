@@ -28,7 +28,14 @@ function App() {
       <div className="admin-gate">
         <img src="/logo.webp" alt="Pink Tomato" />
         <h1>Pink Tomato admin</h1>
-        <p>{state.status === 'error' ? state.message : 'Please open the admin from Apps in the BigCommerce control panel.'}</p>
+        <p>
+          {state.status === 'error'
+            ? state.message
+            : new URLSearchParams(window.location.search).has('signed-out')
+              ? "You've logged out of the admin."
+              : 'Sign in on the shop with an admin account, then click Admin at the top of the page.'}
+        </p>
+        <a className="button button-primary" href="https://pinktomatoco.com/login.php">Go to the shop</a>
         {['localhost', '127.0.0.1'].includes(window.location.hostname) && (
           <a className="button button-primary" href="/dev-login">Open the local admin</a>
         )}

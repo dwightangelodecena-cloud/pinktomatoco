@@ -15,6 +15,11 @@ export function takeSession() {
 let current = null;
 export const setSession = (value) => { current = value; };
 export const session = () => current;
+// Log out: forget the session in this tab. It also stops working on its own after 12 hours.
+export function endSession() {
+  current = null;
+  try { sessionStorage.removeItem(KEY); } catch { /* storage blocked */ }
+}
 
 export async function api(path, body) {
   const response = await fetch(path, {

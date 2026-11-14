@@ -35,6 +35,17 @@
                     });
             };
             (function () {
+                {{!-- Already signed in (for example after pressing Back from the admin): the sign-in and
+                      create-account pages have nothing to do, so go home. Log out (?action=logout) and
+                      password links are left alone. --}}
+                if ({{#if customer}}true{{else}}false{{/if}} && /^\/login\.php/.test(location.pathname)) {
+                    var action = new URLSearchParams(location.search).get('action');
+                    if (!action || action === 'create_account') {
+                        document.documentElement.style.visibility = 'hidden';
+                        location.replace('/');
+                        return;
+                    }
+                }
                 try {
                     if (sessionStorage.getItem('pt-login-home') && /^\/account\.php/.test(location.pathname)) {
                         sessionStorage.removeItem('pt-login-home');

@@ -10,7 +10,8 @@ import ReviewsTab from './components/ReviewsTab.jsx';
 import ContentTab from './components/ContentTab.jsx';
 import SubscribersTab from './components/SubscribersTab.jsx';
 import { Panel } from './components/shared.jsx';
-import { BarChartIcon, CloseIcon, FileIcon, GridIcon, HeartIcon, MenuIcon, PackageIcon, Star, StoreIcon, TagIcon, UsersIcon } from './Icons.jsx';
+import { BarChartIcon, CloseIcon, FileIcon, GridIcon, HeartIcon, LogOutIcon, MenuIcon, PackageIcon, Star, StoreIcon, TagIcon, UsersIcon } from './Icons.jsx';
+import { endSession } from './api.js';
 
 // Products sits on its own tab here. On the React site it lived inside Content, which comes back with the CMS.
 function ProductsTab({ setDirty }) {
@@ -118,6 +119,18 @@ export default function Admin({ me }) {
 
         <div className="admin-sidebar-foot">
           <a href={STORE_URL} target="_blank" rel="noreferrer" onClick={guard}><StoreIcon size={18} /> View store</a>
+          <a
+            href="/?signed-out=1"
+            onClick={(e) => {
+              e.preventDefault();
+              if (unsaved.current && !window.confirm('You have unsaved changes. Log out without saving?')) return;
+              unsaved.current = false;
+              endSession();
+              window.location.replace('/?signed-out=1');
+            }}
+          >
+            <LogOutIcon size={18} /> Log out
+          </a>
           {me?.email && <p className="admin-muted admin-signed-in">Signed in as {me.email}</p>}
         </div>
       </aside>
