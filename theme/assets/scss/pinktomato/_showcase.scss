@@ -301,3 +301,41 @@
     .showcase *, .showcase-glow { animation: none !important; transition: none !important; }
     .showcase-img.is-entering { opacity: 1; transform: none; filter: none; }
 }
+
+// ======================================================================
+// Phones: the homepage tuned for small screens.
+// ======================================================================
+@media (max-width: 767px) {
+    // Hero: candle, name and the candle switcher all fit on the first screen.
+    .showcase-stage { padding: 18px 0 96px; }
+    .showcase-inner { gap: 14px; }
+    .showcase-word { top: 8px; font-size: 30vw; }
+    .showcase-figure, .showcase-figure.is-cutout { max-width: 230px; margin: 0 auto; }
+    .showcase-figure.is-cutout .showcase-arch { aspect-ratio: 1 / 1; }
+    .showcase-arch-glow { inset: 0 -20% -6%; }
+    .showcase-copy { gap: 10px; text-align: center; justify-items: center; }
+    .showcase-eyebrow { justify-self: center; font-size: 10px; padding: 5px 10px; }
+    .showcase-title { font-size: 34px; }
+    .showcase-text { font-size: 14px; line-height: 1.55; max-width: 34ch; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .showcase-chips { justify-content: center; }
+    .showcase-chips li { font-size: 12px; padding: 4px 10px; }
+    .showcase-actions { justify-content: center; gap: 14px; margin-top: 2px; }
+    .showcase-actions .button { padding: 12px 20px; }
+    // Switcher: the thumbnails become a centred strip; the side text is dropped to keep it short.
+    .showcase-side { justify-items: center; text-align: center; gap: 8px; }
+    .showcase-tagline { font-size: 22px; }
+    .showcase-side-text { display: none; }
+    .showcase-thumbs { justify-content: center; flex-wrap: nowrap; overflow-x: auto; max-width: 100%; padding: 6px 4px 8px; gap: 8px; scroll-snap-type: x mandatory; }
+    .showcase-thumb { width: 54px; height: 68px; border-radius: 12px; scroll-snap-align: center; }
+    .showcase-count { font-size: 12px; }
+    // Ingredients: smaller, kept near the candle so they read on a narrow screen.
+    .showcase-note { --s: 34px !important; }
+    .showcase-note:nth-child(n + 7) { display: none; }
+    .showcase-note:nth-child(1) { left: 14% !important; top: 6% !important; }
+    .showcase-note:nth-child(2) { left: 86% !important; top: 8% !important; }
+    .showcase-note:nth-child(3) { left: 10% !important; top: 30% !important; }
+    .showcase-note:nth-child(4) { left: 90% !important; top: 32% !important; }
+    .showcase-note:nth-child(5) { left: 22% !important; top: 44% !important; }
+    .showcase-note:nth-child(6) { left: 80% !important; top: 46% !important; }
+    .showcase + .pt-slot .value-props, .showcase ~ .pt-slot:first-of-type .value-props { margin-top: -64px; }
+}

@@ -338,36 +338,45 @@ body:has([data-pt-compact-header]) .header-logo { display: none; }
 .category-pill.is-active { color: #fff; background: var(--ink); border-color: var(--ink); }
 
 // ---------- Contact page ----------
-.contact-page { padding-top: 24px; padding-bottom: 80px; }
-.contact-layout { display: grid; gap: 22px; max-width: 1180px; margin: 0 auto; }
-@media (min-width: 960px) { .contact-layout { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: stretch; } }
-.contact-aside {
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    padding: clamp(28px, 4vw, 44px);
-    border-radius: 28px;
-    color: #fbefe6;
-    background: radial-gradient(120% 120% at 80% 80%, #2c1e17 0%, #140e0c 70%);
+.contact-page { padding-top: 28px; padding-bottom: 80px; }
+.contact-layout { display: grid; gap: 22px; max-width: 1160px; margin: 0 auto; }
+@media (min-width: 960px) {
+    .contact-layout { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); align-items: start; }
+    .contact-aside { position: sticky; top: 96px; }
 }
-.contact-glow { position: absolute; inset: 0; z-index: -1; background: radial-gradient(360px circle at 78% 82%, rgba(232, 150, 80, .45), transparent 70%); pointer-events: none; }
-.contact-candle { position: absolute; right: -10px; bottom: -6px; z-index: -1; width: 46%; max-width: 240px; filter: drop-shadow(0 20px 28px rgba(0, 0, 0, .5)); opacity: .95; }
-.contact-aside .eyebrow { color: #f5c8b8; margin: 0; }
-.contact-title { margin: 0; color: #fff; font-size: clamp(34px, 4vw, 52px); font-weight: 400; line-height: 1.05; }
-.contact-facts { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 12px; max-width: 360px; }
-.contact-facts li { display: flex; gap: 12px; align-items: flex-start; }
-.contact-facts svg { flex: none; margin-top: 2px; padding: 6px; width: 32px; height: 32px; border-radius: 10px; color: #f0b48f; background: rgba(255, 255, 255, .07); }
-.contact-facts span { display: grid; font-size: 14px; line-height: 1.45; color: rgba(255, 238, 225, .75); }
-.contact-facts strong { color: #fff; font-size: 15px; }
-.contact-link { margin-top: auto; display: inline-flex; align-items: center; gap: 6px; padding-top: 18px; font-weight: 600; color: #fbe5d6; }
-.contact-link:hover { color: #fff; }
-.contact-main { display: grid; align-content: start; gap: 6px; }
-.contact-intro { margin: 0; font-size: 17px; color: var(--text); }
-.contact-intro p { margin: 0 0 6px; }
-.contact-page .contact-form { margin-top: 12px; display: grid; gap: 18px; }
+.contact-aside {
+    display: grid;
+    gap: 12px;
+    padding: 26px;
+    border-radius: 28px;
+    background: linear-gradient(170deg, #fff 0%, var(--blush) 100%);
+    border: 1px solid var(--line);
+    box-shadow: 0 20px 50px rgba(43, 32, 36, .06);
+}
+.contact-photo {
+    display: grid;
+    place-items: center;
+    height: 190px;
+    margin-bottom: 6px;
+    border-radius: 20px;
+    background: radial-gradient(70% 80% at 50% 60%, #f6c8b2 0%, #e8a08f 45%, #b8645b 100%);
+    overflow: hidden;
+}
+.contact-photo img { height: 86%; width: auto; filter: drop-shadow(0 16px 20px rgba(80, 30, 30, .35)); transition: transform .6s var(--ease); }
+.contact-aside:hover .contact-photo img { transform: translateY(-6px) rotate(-2deg); }
+.contact-aside .eyebrow { margin: 4px 0 0; }
+.contact-title { margin: 0; font-size: clamp(32px, 3.4vw, 44px); font-weight: 400; line-height: 1.05; }
+.contact-lead { margin: 0; font-size: 15px; line-height: 1.6; color: var(--text); }
+.contact-facts { list-style: none; margin: 6px 0 4px; padding: 0; display: grid; gap: 10px; }
+.contact-facts li { display: flex; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 14px; background: rgba(255, 255, 255, .7); border: 1px solid var(--line); }
+.contact-facts svg { flex: none; padding: 7px; width: 34px; height: 34px; border-radius: 10px; color: #fff; background: var(--accent); }
+.contact-facts span { display: grid; font-size: 13px; line-height: 1.4; color: var(--muted); }
+.contact-facts strong { font-size: 14px; color: var(--ink); }
+.contact-policy { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
+.contact-main { display: grid; align-content: start; }
+.contact-page .contact-form { margin: 0; display: grid; gap: 18px; padding: clamp(22px, 3vw, 34px); border-radius: 28px; box-shadow: 0 20px 50px rgba(43, 32, 36, .06); }
+.contact-form-head h2 { margin: 0 0 6px; font-size: clamp(24px, 2.4vw, 30px); }
+.contact-intro, .contact-intro p { margin: 0; font-size: 15px; line-height: 1.6; color: var(--muted); }
 .contact-fields { display: grid; gap: 16px 18px; }
 @media (min-width: 640px) { .contact-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .contact-page .form-field { display: grid; gap: 7px; width: auto; float: none; margin: 0; padding: 0; }
@@ -378,23 +387,50 @@ body:has([data-pt-compact-header]) .header-logo { display: none; }
 .contact-page .form-actions { margin: 0; padding: 0; }
 .contact-page .form-actions .button { display: inline-flex; align-items: center; gap: 8px; }
 
-// Contact card, refined: compact panel that stays in view, candle fully visible, next-step guide.
-@media (min-width: 960px) {
-    .contact-layout { align-items: start; }
-    .contact-aside { position: sticky; top: 96px; min-height: 560px; }
+// ======================================================================
+// Phones: rows of cards become smooth swipeable carousels with a peek of the next card.
+// ======================================================================
+@mixin swipe-row($width) {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: $width;
+    grid-template-columns: none;
+    gap: 12px;
+    margin-left: calc(var(--gutter) * -1);
+    margin-right: calc(var(--gutter) * -1);
+    padding: 4px var(--gutter) 14px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding: 0 var(--gutter);
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+    > * { scroll-snap-align: start; }
 }
-.contact-aside { padding-bottom: 210px; }
-.contact-candle { right: 18px; bottom: 18px; width: 40%; max-width: 200px; }
-.contact-next { position: relative; z-index: 1; display: grid; gap: 8px; margin-top: 6px; max-width: 250px; }
-.contact-next-title { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #f5c8b8; }
-.contact-next ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
-.contact-next li { display: flex; align-items: center; gap: 10px; font-size: 14px; color: rgba(255, 238, 225, .8); }
-.contact-next li span { display: grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 50%; font-size: 12px; font-weight: 700; color: #2b2024; background: #f0b48f; }
-.contact-link { position: absolute; left: clamp(28px, 4vw, 44px); bottom: 28px; padding: 0; }
-.contact-form-head h2 { margin: 0 0 4px; font-size: 26px; }
-.contact-form-head p { margin: 0; font-size: 14px; color: var(--muted); }
-.contact-page .contact-form { box-shadow: 0 20px 50px rgba(43, 32, 36, .06); }
-@media (max-width: 959px) {
-    .contact-aside { padding-bottom: 180px; }
-    .contact-candle { width: 34%; }
+@media (max-width: 767px) {
+    .value-props-list { @include swipe-row(78%); }
+    .value-prop { padding: 18px; }
+    .category-tiles { @include swipe-row(62%); }
+    .category-tile { min-height: 230px; }
+    .category-tile-name { font-size: 22px; }
+    .care-list { @include swipe-row(80%); }
+    .care-panel { padding: 26px 0 18px; border-radius: 24px; }
+    .care-head { padding: 0 var(--gutter); margin-bottom: 18px; }
+    .care-list { margin-left: 0; margin-right: 0; }
+    .wick-cards { @include swipe-row(86%); }
+    .review-cards { @include swipe-row(84%); }
+    .home-categories, .story-band, .wick-guide, .care-tips, .home-reviews, .home-faq { padding-top: 60px; }
+    // Story band: candles first, a little shorter.
+    .story-inner { padding: 22px; gap: 16px; border-radius: 24px; }
+    .story-visual { height: 230px; }
+    .story-title { font-size: 30px; }
+    .story-text { font-size: 15px; margin-bottom: 16px; }
+    .story-facts { grid-template-columns: 1fr; gap: 8px; margin-bottom: 18px; }
+    .story-facts li { padding: 10px 12px; }
+    // FAQ and section headings: tighter for small screens.
+    .section-title { font-size: 28px; }
+    .faq-item summary { padding: 16px 18px; font-size: 15px; }
+    .faq-head { text-align: center; }
+    // Contact card: photo smaller, form first-class.
+    .contact-photo { height: 150px; }
+    .contact-aside { padding: 20px; }
 }
