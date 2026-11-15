@@ -357,3 +357,25 @@ body { font-synthesis: none; font-optical-sizing: auto; }
     .showcase-word { font-size: 16vw; }
     .showcase-note { --s: 30px !important; }
 }
+
+
+// ======================================================================
+// Softer, warmer colours: the page is a little deeper than before so it blends with the header and the
+// dark message strip (not a copy of them, just less bright).
+// ======================================================================
+:root {
+    --bg: #f5ece6;
+    --surface: #fcf7f3;
+    --cream: #eee2da;
+    --blush: #f6e2dc;
+    --blush-2: #efcfc6;
+    --line: #e7d8d1;
+    --line-strong: #dcc8c0;
+}
+.main-header, .main-header.is-scrolled { background: rgba(238, 225, 217, .96); border-bottom-color: #e2d0c8; }
+
+// No bottom tab bar any more, so phones don't need space reserved for it.
+@media (max-width: 767px) {
+    body { padding-bottom: 0; }
+    .back-to-top { bottom: calc(18px + env(safe-area-inset-bottom)); }
+}

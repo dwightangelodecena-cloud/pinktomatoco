@@ -92,6 +92,8 @@
             {{else}}
                 <a class="tool-link desktop-only" href="{{urls.auth.login}}?from=index.php">{{> components/pinktomato/icon name="user" size="18"}} Log in</a>
             {{/if}}
+            {{!-- Wishlist in the top bar (the bottom tab bar on phones was removed). --}}
+            <a class="icon-button" href="{{urls.account.wishlists.all}}" aria-label="Wishlist" title="Wishlist">{{> components/pinktomato/icon name="heart" size="20"}}</a>
             <button type="button" class="icon-button" aria-label="Search" aria-expanded="false" data-pt-search-toggle>
                 {{> components/pinktomato/icon name="search" size="20"}}
             </button>
