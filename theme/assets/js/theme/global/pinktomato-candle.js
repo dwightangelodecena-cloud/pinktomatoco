@@ -77,6 +77,13 @@ export default function pinkTomatoCandle() {
     };
     aim();
     window.addEventListener('resize', aim);
+    // On the long sign-up form the candle stays in the middle of the screen, so the light follows it.
+    let aiming = false;
+    window.addEventListener('scroll', () => {
+        if (aiming) return;
+        aiming = true;
+        requestAnimationFrame(() => { aim(); aiming = false; });
+    }, { passive: true });
     // The candle slides aside as it lights, so keep the light on the flame while it moves.
     const follow = (ms) => {
         const end = performance.now() + ms;
