@@ -9,11 +9,11 @@ $wax-top: 114px; // where the wax surface sits, from the top of .pt-candle
     position: relative;
     isolation: isolate;
     overflow: hidden;
-    margin: 12px 0 64px;
+    margin: 8px 0 32px;
     padding: clamp(24px, 4vw, 56px);
     border-radius: 32px;
     // unquote: BigCommerce's older Sass would read min() as its own function and fail.
-    min-height: unquote("min(760px, calc(100vh - 140px))");
+    min-height: unquote("min(620px, calc(100vh - 120px))");
     align-items: center;
     background:
         radial-gradient(120% 90% at 30% 35%, #2a1f1a 0%, #161110 55%, #0d0a09 100%);
@@ -43,6 +43,12 @@ $wax-top: 114px; // where the wax surface sits, from the top of .pt-candle
 .pt-candle-room.is-lit::before { opacity: 1; animation: pt-room-breathe 3.6s ease-in-out 1.2s infinite alternate; }
 .pt-candle-room.is-instant::before { transition: none; }
 .pt-candle-room > * { position: relative; z-index: 1; }
+
+// The candle is the centrepiece here: the big centred logo goes, and the bar shows the small one (pinktomato-layout.js).
+body:has(.pt-candle-room) .header-logo { display: none; }
+.pt-candle-room.is-pointer .pt-wick-btn:focus,
+.pt-candle-room.is-pointer .pt-flame-btn:focus { outline: none !important; box-shadow: none !important; }
+.pt-candle-room .pt-wick-btn, .pt-candle-room .pt-flame-btn { -webkit-tap-highlight-color: transparent; }
 
 // ---------- The scene: words, candle, floating motes ----------
 .pt-candle-scene {
@@ -446,8 +452,9 @@ $wax-top: 114px; // where the wax surface sits, from the top of .pt-candle
     .pt-candle-room.is-ready:not(.is-lit):not(.is-closing) .pt-candle-scene { transform: translateX(calc(50% + 20px)); }
     .pt-candle-room.is-instant .pt-candle-scene { transition: none; }
     // The sign-up form is long, so the candle stays in view beside it.
+    // The sign-up form is long: the candle sits at the top beside it rather than in the middle of the page.
     .pt-candle-room:has(.auth-card--wide) { align-items: start; }
-    .pt-candle-room:has(.auth-card--wide) .pt-candle-scene { position: sticky; top: 120px; }
+    .pt-candle-room:has(.auth-card--wide) .pt-candle-scene { padding-top: 24px; }
 }
 @media (max-width: 991px) {
     .pt-candle-room { border-radius: 24px; min-height: 0; padding-top: 28px; }

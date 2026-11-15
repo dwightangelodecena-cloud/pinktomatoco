@@ -141,6 +141,10 @@ export default function pinkTomatoCandle() {
         setTimeout(() => room.classList.remove('is-out'), 2200);
     };
 
+    // Taps and clicks don't leave a focus ring on the wick or flame; keyboard users still get one.
+    room.addEventListener('pointerdown', () => room.classList.add('is-pointer'));
+    room.addEventListener('keydown', () => room.classList.remove('is-pointer'));
+
     wick.addEventListener('click', () => light());
     flame.addEventListener('click', blowOut);
     // Escape blows the candle out too, when focus isn't in a field.
