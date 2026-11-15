@@ -1,21 +1,48 @@
-import { useState } from 'react';
+import { createContext, useContext, useState } from 'react';
+
+// Lets a section tell the preview which part of the page it edits, so the preview scrolls there.
+export const PreviewFocus = createContext(() => {});
 import { uploadImage } from '../lib/adminApi.js';
+import { useCropper } from './ImageCropper.jsx';
+import { cutOut } from '../lib/removeBackground.js';
 import { ChevronDown, ImageIcon, PencilIcon, PlusIcon, TrashIcon } from '../Icons.jsx';
 
-export function Section({ Icon, title, intro, shown, onToggle, children }) {
+// collapsible: the section folds away to just its title (one click to open), so long pages stay short.
+export function Section({ Icon, title, intro, shown, onToggle, children, collapsible = false, defaultOpen = false, previewKey }) {
+  const [open, setOpen] = useState(defaultOpen || !collapsible);
+  const focusPreview = useContext(PreviewFocus);
+  const point = () => { if (previewKey) focusPreview(previewKey); };
+  const state = onToggle && (
+    <div className="content-row-tools">
+      <span className={`content-state ${shown ? 'is-on' : ''}`}>{shown ? 'On the site' : 'Hidden'}</span>
+      <button type="button" className="content-tool" onClick={(e) => { e.stopPropagation(); onToggle(); }}>{shown ? 'Hide from site' : 'Show on site'}</button>
+    </div>
+  );
+  if (collapsible) {
+    return (
+      <section className={`content-section is-collapsible ${open ? 'is-open' : ''}`} onFocusCapture={point}>
+        <header>
+          <button type="button" className="content-section-toggle" aria-expanded={open} onClick={() => { setOpen((o) => !o); point(); }}>
+            <span className="content-section-chevron" aria-hidden="true">▸</span>
+            <span>
+              <h3>{Icon && <Icon size={18} />} {title}</h3>
+              {intro && <p>{intro}</p>}
+            </span>
+          </button>
+          {state}
+        </header>
+        {open && <div className="content-section-body">{children}</div>}
+      </section>
+    );
+  }
   return (
-    <section className="content-section">
+    <section className="content-section" onFocusCapture={point}>
       <header>
         <div>
           <h3>{Icon && <Icon size={18} />} {title}</h3>
           {intro && <p>{intro}</p>}
         </div>
-        {onToggle && (
-          <div className="content-row-tools">
-            <span className={`content-state ${shown ? 'is-on' : ''}`}>{shown ? 'Showing' : 'Hidden'}</span>
-            <button type="button" className="content-tool" onClick={onToggle}>{shown ? 'Hide' : 'Show'}</button>
-          </div>
-        )}
+        {state}
       </header>
       {children}
     </section>
@@ -105,20 +132,31 @@ export function Messages({ items, onChange }) {
   );
 }
 
-export function ImageUpload({ label = 'Upload photo', multiple, onUploaded, keep = false }) {
+// Every photo opens the crop & zoom editor first (shape: the editor's starting shape).
+export function ImageUpload({ label = 'Upload photo', multiple, onUploaded, keep = false, shape = 'original' }) {
   const [busy, setBusy] = useState(false);
+  const [step, setStep] = useState('');
   const [error, setError] = useState('');
+  const cropper = useCropper();
 
   const onFiles = async (e) => {
-    const files = [...e.target.files];
+    const files = Array.from(e.target.files);
     e.target.value = '';
     setError('');
     setBusy(true);
     try {
-      for (const file of files) onUploaded(await uploadImage(file, keep));
+      for (const file of files) {
+        const choice = await cropper.edit(file, shape, { offerCutout: true });
+        if (!choice) continue;
+        // The admin chose to remove the background: do it before uploading.
+        const ready = choice.removeBackground ? await cutOut(choice.file, setStep) : choice.file;
+        setStep('Uploading…');
+        onUploaded(await uploadImage(ready, keep));
+      }
     } catch (err) {
       setError(err.message);
     }
+    setStep('');
     setBusy(false);
   };
 
@@ -126,9 +164,10 @@ export function ImageUpload({ label = 'Upload photo', multiple, onUploaded, keep
     <>
       <label className={`content-tool content-upload ${busy ? 'is-busy' : ''}`}>
         <input className="sr-only" type="file" accept="image/jpeg,image/png,image/webp" multiple={multiple} disabled={busy} onChange={onFiles} />
-        <ImageIcon size={14} /> {busy ? 'Uploading…' : label}
+        <ImageIcon size={14} /> {busy ? step || 'Adjust your photo…' : label}
       </label>
       {error && <p className="form-message error" role="alert">{error}</p>}
+      {cropper.modal}
     </>
   );
 }

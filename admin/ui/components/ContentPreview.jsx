@@ -32,7 +32,7 @@ function WickCard({ card, wood }) {
 
 // A frame with the admin's own copy of the store's styles, so the phone view gets the store's
 // real phone layout. The sections are drawn into it from the unsaved edits, as you type.
-function Frame({ width, height, scale, children }) {
+function Frame({ width, height, scale, children, focus }) {
   const frame = useRef(null);
   const [body, setBody] = useState(null);
 
@@ -45,6 +45,18 @@ function Frame({ width, height, scale, children }) {
     doc.body.style.margin = '0';
     setBody(doc.body);
   }, []);
+
+  useEffect(() => {
+    if (!body || !focus?.key) return;
+    const target = body.querySelector(`[data-preview="${focus.key}"]`);
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // A short glow shows which part is being edited.
+    if (target) {
+      target.classList.remove('preview-flash');
+      void target.offsetWidth;
+      target.classList.add('preview-flash');
+    }
+  }, [focus, body]);
 
   return (
     <iframe
@@ -63,7 +75,7 @@ function Header({ draft }) {
   return (
     <>
       {items.length > 0 && (
-        <div className="announcement-bar">
+        <div className="announcement-bar" data-preview="top">
           <div className="marquee-viewport" aria-hidden="true">
             <div className="marquee">
               {[0, 1].map((k) => (
@@ -109,7 +121,7 @@ function Header({ draft }) {
 function Footer({ draft }) {
   const f = draft.footer;
   return (
-    <footer className="main-footer">
+    <footer className="main-footer" data-preview="footer">
       <section className="footer-site-subscribe">
         <h2 className="footer-heading">{f.heading}</h2>
         <p className="footer-sub">{f.text}</p>
@@ -169,7 +181,7 @@ function Home({ draft, products, featuredIds }) {
       <HeroPreview draft={draft} slides={heroList} fallback={chosen.slice(0, 5)} />
 
       {h.showValueProps && (
-        <section className="value-props container">
+        <section className="value-props container" data-preview="values">
           <ul className="value-props-list">
             {h.valueProps.map((v, i) => {
               const Icon = VALUE_ICONS[i % 4];
@@ -179,7 +191,7 @@ function Home({ draft, products, featuredIds }) {
         </section>
       )}
 
-      <section className="products-home container">
+      <section className="products-home container" data-preview="products">
         <div className="reveal is-visible section-head">
           <div><p className="eyebrow">{h.productsEyebrow}</p><h2 className="section-title">{h.productsTitle}</h2></div>
           <span className="text-link">View all products <ArrowRight /></span>
@@ -188,7 +200,7 @@ function Home({ draft, products, featuredIds }) {
       </section>
 
       {h.showStory && (
-        <section className="story-band container">
+        <section className="story-band container" data-preview="story">
           <div className="story-inner reveal is-visible">
             <span className="story-glow" aria-hidden="true" />
             <div className="story-copy">
@@ -209,7 +221,7 @@ function Home({ draft, products, featuredIds }) {
       )}
 
       {h.showWicks && (
-        <section className="wick-guide container">
+        <section className="wick-guide container" data-preview="wicks">
           <div className="reveal is-visible wick-head"><p className="eyebrow">{h.wicksEyebrow}</p><h2 className="section-title">{h.wicksTitle}</h2></div>
           <div className="wick-cards">
             <WickCard card={h.wicks[0] || {}} wood />
@@ -219,7 +231,7 @@ function Home({ draft, products, featuredIds }) {
       )}
 
       {h.showMood && first && (
-        <section className="mood-finder container">
+        <section className="mood-finder container" data-preview="mood">
           <div className="mood-inner">
             <div className="reveal is-visible mood-head">
               <p className="eyebrow">{h.moodEyebrow}</p>
@@ -240,7 +252,7 @@ function Home({ draft, products, featuredIds }) {
       )}
 
       {h.showProcess && (
-        <section className="process container">
+        <section className="process container" data-preview="process">
           <div className="reveal is-visible process-head"><p className="eyebrow">{h.processEyebrow}</p><h2 className="section-title">{h.processTitle}</h2></div>
           <ol className="process-steps is-in">
             <span className="process-line" aria-hidden="true" />
@@ -253,7 +265,7 @@ function Home({ draft, products, featuredIds }) {
       )}
 
       {h.showCare && (
-        <section className="care-tips container">
+        <section className="care-tips container" data-preview="care">
           <div className="care-panel">
             <div className="reveal is-visible care-head"><p className="eyebrow">{h.careEyebrow}</p><h2 className="section-title">{h.careTitle}</h2></div>
             <ol className="care-list">
@@ -267,7 +279,7 @@ function Home({ draft, products, featuredIds }) {
       )}
 
       {h.showFaq && (
-        <section className="home-faq container">
+        <section className="home-faq container" data-preview="faq">
           <div className="reveal is-visible faq-head">
             <p className="eyebrow">{h.faqEyebrow}</p>
             <h2 className="section-title">{h.faqTitle}</h2>
@@ -286,7 +298,7 @@ function Home({ draft, products, featuredIds }) {
       )}
 
       {h.showJournal && (
-        <section className="latest-blog-posts container">
+        <section className="latest-blog-posts container" data-preview="journal">
           <div className="reveal is-visible blog-card">
             <p className="eyebrow">{h.journalEyebrow}</p>
             <h2 className="section-title">{h.journalTitle}</h2>
@@ -335,7 +347,7 @@ function Page({ draft, page }) {
 }
 
 // Shows unsaved edits the way the store will show them. Saved changes appear on the real store.
-export default function ContentPreview({ title, draft, view, products, featuredIds }) {
+export default function ContentPreview({ title, draft, view, products, featuredIds, focus }) {
   const [device, setDevice] = useState('computer');
   const [box, setBox] = useState({ width: 0, height: 0 });
   const stage = useRef(null);
@@ -361,7 +373,7 @@ export default function ContentPreview({ title, draft, view, products, featuredI
         </div>
       </header>
       <div className="store-preview-stage" ref={stage}>
-        <Frame key={device} width={width} height={box.height} scale={scale}>
+        <Frame key={device} width={width} height={box.height} scale={scale} focus={focus}>
           <div className="site-frame">
             <Header draft={draft} />
             <main className="main-content">

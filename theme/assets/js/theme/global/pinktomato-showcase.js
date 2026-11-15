@@ -119,10 +119,14 @@ export default function pinkTomatoShowcase(context) {
     // Scent-note ingredients float in, scatter out on change.
     const showNotes = (d) => {
         if (!notesLayer) return;
-        Array.from(notesLayer.children).forEach((el) => { el.classList.add('is-leaving'); setTimeout(() => el.remove(), 700); });
         // Uploaded ingredient pictures come first, then the drawn ingredients for each scent note.
         const pictures = list(d.images).map((src) => `<img src="${escapeHtml(src)}" alt="">`);
         const art = [...pictures, ...artFor(notesOf(d))];
+        // Same ingredients already floating (e.g. the descriptions just loaded): keep them as they are.
+        const key = `${d.id}|${notesOf(d).join(',')}|${list(d.images).join(',')}`;
+        if (notesLayer.dataset.key === key) return;
+        notesLayer.dataset.key = key;
+        Array.from(notesLayer.children).forEach((el) => { el.classList.add('is-leaving'); setTimeout(() => el.remove(), 700); });
         SPOTS.forEach((spot, n) => {
             const el = document.createElement('span');
             el.className = 'showcase-note';
@@ -139,15 +143,31 @@ export default function pinkTomatoShowcase(context) {
         chips.hidden = !notes.length;
     };
 
-    const showCandle = (d) => {
+    const showCandle = (d, { instant = false } = {}) => {
         const cut = cutoutUrl(d);
-        figure.classList.toggle('is-cutout', Boolean(cut));
+        const src = cut || d.image;
+        const shown = arch.querySelector('.showcase-img.is-current:not(.is-leaving)');
+        // Same candle already showing (for example after the descriptions load): leave it alone.
+        if (shown && !shown.classList.contains('is-server') && shown.getAttribute('src') === src) return;
+        // Already loading this picture (first visit, slow connection): don't start a second copy.
+        if (arch.dataset.pending === src) return;
+        arch.dataset.pending = src;
+        // First paint: the page's own photo is the right one when there's no cut-out, so just show it.
+        if (shown && shown.classList.contains('is-server') && !cut) {
+            figure.classList.remove('is-cutout');
+            shown.classList.remove('is-server');
+            return;
+        }
         const img = new Image();
         img.className = 'showcase-img is-entering';
         img.alt = d.name;
-        img.src = cut || d.image;
+        img.src = src;
         const old = Array.from(arch.querySelectorAll('.showcase-img'));
         const place = () => {
+            // Switch the frame style only once the new picture is ready, so the old one never shows in the wrong frame.
+            figure.classList.toggle('is-cutout', Boolean(cut));
+            if (arch.dataset.pending === src) delete arch.dataset.pending;
+            if (instant) img.classList.remove('is-entering');
             arch.appendChild(img);
             old.forEach((o) => o.classList.add('is-leaving'));
             requestAnimationFrame(() => requestAnimationFrame(() => img.classList.add('is-current')));
@@ -169,7 +189,7 @@ export default function pinkTomatoShowcase(context) {
         current = i;
         tint(i);
         if (indexEl) indexEl.textContent = pad(i + 1);
-        showCandle(d);
+        showCandle(d, { instant: first });
         showNotes(d);
 
         // Words: slide the old ones out, then the new ones in.

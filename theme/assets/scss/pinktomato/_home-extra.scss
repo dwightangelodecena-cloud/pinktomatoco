@@ -310,3 +310,28 @@ body:has([data-pt-compact-header]) .header-logo { display: none; }
 .glance-made li { display: flex; align-items: flex-start; gap: 8px; font-size: 14px; line-height: 1.5; color: var(--text); }
 .glance-made svg { flex: none; margin-top: 2px; padding: 2px; width: 18px; height: 18px; border-radius: 50%; color: #fff; background: var(--sage); }
 .glance-origin { display: flex; align-items: center; gap: 8px; margin: 0; padding: 12px 14px; font-size: 14px; font-weight: 600; border-radius: var(--radius); color: var(--accent-dark); background: var(--blush); }
+
+// ---------- Category buttons on Shop All and every category page ----------
+.category-pills {
+    display: flex;
+    gap: 8px;
+    margin: 4px 0 26px;
+    padding-bottom: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+.category-pills::-webkit-scrollbar { display: none; }
+@media (min-width: 768px) { .category-pills { flex-wrap: wrap; justify-content: center; overflow: visible; } }
+.category-pill {
+    flex: none;
+    padding: 9px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 999px;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    transition: background-color .25s, color .25s, border-color .25s, transform .3s var(--ease);
+}
+.category-pill:hover { color: var(--accent-dark); border-color: var(--accent); transform: translateY(-2px); }
+.category-pill.is-active { color: #fff; background: var(--ink); border-color: var(--ink); }

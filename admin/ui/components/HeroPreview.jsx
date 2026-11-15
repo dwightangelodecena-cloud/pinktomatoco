@@ -41,7 +41,7 @@ export default function HeroPreview({ draft, slides, fallback }) {
   const tint = TINTS[index % TINTS.length];
 
   return (
-    <section className="showcase is-ready is-in" style={{ '--showcase-glow': tint.glow, '--showcase-bg': tint.bg }} key={`${p.id}-${index}`}>
+    <section data-preview="hero" className="showcase is-ready is-in" style={{ '--showcase-glow': tint.glow, '--showcase-bg': tint.bg }} key={`${p.id}-${index}`}>
       <div className="showcase-stage">
         <span className="showcase-glow" aria-hidden="true" />
         <p className="showcase-word" aria-hidden="true">{p.name}</p>

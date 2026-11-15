@@ -3,7 +3,7 @@ import { DEFAULT_CONTENT } from '../lib/siteContent.js';
 import { STORE_URL, getAdminProducts, getContent, saveContent } from '../lib/adminApi.js';
 import ContentPreview from './ContentPreview.jsx';
 import { ArrowRight, EyeIcon, EyeOffIcon, FileIcon, GridIcon, ImageIcon, LayersIcon, MegaphoneIcon, RefreshIcon, SaveIcon, TagIcon, UndoIcon } from '../Icons.jsx';
-import { Cards, Messages, PolicySections, Section, Text } from './ContentFields.jsx';
+import { Cards, Messages, PolicySections, PreviewFocus, Section, Text } from './ContentFields.jsx';
 import { PlusIcon, TrashIcon } from '../Icons.jsx';
 import HomepageProducts from './HomepageProducts.jsx';
 import HeroCandles from './HeroCandles.jsx';
@@ -12,11 +12,11 @@ import CategoryManager from './CategoryManager.jsx';
 import { Filter, Loading, Problem } from './shared.jsx';
 
 const CARDS = [
-  { id: 'banners', label: 'Hero & Banners', text: 'Announcement bar, plus the heading and photos at the top of the homepage', Icon: MegaphoneIcon },
-  { id: 'homepage', label: 'Homepage', text: 'Featured products and every section below the hero', Icon: GridIcon },
-  { id: 'pages', label: 'Pages', text: 'Shipping & Returns, Contact Us, Blog and the footer', Icon: FileIcon },
+  { id: 'banners', label: 'Top of homepage', text: 'The message strip and the candle showcase (photos, scents, ingredients)', Icon: MegaphoneIcon },
+  { id: 'homepage', label: 'Homepage sections', text: 'Everything below the showcase: products, story, wick guide, care tips, questions', Icon: GridIcon },
+  { id: 'pages', label: 'Other pages', text: 'Shipping & Returns, Contact Us, Blog and the bottom of every page', Icon: FileIcon },
   { id: 'categories', label: 'Categories', text: 'The groups in the Shop menu, like Candles or Wax Melts', Icon: LayersIcon },
-  { id: 'products', label: 'Products', text: 'Names, photos, options (vessel, size, wick), prices and stock', Icon: TagIcon },
+  { id: 'products', label: 'Products', text: 'Add or edit candles: names, photos, sizes, prices and stock', Icon: TagIcon },
 ];
 // These cards save each item on its own, straight to BigCommerce, so the page-wide Save and preview don't apply.
 const SELF_SAVING = ['categories', 'products'];
@@ -36,16 +36,16 @@ function HeroBanners({ draft, edit }) {
   const home = draft.home;
   return (
     <>
-      <Section Icon={MegaphoneIcon} title="Announcement bar" intro="Short messages that scroll along the strip at the very top of every page.">
+      <Section collapsible Icon={MegaphoneIcon} title="Message strip" previewKey="top" intro="Short messages that scroll along the very top of every page.">
         <Messages items={draft.announcement.items} onChange={(items) => edit('announcement', { items })} />
       </Section>
-      <Section Icon={ImageIcon} title="Homepage hero" intro="The candle showcase at the top of the homepage. It shows your homepage products (Homepage → Featured products), or the newest ones, with their own photos and names; shoppers click a candle to switch.">
+      <Section collapsible Icon={ImageIcon} title="Showcase wording" previewKey="hero" intro="The small label, tagline and short text around the candles.">
         <Text label="Small label (top left)" value={home.heroEyebrow} onChange={(heroEyebrow) => edit('home', { heroEyebrow }, 'heroEyebrow')} />
         <Text label="Tagline (right side)" value={home.heroTitle} onChange={(heroTitle) => edit('home', { heroTitle }, 'heroTitle')} />
         <Text label="Short text under the tagline" rows={2} value={home.heroText} onChange={(heroText) => edit('home', { heroText }, 'heroText')} />
         <Text label="Link text (goes to Shop All)" value={home.heroButton} onChange={(heroButton) => edit('home', { heroButton }, 'heroButton')} />
       </Section>
-      <Section Icon={ImageIcon} title="Hero candles" intro="Up to five candles, in order. Upload a photo and its background is removed automatically. Type scent notes (like Taro, Rose, Apple) and matching ingredients float around the candle.">
+      <Section collapsible defaultOpen Icon={ImageIcon} title="Showcase candles" previewKey="hero" intro="1 to 5 candles, in order. Upload a photo and its background is removed for you. Type scent notes (like Taro, Rose, Apple) and matching ingredients float around the candle.">
         <HeroCandles slides={home.heroSlides || []} onChange={(heroSlides) => edit('home', { heroSlides })} />
       </Section>
     </>
@@ -95,47 +95,47 @@ function Homepage({ draft, edit, onProductsSaved }) {
   const toggle = (name) => () => edit('home', { [name]: !home[name] });
   return (
     <>
-      <Section title="Featured products" intro="Shown on the homepage with a New badge, in this order. Up to 8.">
+      <Section collapsible title="Featured products" previewKey="products" intro="Shown on the homepage with a New badge, in this order. Up to 8.">
         <Text label="Small heading" value={home.productsEyebrow} onChange={text('productsEyebrow')} />
         <Text label="Heading" value={home.productsTitle} onChange={text('productsTitle')} />
         <HomepageProducts onSaved={onProductsSaved} />
       </Section>
-      <Section title="Why Pink Tomato" intro="The four short facts under the hero." shown={home.showValueProps} onToggle={toggle('showValueProps')}>
+      <Section collapsible title="Why Pink Tomato" previewKey="values" intro="The four short facts under the hero." shown={home.showValueProps} onToggle={toggle('showValueProps')}>
         <Cards label="Fact" items={home.valueProps} onChange={(valueProps) => edit('home', { valueProps }, 'valueProps')} />
       </Section>
-      <Section title="Story band" intro="The candle-lit panel with your story, under the featured products. The candles shown there come from your product photos." shown={home.showStory} onToggle={toggle('showStory')}>
+      <Section collapsible title="Story band" previewKey="story" intro="The candle-lit panel with your story, under the featured products. The candles shown there come from your product photos." shown={home.showStory} onToggle={toggle('showStory')}>
         <Text label="Small heading" value={home.storyEyebrow} onChange={text('storyEyebrow')} />
         <Text label="Heading" value={home.storyTitle} onChange={text('storyTitle')} />
         <Text label="Text" rows={3} value={home.storyText} onChange={text('storyText')} />
         <Text label="Button text" value={home.storyButton} onChange={text('storyButton')} />
       </Section>
-      <Section title="Cotton or wooden wick?" intro="Two cards that explain the wick choices." shown={home.showWicks} onToggle={toggle('showWicks')}>
+      <Section collapsible title="Cotton or wooden wick?" previewKey="wicks" intro="Two cards that explain the wick choices." shown={home.showWicks} onToggle={toggle('showWicks')}>
         <Text label="Small heading" value={home.wicksEyebrow} onChange={text('wicksEyebrow')} />
         <Text label="Heading" value={home.wicksTitle} onChange={text('wicksTitle')} />
         <WickCards items={home.wicks} onChange={(wicks) => edit('home', { wicks }, 'wicks')} />
       </Section>
-      <Section title="Mood finder" intro="Built from candles whose description has Mood and Scent Notes lines." shown={home.showMood} onToggle={toggle('showMood')}>
+      <Section collapsible title="Mood finder" previewKey="mood" intro="Built from candles whose description has Mood and Scent Notes lines." shown={home.showMood} onToggle={toggle('showMood')}>
         <Text label="Small heading" value={home.moodEyebrow} onChange={text('moodEyebrow')} />
         <Text label="Heading" value={home.moodTitle} onChange={text('moodTitle')} />
       </Section>
-      <Section title="How it's made" shown={home.showProcess} onToggle={toggle('showProcess')}>
+      <Section collapsible title="How it's made" previewKey="process" shown={home.showProcess} onToggle={toggle('showProcess')}>
         <Text label="Small heading" value={home.processEyebrow} onChange={text('processEyebrow')} />
         <Text label="Heading" value={home.processTitle} onChange={text('processTitle')} />
         <Cards label="Step" items={home.processSteps} onChange={(processSteps) => edit('home', { processSteps }, 'processSteps')} />
       </Section>
-      <Section title="Candle care" intro="Four tips for a better, longer burn." shown={home.showCare} onToggle={toggle('showCare')}>
+      <Section collapsible title="Candle care" previewKey="care" intro="Four tips for a better, longer burn." shown={home.showCare} onToggle={toggle('showCare')}>
         <Text label="Small heading" value={home.careEyebrow} onChange={text('careEyebrow')} />
         <Text label="Heading" value={home.careTitle} onChange={text('careTitle')} />
         <Cards label="Tip" items={home.careTips} onChange={(careTips) => edit('home', { careTips }, 'careTips')} />
       </Section>
-      <Section title="Questions (FAQ)" intro="Questions shoppers can open and close. Up to 10." shown={home.showFaq} onToggle={toggle('showFaq')}>
+      <Section collapsible title="Questions (FAQ)" previewKey="faq" intro="Questions shoppers can open and close. Up to 10." shown={home.showFaq} onToggle={toggle('showFaq')}>
         <Text label="Small heading" value={home.faqEyebrow} onChange={text('faqEyebrow')} />
         <Text label="Heading" value={home.faqTitle} onChange={text('faqTitle')} />
         <Text label="Text under the heading" value={home.faqIntro} onChange={text('faqIntro')} />
         <FaqItems items={home.faqItems} onChange={(faqItems) => edit('home', { faqItems }, 'faqItems')} />
       </Section>
       <p className="content-hint">"Shop by category" and "Kind words" fill in by themselves: categories from Content → Categories (shown once there are two), and reviews from real customer reviews (shown once there are any).</p>
-      <Section title="Journal" shown={home.showJournal} onToggle={toggle('showJournal')}>
+      <Section collapsible title="Journal" previewKey="journal" shown={home.showJournal} onToggle={toggle('showJournal')}>
         <Text label="Small heading" value={home.journalEyebrow} onChange={text('journalEyebrow')} />
         <Text label="Heading" value={home.journalTitle} onChange={text('journalTitle')} />
         <Text label="Text" rows={3} value={home.journalText} onChange={text('journalText')} />
@@ -172,7 +172,7 @@ function PageEditor({ page, draft, edit }) {
     );
   }
   return (
-    <Section title="Footer" intro="Shown at the bottom of every page. Scroll down in the preview to see it.">
+    <Section title="Footer" previewKey="footer" intro="Shown at the bottom of every page. Scroll down in the preview to see it.">
       <Text label="Newsletter heading" value={draft.footer.heading} onChange={text('footer', 'heading')} />
       <Text label="Newsletter text" value={draft.footer.text} onChange={text('footer', 'text')} />
       <Text label="Address" value={draft.footer.address} onChange={text('footer', 'address')} />
@@ -215,6 +215,8 @@ function ContentEditor({ content, onSaved, setDirty, products, featuredIds, onFe
   const [draft, setDraft] = useState(content);
   const [history, setHistory] = useState([]);
   const [card, setCard] = useState(CARDS.some((c) => c.id === startCard) ? startCard : 'banners');
+  // Which part of the page the admin is editing, so the preview can scroll to it.
+  const [focus, setFocus] = useState(null);
   const selfSaving = SELF_SAVING.includes(card);
   const [page, setPage] = useState('shipping');
   const [status, setStatus] = useState(null);
@@ -299,7 +301,14 @@ function ContentEditor({ content, onSaved, setDirty, products, featuredIds, onFe
         </div>}
       </header>
 
-      {status?.text && <p className={`form-message ${status.type}`} role="status">{status.text}</p>}
+      {status?.text && <p className={`form-message ${status.type}`} role="status">{status.type === 'success' ? '✓ ' : ''}{status.text}</p>}
+      {!selfSaving && dirty && (
+        <div className="content-savebar" role="region" aria-label="Unsaved changes">
+          <span><strong>You have unsaved changes.</strong> Shoppers won't see them until you save.</span>
+          <button type="button" className="link-button" onClick={reset}>Undo all</button>
+          <button type="button" className="button button-primary" disabled={status?.type === 'pending'} onClick={save}>{status?.type === 'pending' ? 'Saving…' : 'Save changes'}</button>
+        </div>
+      )}
 
       <div className="content-cards-nav">
         {CARDS.map((c) => (
@@ -326,6 +335,7 @@ function ContentEditor({ content, onSaved, setDirty, products, featuredIds, onFe
         </div>
       ) : (
       <div className={`content-split ${showPreview ? 'has-preview' : ''}`}>
+        <PreviewFocus.Provider value={(key) => setFocus({ key, at: Date.now() })}>
         <div className="content-editor">
           {card === 'pages' && <Filter label="Choose a page" options={PAGES} value={page} onChange={setPage} />}
           {card === 'banners' && <HeroBanners draft={draft} edit={edit} />}
@@ -333,6 +343,7 @@ function ContentEditor({ content, onSaved, setDirty, products, featuredIds, onFe
           {card === 'pages' && <PageEditor page={page} draft={draft} edit={edit} />}
           <button type="button" className="link-button content-restore" onClick={restoreOriginal}>Restore original wording</button>
         </div>
+        </PreviewFocus.Provider>
         {showPreview && (
           <ContentPreview
             title={card === 'pages' ? pageInfo.label : 'Homepage'}
@@ -340,6 +351,7 @@ function ContentEditor({ content, onSaved, setDirty, products, featuredIds, onFe
             draft={draft}
             products={products}
             featuredIds={featuredIds}
+            focus={focus}
           />
         )}
       </div>

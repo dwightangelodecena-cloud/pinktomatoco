@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getAdminProducts, uploadImage } from '../lib/adminApi.js';
 import { cutOut } from '../lib/removeBackground.js';
+import { useCropper } from './ImageCropper.jsx';
 // The theme's own ingredient drawings and label notes, so the preview here matches the homepage.
 import { artFor, noteKind } from '../../../theme/assets/js/theme/global/pinktomato-notes.js';
 import CUTOUTS, { LABEL_NOTES } from '../../../theme/assets/js/theme/global/pinktomato-cutouts.js';
@@ -13,13 +14,18 @@ const splitNotes = (text) => text.split(',').map((n) => n.trim()).filter(Boolean
 function CutoutUpload({ label, onDone }) {
   const [step, setStep] = useState('');
   const [error, setError] = useState('');
+  const cropper = useCropper();
   const pick = async (e) => {
     const file = e.target.files[0];
     e.target.value = '';
     if (!file) return;
     setError('');
     try {
-      const cut = await cutOut(file, setStep);
+      // Crop and zoom first, then remove the background from the adjusted photo.
+      // Showcase candles always have their background removed (no switch here).
+      const choice = await cropper.edit(file, 'original');
+      if (!choice) return;
+      const cut = await cutOut(choice.file, setStep);
       setStep('Uploading…');
       onDone(await uploadImage(cut, true));
     } catch (err) {
@@ -34,6 +40,7 @@ function CutoutUpload({ label, onDone }) {
         <ImageIcon size={14} /> {step || label}
       </label>
       {error && <p className="form-message error" role="alert">{error}</p>}
+      {cropper.modal}
     </>
   );
 }

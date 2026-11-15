@@ -26,7 +26,7 @@ product_results:
         {{#if product_results.products.length}}
             <div class="product-grid">
                 {{#each product_results.products}}
-                    {{> components/pinktomato/product-card product=this index=@index summary=true}}
+                    {{> components/pinktomato/product-card product=this index=@index}}
                 {{/each}}
             </div>
             {{> components/pinktomato/pagination pagination.product_results}}

@@ -186,6 +186,7 @@
     opacity: 0;
 }
 .showcase-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.showcase-img.is-server { opacity: 0; }
 
 // A cut-out candle: no frame, bigger, standing in the light.
 .showcase-figure.is-cutout { max-width: 560px; }

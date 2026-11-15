@@ -17,6 +17,13 @@ category:
     <h1 class="page-heading">{{category.name}}</h1>
     {{{region name="category_below_header"}}}
 
+    {{!-- Category buttons: every visible category, the current one highlighted (admin: Content → Categories). --}}
+    <nav class="category-pills" aria-label="Categories">
+        {{#each categories}}
+            <a class="category-pill{{#if url '===' ../category.url}} is-active{{/if}}" href="{{url}}"{{#if url '===' ../category.url}} aria-current="page"{{/if}}>{{name}}</a>
+        {{/each}}
+    </nav>
+
     {{#if category.products}}
         <form class="catalog-toolbar" method="get" action="{{category.url}}" data-pt-sort>
             <span class="catalog-count">{{#if category.total_products}}{{category.total_products}}{{else}}{{category.products.length}}{{/if}} products</span>
@@ -36,7 +43,7 @@ category:
 
         <div class="product-grid" data-list-name="Category: {{category.name}}">
             {{#each category.products}}
-                {{> components/pinktomato/product-card product=this index=@index summary=true}}
+                {{> components/pinktomato/product-card product=this index=@index}}
             {{/each}}
         </div>
 

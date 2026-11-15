@@ -28,7 +28,8 @@
                 <span class="showcase-arch-glow" aria-hidden="true"></span>
                 <div class="showcase-arch" data-pt-showcase-arch>
                     {{#each (limit products.new 1)}}
-                        <img class="showcase-img is-current" src="{{getImage image 'zoom_size' (cdn theme_settings.default_image_product)}}" alt="{{name}}">
+                        {{!-- Hidden until the script picks the cut-out or this photo (avoids a flash of the wrong one). --}}
+                        <img class="showcase-img is-current is-server" src="{{getImage image 'zoom_size' (cdn theme_settings.default_image_product)}}" alt="{{name}}">
                     {{/each}}
                 </div>
                 <span class="showcase-floor" aria-hidden="true"></span>

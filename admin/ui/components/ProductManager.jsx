@@ -4,6 +4,7 @@ import { priceRange } from '../lib/pricing.js';
 import { descriptionToText, textToDescription } from '../lib/productText.js';
 import { ArrowRight, PencilIcon, PlusIcon, TrashIcon } from '../Icons.jsx';
 import { ImageUpload, Section, Text } from './ContentFields.jsx';
+import ProductPreview from './ProductPreview.jsx';
 import { Empty, Loading, Problem, useAdminData } from './shared.jsx';
 
 // Product pages live at the top of the site, so these names belong to other pages.
@@ -165,6 +166,7 @@ function ProductEditor({ product, categories, onDone, onCancel, setDirty }) {
   };
 
   return (
+    <div className="product-edit-split">
     <form className="content-product-form" onSubmit={submit}>
       <datalist id="pt-option-ideas">{OPTION_IDEAS.map((o) => <option key={o} value={o} />)}</datalist>
       <button type="button" className="content-back" onClick={onCancel}><ArrowRight size={16} /> Back to products</button>
@@ -299,6 +301,16 @@ function ProductEditor({ product, categories, onDone, onCancel, setDirty }) {
         {status?.text && <p className={`form-message ${status.type}`} role="alert">{status.text}</p>}
       </div>
     </form>
+    <ProductPreview
+      name={form.name}
+      description={form.description}
+      images={form.images}
+      options={options}
+      rows={combos.map(rowFor)}
+      visible={form.is_visible}
+      categories={(categories || []).filter((c) => c.id !== SHOP_ALL && form.categories.includes(c.id)).map((c) => c.name)}
+    />
+    </div>
   );
 }
 
@@ -391,6 +403,7 @@ export default function ProductManager({ setDirty, onPreview = () => {} }) {
                   {priceRange({ ...p, variants: p.product_variants })}
                   {p.options.length > 0 && ` · ${p.options.map((o) => `${o.values.length} ${o.name.toLowerCase()}${o.values.length === 1 ? '' : 's'}`).join(', ')}`}
                   {p.inventory_tracking === 'none' ? ' · Stock not counted' : ''}
+                  {(() => { const names = (categories || []).filter((c) => c.id !== SHOP_ALL && p.categories.includes(c.id)).map((c) => c.name); return names.length ? ` · ${names.join(', ')}` : ' · No category yet'; })()}
                 </small>
               </div>
               <div className="content-row-tools">
