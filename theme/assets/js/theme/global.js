@@ -17,6 +17,7 @@ import pinkTomatoLayout from './global/pinktomato-layout';
 import pinkTomatoHome from './global/pinktomato-home';
 import pinkTomatoProduct from './global/pinktomato-product';
 import pinkTomatoCart from './global/pinktomato-cart';
+import pinkTomatoCandle from './global/pinktomato-candle';
 
 export default class Global extends PageManager {
     onReady() {
@@ -35,5 +36,6 @@ export default class Global extends PageManager {
         pinkTomatoHome(this.context);
         pinkTomatoProduct(this.context);
         pinkTomatoCart(this.context);
+        pinkTomatoCandle();
     }
 }

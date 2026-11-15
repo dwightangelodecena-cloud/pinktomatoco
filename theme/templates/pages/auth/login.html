@@ -1,7 +1,7 @@
 {{#partial "page"}}
-<div class="auth-page">
-    {{> components/pinktomato/auth-visual}}
-    <div class="auth-card">
+<div class="auth-page pt-candle-room" data-pt-candle-room>
+    {{#if forms.login.error}}{{> components/pinktomato/auth-candle autolight=true}}{{else}}{{> components/pinktomato/auth-candle}}{{/if}}
+    <div class="auth-card pt-candle-card" data-pt-candle-card>
         {{> components/pinktomato/auth-tabs active="signin"}}
         <div class="auth-panel">
             {{!-- .login-form and the field names are BigCommerce's, so its own sign-in and checks run. --}}

@@ -1,0 +1,42 @@
+{{!-- The sign-in scene: tap the wick to light the candle and show the form; tap the flame to blow it out.
+      Behaviour is in assets/js/theme/global/pinktomato-candle.js, styles in scss/pinktomato/_candle.scss.
+      autolight starts it lit (after a failed sign-in, for example) so nobody has to find the wick twice. --}}
+<div class="pt-candle-scene" data-pt-candle{{#if autolight}} data-pt-candle-autolight{{/if}}>
+    <p class="pt-candle-eyebrow">Pink Tomato Candle &amp; Bath Co.</p>
+
+    <div class="pt-candle" aria-live="polite">
+        <div class="pt-flame-wrap">
+            <span class="pt-flame-halo" aria-hidden="true"></span>
+            <button type="button" class="pt-flame-btn" aria-label="Blow out the candle and close the form" data-pt-candle-out tabindex="-1">
+                <span class="pt-flame" aria-hidden="true"><span class="pt-flame-inner"></span><span class="pt-flame-core"></span></span>
+            </button>
+            <span class="pt-sparks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+            <span class="pt-smoke" aria-hidden="true"><i></i><i></i><i></i></span>
+        </div>
+        <button type="button" class="pt-wick-btn" aria-label="Light the candle to {{#if signup}}create an account{{else}}sign in{{/if}}" data-pt-candle-light>
+            <span class="pt-wick" aria-hidden="true"></span>
+            <span class="pt-wick-ring" aria-hidden="true"></span>
+        </button>
+        <div class="pt-jar" aria-hidden="true">
+            <span class="pt-wax"><span class="pt-wax-pool"></span></span>
+            <span class="pt-jar-label">
+                <span class="pt-jar-brand">Pink Tomato</span>
+                <span class="pt-jar-sub">hand-poured · soy</span>
+            </span>
+            <span class="pt-jar-shine"></span>
+        </div>
+        <span class="pt-candle-shadow" aria-hidden="true"></span>
+        <span class="pt-candle-tip" aria-hidden="true" data-pt-candle-tip><span>Tap the wick</span></span>
+    </div>
+
+    <div class="pt-candle-copy">
+        {{#if signup}}
+            <h2 class="pt-candle-title" data-pt-candle-title data-unlit="Light a candle, join the family." data-lit="Welcome to the family.">Light a candle, join the family.</h2>
+        {{else}}
+            <h2 class="pt-candle-title" data-pt-candle-title data-unlit="Light the candle to come in." data-lit="Welcome home. Make yourself cozy.">Light the candle to come in.</h2>
+        {{/if}}
+        <p class="pt-candle-hint" data-pt-candle-hint data-unlit="Tap the wick to light it." data-lit="Tap the flame to blow it out.">Tap the wick to light it.</p>
+    </div>
+
+    <span class="pt-motes" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+</div>

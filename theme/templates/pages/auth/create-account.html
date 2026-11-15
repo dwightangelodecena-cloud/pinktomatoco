@@ -1,9 +1,9 @@
 {{inject 'passwordRequirements' settings.password_requirements}}
 {{inject 'recaptchaTitle' (lang 'create_account.recaptcha_title')}}
 {{#partial "page"}}
-<div class="auth-page">
-    {{> components/pinktomato/auth-visual}}
-    <div class="auth-card auth-card--wide">
+<div class="auth-page pt-candle-room" data-pt-candle-room>
+    {{#if forms.create_account.error}}{{> components/pinktomato/auth-candle autolight=true signup=true}}{{else}}{{> components/pinktomato/auth-candle signup=true}}{{/if}}
+    <div class="auth-card auth-card--wide pt-candle-card" data-pt-candle-card>
         {{> components/pinktomato/auth-tabs active="signup"}}
         <div class="auth-panel">
             <div class="auth-heading">
