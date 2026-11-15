@@ -175,7 +175,7 @@ const FEATURED_QUERY = `query Featured($ids: [Int!]) {
   } } } }
 }`;
 
-const card = (p, i) => {
+export const card = (p, i, { badge = true } = {}) => {
     const name = escapeHtml(p.name);
     const href = escapeHtml(p.path);
     const { min, max } = p.prices.priceRange;
@@ -183,7 +183,7 @@ const card = (p, i) => {
     return `<article class="reveal product-item is-visible" style="transition-delay:${(i % 4) * 90}ms">
         <div class="product-item-thumbnail">
             <a href="${href}" class="product-item-image" tabindex="-1" aria-hidden="true"><img src="${escapeHtml(p.defaultImage ? p.defaultImage.url : '')}" alt="" loading="lazy"></a>
-            <span class="product-badge">New</span>
+            ${badge ? '<span class="product-badge">New</span>' : ''}
             <form action="/wishlist.php?action=add&amp;product_id=${p.entityId}" method="post">
                 <button type="submit" class="card-wishlist" aria-label="Add ${name} to wishlist">${icon('heart', 18)}</button>
             </form>

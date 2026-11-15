@@ -1,3 +1,4 @@
+import { card } from './pinktomato-home';
 // Product page and Quick View extras: sold-out sizes, price pop, "Added" state, zoom origin, sticky buy bar.
 
 const VARIANTS_QUERY = `query ProductVariants($id: Int!) {
@@ -121,11 +122,92 @@ function initStickyBar() {
     });
 }
 
+const svgIcon = (name, size) => `<svg class="pt-i" width="${size}" height="${size}" aria-hidden="true"><use href="#pt-${name}"></use></svg>`;
+const esc = (t) => String(t || '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const splitList = (t) => t.split(/[,/·]/).map((x) => x.trim().replace(/\.$/, '')).filter(Boolean);
+
+// Product descriptions follow a pattern: a story, then "Mood:", "Scent Notes:" and "Burn Time:" lines,
+// a "What is our candle constructed with?" list and "All candles are made in North Dakota".
+// Those parts become an "At a glance" card beside the story. Descriptions that don't follow the
+// pattern (or contain links, images or tables) are left exactly as written.
+function initProductStory() {
+    const section = document.querySelector('[data-pt-product-story]');
+    const desc = section && section.querySelector('[data-pt-description]');
+    if (!desc || desc.querySelector('img, a, table, iframe, video')) return;
+    const lines = desc.innerText.split(/\n+/).map((l) => l.trim()).filter(Boolean);
+    const facts = { mood: [], notes: [], burn: '', made: [], origin: '' };
+    const story = [];
+    let inList = false;
+    lines.forEach((line) => {
+        const m = line.match(/^(mood|scent notes?|notes|burn time)\s*:\s*(.+)$/i);
+        if (m) {
+            inList = false;
+            const key = m[1].toLowerCase();
+            if (key === 'mood') facts.mood = splitList(m[2]);
+            else if (key === 'burn time') facts.burn = m[2].trim();
+            else facts.notes = splitList(m[2]);
+            return;
+        }
+        if (/constructed with|made with\?|what('s| is) (in|inside)/i.test(line) && line.endsWith('?')) { inList = true; return; }
+        if (inList && /^[-•*]\s*/.test(line)) { facts.made.push(line.replace(/^[-•*]\s*/, '')); return; }
+        if (/^all (our )?candles are (hand[- ]?poured|made) in /i.test(line)) { inList = false; facts.origin = line.replace(/\.$/, ''); return; }
+        inList = false;
+        story.push(line);
+    });
+    if (!facts.mood.length && !facts.notes.length && !facts.burn) return;
+
+    const card = [
+        '<aside class="glance-card" aria-label="At a glance">',
+        '<p class="eyebrow">At a glance</p>',
+        facts.mood.length ? `<div class="glance-row"><span class="glance-label">${svgIcon('heart', 16)} Mood</span><div class="glance-chips">${facts.mood.map((x) => `<span class="glance-chip">${esc(x)}</span>`).join('')}</div></div>` : '',
+        facts.notes.length ? `<div class="glance-row"><span class="glance-label">${svgIcon('leaf', 16)} Scent notes</span><div class="glance-tags">${facts.notes.map((x) => `<span class="glance-tag">${esc(x)}</span>`).join('')}</div></div>` : '',
+        facts.burn ? `<div class="glance-row"><span class="glance-label">${svgIcon('clock', 16)} Burn time</span><p class="glance-burn">${esc(facts.burn)}</p></div>` : '',
+        facts.made.length ? `<div class="glance-row"><span class="glance-label">${svgIcon('flame', 16)} Made with</span><ul class="glance-made">${facts.made.map((x) => `<li>${svgIcon('check', 14)}${esc(x)}</li>`).join('')}</ul></div>` : '',
+        facts.origin ? `<p class="glance-origin">${svgIcon('map-pin', 16)} ${esc(facts.origin)}</p>` : '',
+        '</aside>',
+    ].join('');
+    desc.innerHTML = story.map((p) => `<p>${esc(p)}</p>`).join('');
+    desc.insertAdjacentHTML('afterend', card);
+    section.classList.add('has-glance');
+}
+
+const OTHERS_QUERY = `query Others {
+  site { products(first: 12) { edges { node {
+    entityId name path
+    defaultImage { url(width: 640) }
+    prices { price { value } priceRange { min { value } max { value } } }
+  } } } }
+}`;
+
+// "You may also like": BigCommerce's related products, or four other candles when it has none.
+async function initAlsoLike(productId) {
+    const section = document.querySelector('[data-pt-also-like]');
+    const grid = section && section.querySelector('[data-pt-also-like-grid]');
+    if (!grid || grid.children.length || !storefrontToken) return;
+    try {
+        const response = await fetch('/graphql', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${storefrontToken}` },
+            body: JSON.stringify({ query: OTHERS_QUERY }),
+        });
+        const { data } = await response.json();
+        const others = data.site.products.edges.map((e) => e.node).filter((p) => p.entityId !== Number(productId)).slice(0, 4);
+        if (!others.length) return;
+        grid.innerHTML = others.map((p, i) => card(p, i, { badge: false })).join('');
+        section.hidden = false;
+    } catch (err) {
+        // Leave the row out if it can't load.
+    }
+}
+
 export default function pinkTomatoProduct(context) {
     storefrontToken = context.storefrontApiToken;
     document.querySelectorAll('form[data-cart-item-add]').forEach(initForm);
     initZoom();
     initStickyBar();
+    initProductStory();
+    initAlsoLike(context.productId);
 
     document.addEventListener('onProductOptionsChanged', (event) => {
         const form = event.target.closest ? event.target.closest('form[data-cart-item-add]') : null;

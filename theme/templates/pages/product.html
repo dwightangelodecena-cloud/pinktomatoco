@@ -11,6 +11,8 @@ product:
 
 {{#partial "page"}}
 <div class="page product-page">
+    {{!-- Product pages use the compact header (small logo in the bar), so the product shows straight away. --}}
+    <span data-pt-compact-header hidden></span>
     <nav class="breadcrumbs" aria-label="Breadcrumb">
         <ol>
             <li><a href="/shop-all/">Shop All</a></li>
@@ -26,9 +28,12 @@ product:
 
     {{{region name="product_below_content"}}}
 
-    <section class="product-tabs">
+    {{!-- pinktomato-product.js turns the Mood / Scent Notes / Burn Time lines into an "At a glance" card. --}}
+    <section class="product-tabs" data-pt-product-story>
         <nav class="product-tabs-menu"><span class="product-tab-link is-active">Overview</span></nav>
-        <div class="product-description rte" data-pt-description>{{{product.description}}}</div>
+        <div class="product-story">
+            <div class="product-description rte" data-pt-description>{{{product.description}}}</div>
+        </div>
     </section>
 
     {{#if product.videos.list.length}}
@@ -52,16 +57,21 @@ product:
         </section>
     {{/if}}
 
-    {{#if product.related_products.length}}
-        <section class="products-related">
-            <h2 class="section-title">Similar Items</h2>
-            <div class="product-grid">
-                {{#each product.related_products}}
+    {{!-- BigCommerce's related products; when it has none, pinktomato-product.js fills in other candles. --}}
+    <section class="products-related" data-pt-also-like{{#unless product.related_products.length}} hidden{{/unless}}>
+            <div class="section-head">
+                <div>
+                    <p class="eyebrow">More to love</p>
+                    <h2 class="section-title">You may also like</h2>
+                </div>
+                <a href="/shop-all/" class="text-link">Shop all {{> components/pinktomato/icon name="arrow-right" size="16"}}</a>
+            </div>
+            <div class="product-grid" data-pt-also-like-grid>
+                {{#each (limit product.related_products 4)}}
                     {{> components/pinktomato/product-card product=this index=@index}}
                 {{/each}}
             </div>
-        </section>
-    {{/if}}
+    </section>
 
     <div class="sticky-buy-bar" aria-hidden="true" data-pt-sticky-buy>
         <img src="{{getImage product.main_image 'productview_thumb_size' (cdn theme_settings.default_image_product)}}" alt="">

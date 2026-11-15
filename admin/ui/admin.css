@@ -256,7 +256,13 @@ a.admin-tile:hover { border-color: var(--accent); transform: translateY(-2px); }
 @media (min-width: 900px) { .content-grid-name { flex: 0 1 220px; } }
 
 /* Shipping, Payments & Tax */
-.settings-stack { display: grid; gap: 18px; max-width: 980px; }
+.settings-layout { display: grid; gap: 18px; align-items: start; }
+.settings-main, .settings-side { display: grid; gap: 18px; min-width: 0; }
+@media (min-width: 1280px) { .settings-layout { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 22px; } }
+/* Payments: compact two-column list so it doesn't run down the page. */
+.settings-side .content-rows { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.settings-side .content-rows li { border-right: 1px solid var(--line); }
+.settings-side .content-rows li small { display: block; }
 .settings-card { display: grid; gap: 10px; margin-bottom: 12px; padding: 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); }
 .settings-card > header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
 .settings-card h4 { margin: 0; font-size: 16px; }

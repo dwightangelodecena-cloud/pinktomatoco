@@ -233,3 +233,48 @@
 @media (prefers-reduced-motion: reduce) {
     .story-bg, .wick-flame, .wick-crackle i { animation: none; }
 }
+
+// ---------- Product page ----------
+// Product pages use the compact header: the small logo sits in the bar (pinktomato-layout.js) and
+// the large centred logo is hidden, so the product shows straight away.
+body:has([data-pt-compact-header]) .header-logo { display: none; }
+.product-page .breadcrumbs { margin-top: 18px; }
+
+// The story and its "At a glance" card side by side (pinktomato-product.js builds the card).
+.product-tabs.has-glance { max-width: none; }
+.product-tabs.has-glance .product-story { display: grid; gap: 28px; }
+@media (min-width: 992px) {
+    .product-tabs.has-glance .product-story { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 56px; align-items: start; }
+    .glance-card { position: sticky; top: 100px; }
+}
+.product-tabs.has-glance .product-description p { margin: 0 0 16px; font-size: 17px; line-height: 1.75; color: var(--text); }
+.product-tabs.has-glance .product-description p:first-child::first-letter {
+    float: left;
+    margin: 6px 10px 0 0;
+    font-family: var(--font-display);
+    font-size: 56px;
+    line-height: .8;
+    color: var(--accent);
+}
+.glance-card {
+    display: grid;
+    gap: 18px;
+    padding: 28px;
+    border-radius: var(--radius-lg);
+    background: radial-gradient(120% 100% at 100% 0%, var(--blush) 0%, var(--surface) 55%);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-sm);
+}
+.glance-card .eyebrow { margin: 0; }
+.glance-row { display: grid; gap: 8px; padding-top: 16px; border-top: 1px solid var(--line); }
+.glance-row:first-of-type { padding-top: 0; border-top: 0; }
+.glance-label { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.glance-label svg { color: var(--accent); }
+.glance-chips, .glance-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.glance-chip { padding: 6px 14px; font-size: 14px; font-weight: 600; border-radius: 999px; color: #fff; background: var(--accent); }
+.glance-tag { padding: 5px 12px; font-size: 13px; border-radius: 999px; color: var(--ink); background: var(--cream); border: 1px solid var(--line-strong); }
+.glance-burn { margin: 0; font-size: 15px; color: var(--ink); }
+.glance-made { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.glance-made li { display: flex; align-items: flex-start; gap: 8px; font-size: 14px; line-height: 1.5; color: var(--text); }
+.glance-made svg { flex: none; margin-top: 2px; padding: 2px; width: 18px; height: 18px; border-radius: 50%; color: #fff; background: var(--sage); }
+.glance-origin { display: flex; align-items: center; gap: 8px; margin: 0; padding: 12px 14px; font-size: 14px; font-weight: 600; border-radius: var(--radius); color: var(--accent-dark); background: var(--blush); }

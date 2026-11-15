@@ -159,12 +159,13 @@ function ZoneForm({ zone, onSave, onCancel }) {
       </label>
       <label className="admin-switch">
         <input type="checkbox" checked={z.freeOn} onChange={(e) => set('freeOn', e.target.checked)} />
-        <span>Free shipping when the order is over a set amount</span>
+        <span>Offer free shipping on bigger orders</span>
       </label>
       {z.freeOn && (
         <label className="form-field">
-          <span className="form-field-title">Free shipping over ($)</span>
-          <input className="form-input" type="number" min="0" step="0.01" required value={z.freeMin} onChange={(e) => set('freeMin', e.target.value)} />
+          <span className="form-field-title">Order total that gets free shipping ($)</span>
+          <input className="form-input" type="number" min="0" step="0.01" required placeholder="e.g. 50" value={z.freeMin} onChange={(e) => set('freeMin', e.target.value)} />
+          <small className="content-hint">This is not a charge. Orders at or above this amount ship free; smaller orders pay the shipping options below. Use 0 to make shipping always free.</small>
         </label>
       )}
       <label className="form-field">
@@ -218,7 +219,7 @@ function Shipping() {
                 <h4>{z.name}</h4>
                 <small>
                   {z.locations.map((l) => (l.state ? `${l.state}, ${l.country}` : countryName(l.country))).join(' · ')}
-                  {z.freeShipping.enabled ? ` · Free shipping over ${dollars(z.freeShipping.minimum)}` : ''}
+                  {z.freeShipping.enabled ? (z.freeShipping.minimum > 0 ? ` · Free shipping on orders of ${dollars(z.freeShipping.minimum)} or more` : ' · Free shipping on every order') : ''}
                   {z.handlingFee > 0 ? ` · ${dollars(z.handlingFee)} handling` : ''}
                 </small>
               </div>
@@ -364,10 +365,10 @@ function Tax() {
 export default function ShippingTab() {
   return (
     <Panel title="Shipping, Payments & Tax" intro="Everything shoppers pay at checkout besides the products.">
-      <div className="settings-stack">
-        <Shipping />
-        <Payments />
-        <Tax />
+      {/* Wide screens: shipping on the left, payments and tax beside it on the right. */}
+      <div className="settings-layout">
+        <div className="settings-main"><Shipping /></div>
+        <div className="settings-side"><Payments /><Tax /></div>
       </div>
     </Panel>
   );
