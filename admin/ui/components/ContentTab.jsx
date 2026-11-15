@@ -3,7 +3,7 @@ import { DEFAULT_CONTENT } from '../lib/siteContent.js';
 import { STORE_URL, getAdminProducts, getContent, saveContent } from '../lib/adminApi.js';
 import ContentPreview from './ContentPreview.jsx';
 import { ArrowRight, EyeIcon, EyeOffIcon, FileIcon, GridIcon, ImageIcon, LayersIcon, MegaphoneIcon, RefreshIcon, SaveIcon, TagIcon, UndoIcon } from '../Icons.jsx';
-import { Cards, Messages, PhotoSlots, PolicySections, Section, Text } from './ContentFields.jsx';
+import { Cards, Messages, PolicySections, Section, Text } from './ContentFields.jsx';
 import { PlusIcon, TrashIcon } from '../Icons.jsx';
 import HomepageProducts from './HomepageProducts.jsx';
 import ProductManager from './ProductManager.jsx';
@@ -27,8 +27,7 @@ const PAGES = [
   { value: 'footer', label: 'Footer', path: '/' },
 ];
 
-const HERO_FIELDS = ['heroEyebrow', 'heroTitle', 'heroButton', 'heroImages'];
-const HERO_PHOTOS = ['Large photo (with heading)', 'Small photo, left', 'Small photo, right', 'Wide photo'];
+const HERO_FIELDS = ['heroEyebrow', 'heroTitle', 'heroText', 'heroButton', 'heroImages'];
 const pick = (source, fields) => Object.fromEntries(fields.map((f) => [f, source[f]]));
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
@@ -39,11 +38,11 @@ function HeroBanners({ draft, edit }) {
       <Section Icon={MegaphoneIcon} title="Announcement bar" intro="Short messages that scroll along the strip at the very top of every page.">
         <Messages items={draft.announcement.items} onChange={(items) => edit('announcement', { items })} />
       </Section>
-      <Section Icon={ImageIcon} title="Homepage hero" intro="The first thing shoppers see.">
-        <Text label="Small heading" value={home.heroEyebrow} onChange={(heroEyebrow) => edit('home', { heroEyebrow }, 'heroEyebrow')} />
-        <Text label="Main heading" value={home.heroTitle} onChange={(heroTitle) => edit('home', { heroTitle }, 'heroTitle')} />
-        <Text label="Button text" value={home.heroButton} onChange={(heroButton) => edit('home', { heroButton }, 'heroButton')} />
-        <PhotoSlots images={home.heroImages} labels={HERO_PHOTOS} onChange={(heroImages) => edit('home', { heroImages })} />
+      <Section Icon={ImageIcon} title="Homepage hero" intro="The candle showcase at the top of the homepage. It shows your homepage products (Homepage → Featured products), or the newest ones, with their own photos and names; shoppers click a candle to switch.">
+        <Text label="Small label (top left)" value={home.heroEyebrow} onChange={(heroEyebrow) => edit('home', { heroEyebrow }, 'heroEyebrow')} />
+        <Text label="Tagline (right side)" value={home.heroTitle} onChange={(heroTitle) => edit('home', { heroTitle }, 'heroTitle')} />
+        <Text label="Short text under the tagline" rows={2} value={home.heroText} onChange={(heroText) => edit('home', { heroText }, 'heroText')} />
+        <Text label="Link text (goes to Shop All)" value={home.heroButton} onChange={(heroButton) => edit('home', { heroButton }, 'heroButton')} />
       </Section>
     </>
   );
@@ -100,12 +99,11 @@ function Homepage({ draft, edit, onProductsSaved }) {
       <Section title="Why Pink Tomato" intro="The four short facts under the hero." shown={home.showValueProps} onToggle={toggle('showValueProps')}>
         <Cards label="Fact" items={home.valueProps} onChange={(valueProps) => edit('home', { valueProps }, 'valueProps')} />
       </Section>
-      <Section title="Story band" intro="The large photo with a short story, under the featured products." shown={home.showStory} onToggle={toggle('showStory')}>
+      <Section title="Story band" intro="The candle-lit panel with your story, under the featured products. The candles shown there come from your product photos." shown={home.showStory} onToggle={toggle('showStory')}>
         <Text label="Small heading" value={home.storyEyebrow} onChange={text('storyEyebrow')} />
         <Text label="Heading" value={home.storyTitle} onChange={text('storyTitle')} />
         <Text label="Text" rows={3} value={home.storyText} onChange={text('storyText')} />
         <Text label="Button text" value={home.storyButton} onChange={text('storyButton')} />
-        <PhotoSlots images={[home.storyImage]} labels={['Background photo']} onChange={([storyImage]) => edit('home', { storyImage })} />
       </Section>
       <Section title="Cotton or wooden wick?" intro="Two cards that explain the wick choices." shown={home.showWicks} onToggle={toggle('showWicks')}>
         <Text label="Small heading" value={home.wicksEyebrow} onChange={text('wicksEyebrow')} />

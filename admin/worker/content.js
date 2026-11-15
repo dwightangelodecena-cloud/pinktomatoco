@@ -19,6 +19,11 @@ const SLOTS = {
     region: 'pt_home_hero',
     template: `<section class="mosaic container"><div class="mosaic-item mosaic-item-0" style="--i: 0"><div class="mosaic-item-bg" style="background-image: url('{{image0}}')"></div><div class="mosaic-overlay"><p class="hero-eyebrow">{{eyebrow}}</p><h1 class="hero-title">{{title}}</h1><a href="/shop-all/" class="button button-light">{{button}} ${svg('arrow-right', 16)}</a></div></div><div class="mosaic-item mosaic-item-1" style="--i: 1"><div class="mosaic-item-bg" style="background-image: url('{{image1}}')"></div></div><div class="mosaic-item mosaic-item-2" style="--i: 2"><div class="mosaic-item-bg" style="background-image: url('{{image2}}')"></div></div><div class="mosaic-item mosaic-item-3" style="--i: 3"><div class="mosaic-item-bg" style="background-image: url('{{image3}}')"></div></div></section>`,
   },
+  // The homepage hero (templates/components/pinktomato/home-showcase.html) reads this marker.
+  showcase: {
+    region: 'pt_home_showcase',
+    template: '<span data-pt-showcase-copy data-eyebrow="{{eyebrow}}" data-tagline="{{tagline}}" data-text="{{text}}" data-button="{{button}}" hidden></span>',
+  },
   values: {
     region: 'pt_home_values',
     template: `{{#if show}}<section class="value-props container" aria-label="Why Pink Tomato"><ul class="value-props-list">{{#each items}}<li class="reveal value-prop" data-pt-reveal="{{delay}}"><span class="value-prop-icon"><svg class="pt-i" width="24" height="24" aria-hidden="true"><use href="#pt-{{icon}}"></use></svg></span><div><h3>{{title}}</h3><p>{{text}}</p></div></li>{{/each}}</ul></section>{{else}}${HIDDEN}{{/if}}`,
@@ -40,9 +45,10 @@ const SLOTS = {
     template: `{{#if show}}<section class="latest-blog-posts container"><div class="reveal blog-card" data-pt-reveal="0"><p class="eyebrow">{{eyebrow}}</p><h2 class="section-title">{{title}}</h2><p class="blog-empty">{{text}}</p><a href="/shop-all/" class="button button-primary">{{button}} ${svg('arrow-right', 16)}</a></div></section>{{else}}${HIDDEN}{{/if}}`,
   },
   // The four sections below match templates/components/pinktomato/home-{story,wicks,care,faq}.html.
+  // The story band (templates/components/pinktomato/home-story.html) reads this marker.
   story: {
     region: 'pt_home_story',
-    template: `{{#if show}}<section class="story-band container"><div class="story-inner reveal" data-pt-reveal="0"><div class="story-bg" style="background-image: url('{{image}}')"></div><div class="story-copy"><p class="eyebrow">{{eyebrow}}</p><h2 class="story-title">{{title}}</h2><p class="story-text">{{text}}</p><a href="/shop-all/" class="button button-light">{{button}} ${svg('arrow-right', 16)}</a></div></div></section>{{else}}${HIDDEN}{{/if}}`,
+    template: '<span data-pt-story-copy data-show="{{#if show}}1{{else}}0{{/if}}" data-eyebrow="{{eyebrow}}" data-title="{{title}}" data-text="{{text}}" data-button="{{button}}" hidden></span>',
   },
   wicks: {
     region: 'pt_home_wicks',
@@ -98,14 +104,13 @@ function widgetSettings(key, value, origin, featuredIds) {
   }
   if (key === 'home') {
     const v = value;
-    const images = (v.heroImages || []).slice(0, 4).map((src) => imageUrl(src, origin));
     return {
-      hero: { eyebrow: text(v.heroEyebrow, 80), title: text(v.heroTitle, 120), button: text(v.heroButton, 40), image0: images[0], image1: images[1], image2: images[2], image3: images[3] },
+      showcase: { eyebrow: text(v.heroEyebrow, 60), tagline: text(v.heroTitle, 80), text: text(v.heroText, 220), button: text(v.heroButton, 40) },
       values: { show: v.showValueProps !== false, items: (v.valueProps || []).slice(0, 4).map((c, i) => ({ title: text(c.title, 80), text: text(c.text, 200), icon: VALUE_ICONS[i % 4], delay: i * 90 })) },
       products: { eyebrow: text(v.productsEyebrow, 80), title: text(v.productsTitle, 120), ids: featuredIds },
       mood: { show: v.showMood !== false, eyebrow: text(v.moodEyebrow, 80), title: text(v.moodTitle, 120) },
       process: { show: v.showProcess !== false, eyebrow: text(v.processEyebrow, 80), title: text(v.processTitle, 120), steps: (v.processSteps || []).slice(0, 4).map((s, i) => ({ title: text(s.title, 80), text: text(s.text, 240), icon: PROCESS_ICONS[i % 4], num: i + 1, delay: 200 + i * 220 })) },
-      story: { show: v.showStory !== false, eyebrow: text(v.storyEyebrow, 80), title: text(v.storyTitle, 120), text: text(v.storyText, 400), button: text(v.storyButton, 40), image: imageUrl(v.storyImage || '/images/hero/hero-2.jpg', origin) },
+      story: { show: v.showStory !== false, eyebrow: text(v.storyEyebrow, 80), title: text(v.storyTitle, 120), text: text(v.storyText, 400), button: text(v.storyButton, 40) },
       wicks: { show: v.showWicks !== false, eyebrow: text(v.wicksEyebrow, 80), title: text(v.wicksTitle, 120), wood: wick(v.wicks?.[0]), cotton: wick(v.wicks?.[1]) },
       care: { show: v.showCare !== false, eyebrow: text(v.careEyebrow, 80), title: text(v.careTitle, 120), tips: (v.careTips || []).slice(0, 4).map((t, i) => ({ title: text(t.title, 80), text: text(t.text, 240), icon: CARE_ICONS[i % 4], num: `0${i + 1}`, delay: i * 90 })) },
       faq: { show: v.showFaq !== false, eyebrow: text(v.faqEyebrow, 80), title: text(v.faqTitle, 120), intro: text(v.faqIntro, 200), items: (v.faqItems || []).filter((f) => text(f.q)).slice(0, 10).map((f, i) => ({ q: text(f.q, 160), a: text(f.a, 600), delay: i * 60 })) },

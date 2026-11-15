@@ -1,16 +1,27 @@
-<div class="pt-slot">
-{{{region name="pt_home_story"}}}
-<div class="pt-default">
-<section class="story-band container">
+{{!-- Story band: candle-lit panel with the brand story on the left and three cut-out candles on a lit
+      shelf on the right, with scent ingredients drifting around them (pinktomato-showcase.js).
+      Wording comes from the admin (Content → Homepage → Story band) through a hidden marker. --}}
+<section class="story-band container" data-pt-story>
     <div class="story-inner reveal" data-pt-reveal="0">
-        <div class="story-bg" style="background-image: url('{{cdn 'img/hero/hero-2.jpg'}}')"></div>
+        <span class="story-glow" aria-hidden="true"></span>
+        <span class="story-notes" aria-hidden="true" data-pt-story-notes></span>
         <div class="story-copy">
-            <p class="eyebrow">Made to linger</p>
-            <h2 class="story-title">Light it. Breathe. Stay a while.</h2>
-            <p class="story-text">Every Pink Tomato candle is poured by hand in small batches in Watford City, North Dakota, with coconut soy wax and toxic-free fragrance, made to turn an ordinary evening into a slow one.</p>
-            <a href="/shop-all/" class="button button-light">Shop the collection {{> components/pinktomato/icon name="arrow-right" size="16"}}</a>
+            <p class="eyebrow" data-pt-story-eyebrow>Made to linger</p>
+            <h2 class="story-title" data-pt-story-title>Light it. Breathe. Stay a while.</h2>
+            <p class="story-text" data-pt-story-text>Every Pink Tomato candle is poured by hand in small batches in Watford City, North Dakota, with coconut soy wax and toxic-free fragrance, made to turn an ordinary evening into a slow one.</p>
+            <ul class="story-facts">
+                <li>{{> components/pinktomato/icon name="map-pin" size="18"}}<span><strong>Small batches</strong>poured by hand</span></li>
+                <li>{{> components/pinktomato/icon name="leaf" size="18"}}<span><strong>Coconut soy</strong>clean-burning wax</span></li>
+                <li>{{> components/pinktomato/icon name="flame" size="18"}}<span><strong>Wooden wicks</strong>a soft crackle</span></li>
+            </ul>
+            <a href="/shop-all/" class="button button-light"><span data-pt-story-button>Shop the collection</span> {{> components/pinktomato/icon name="arrow-right" size="16"}}</a>
+        </div>
+        <div class="story-visual" aria-hidden="true">
+            <span class="story-shelf"></span>
+            <img class="story-candle story-candle--left" src="{{cdn 'img/cutouts/113.webp'}}" alt="" loading="lazy">
+            <img class="story-candle story-candle--right" src="{{cdn 'img/cutouts/115.webp'}}" alt="" loading="lazy">
+            <img class="story-candle story-candle--center" src="{{cdn 'img/cutouts/128.webp'}}" alt="" loading="lazy">
         </div>
     </div>
+    {{{region name="pt_home_story"}}}
 </section>
-</div>
-</div>

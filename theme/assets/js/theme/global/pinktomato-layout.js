@@ -56,8 +56,8 @@ export default function pinkTomatoLayout() {
         setSearch(false);
     });
 
-    // The sign-in pages hide the big centred logo (the candle is the centrepiece), so the bar always shows it.
-    const candlePage = Boolean(document.querySelector('[data-pt-candle-room], [data-pt-compact-header]'));
+    // The logo always sits on the left of the nav bar (the big centred logo block is no longer used).
+    const candlePage = true;
     const showLogo = (scrolled) => {
         const visible = scrolled || mobile.matches || candlePage;
         logo.classList.toggle('is-visible', visible);

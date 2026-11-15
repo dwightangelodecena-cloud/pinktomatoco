@@ -272,3 +272,36 @@ a.admin-tile:hover { border-color: var(--accent); transform: translateY(-2px); }
 .settings-bands li { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px; }
 .settings-bands label { display: grid; flex: 1 1 110px; gap: 2px; font-size: 12px; }
 .settings-bands .form-input { min-height: 40px; padding: 6px 10px; }
+
+/* Shipping: plain-language summary and the guided setup */
+.ship-summary { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; padding: 16px 18px; border-radius: var(--radius-sm); border: 1px solid var(--line); background: var(--surface, #fff); }
+.ship-summary p { display: flex; align-items: flex-start; gap: 10px; margin: 0; flex: 1 1 300px; font-size: 15px; line-height: 1.5; color: var(--ink); }
+.ship-dot { flex: none; width: 10px; height: 10px; margin-top: 6px; border-radius: 50%; background: #3f8f5a; }
+.ship-summary.is-missing { border-color: #f0c2c5; background: #fff5f5; }
+.ship-summary.is-missing .ship-dot { background: var(--error, #b3363f); }
+.ship-setup { display: grid; gap: 16px; width: 100%; }
+.ship-setup h4 { margin: 0; font-size: 17px; }
+.ship-choices { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.ship-choice { position: relative; display: grid; gap: 4px; padding: 16px; border-radius: var(--radius-sm); border: 2px solid var(--line); background: #fff; cursor: pointer; transition: border-color .2s, background-color .2s; }
+.ship-choice input { position: absolute; opacity: 0; pointer-events: none; }
+.ship-choice strong { font-size: 15px; }
+.ship-choice span { font-size: 13px; color: var(--muted); line-height: 1.45; }
+.ship-choice.is-on { border-color: var(--accent); background: var(--blush, #fbeae6); }
+.ship-choice:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ship-fields { display: grid; gap: 12px; }
+.ship-money { display: grid; gap: 6px; font-size: 14px; font-weight: 600; }
+.ship-money-input { display: inline-flex; align-items: center; gap: 6px; max-width: 200px; }
+.ship-money-input b { font-size: 18px; color: var(--muted); }
+.ship-money-input .form-input { min-height: 46px; font-size: 18px; }
+.ship-band { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 14px; }
+.ship-band .ship-money-input { max-width: 140px; }
+.ship-preview { margin: 0; padding: 12px 14px; border-radius: var(--radius-sm); background: #eef6f0; color: #1f5133; font-size: 15px; }
+.ship-preview span { font-weight: 700; }
+.ship-advanced { margin-top: 8px; padding-top: 12px; border-top: 1px dashed var(--line); }
+.ship-advanced > summary { cursor: pointer; font-weight: 600; color: var(--muted); padding: 6px 0; }
+.ship-advanced[open] > summary { margin-bottom: 10px; }
+/* Payments in plain language */
+.pay-warning { display: grid; gap: 4px; margin-bottom: 12px; padding: 14px 16px; border-radius: var(--radius-sm); background: #fff4dc; color: #6b4a00; font-size: 14px; line-height: 1.5; }
+.pay-lead { margin: 0 0 8px; font-weight: 600; }
+.pay-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.pay-chip { padding: 8px 14px; border-radius: 999px; background: #eef6f0; color: #1f5133; font-size: 14px; font-weight: 600; }

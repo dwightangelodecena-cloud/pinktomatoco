@@ -47,38 +47,70 @@
 .category-tile:hover .category-tile-go svg { transform: translateX(4px); }
 
 // ---------- Story band ----------
-.story-band { padding-top: 90px; }
+// A candle-lit panel matching the hero: story on the left, three cut-out candles on a lit shelf on the right.
+.story-band { padding-top: 100px; }
 .story-inner {
     position: relative;
-    display: flex;
-    align-items: center;
-    min-height: 460px;
-    overflow: hidden;
-    border-radius: 32px;
     isolation: isolate;
+    overflow: hidden;
+    display: grid;
+    gap: 24px;
+    align-items: center;
+    padding: clamp(32px, 5vw, 72px);
+    border-radius: 32px;
+    color: #fbefe6;
+    background: radial-gradient(120% 120% at 75% 55%, #2c1e17 0%, #140e0c 70%);
+    box-shadow: 0 30px 80px rgba(20, 12, 8, .22);
 }
-.story-bg {
-    position: absolute;
-    inset: 0;
-    z-index: -2;
-    background-size: cover;
-    background-position: center;
-    animation: slow-zoom 22s ease-in-out infinite alternate;
-}
-.story-inner::after {
-    content: '';
+@media (min-width: 900px) { .story-inner { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); min-height: 520px; } }
+.story-glow {
     position: absolute;
     inset: 0;
     z-index: -1;
-    background: linear-gradient(90deg, rgba(36, 24, 22, .86) 0%, rgba(36, 24, 22, .55) 45%, rgba(36, 24, 22, .05) 100%);
+    background: radial-gradient(460px circle at 74% 62%, rgba(232, 150, 80, .45), transparent 70%);
+    animation: showcase-breathe 5s ease-in-out infinite alternate;
+    pointer-events: none;
 }
-.story-copy { max-width: 540px; padding: clamp(32px, 6vw, 72px); color: #fbefe6; }
+.story-notes { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.story-copy { position: relative; z-index: 2; max-width: 520px; }
 .story-copy .eyebrow { color: #f5c8b8; }
-.story-title { margin: 6px 0 16px; color: #fff; font-size: clamp(32px, 4.2vw, 54px); line-height: 1.05; font-weight: 400; }
-.story-text { margin: 0 0 28px; font-size: 17px; line-height: 1.65; color: rgba(255, 240, 230, .88); }
-@media (max-width: 639px) {
-    .story-inner { min-height: 420px; align-items: flex-end; }
-    .story-inner::after { background: linear-gradient(180deg, rgba(36, 24, 22, .1) 0%, rgba(36, 24, 22, .88) 70%); }
+.story-title { margin: 6px 0 16px; color: #fff; font-size: clamp(32px, 4vw, 54px); line-height: 1.05; font-weight: 400; }
+.story-text { margin: 0 0 24px; font-size: 17px; line-height: 1.65; color: rgba(255, 240, 230, .82); }
+.story-facts { list-style: none; margin: 0 0 28px; padding: 0; display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+.story-facts li { display: flex; align-items: flex-start; gap: 10px; padding: 12px; border-radius: 14px; background: rgba(255, 255, 255, .05); border: 1px solid rgba(255, 225, 200, .12); }
+.story-facts svg { flex: none; margin-top: 2px; color: #f0b48f; }
+.story-facts span { display: grid; font-size: 13px; line-height: 1.35; color: rgba(255, 238, 225, .7); }
+.story-facts strong { font-size: 14px; color: #fff; }
+
+.story-visual { position: relative; z-index: 1; height: clamp(300px, 34vw, 440px); }
+.story-shelf {
+    position: absolute;
+    left: 6%;
+    right: 6%;
+    bottom: 6%;
+    height: 22px;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(0, 0, 0, .6), transparent);
+}
+.story-candle {
+    position: absolute;
+    bottom: 8%;
+    height: 62%;
+    width: auto;
+    filter: drop-shadow(0 24px 30px rgba(0, 0, 0, .55));
+    transition: transform .8s var(--spring);
+    animation: story-bob 6s ease-in-out infinite alternate;
+}
+// Centred without transform, so the bob (translate) and hover (transform) don't fight.
+.story-candle--center { left: 0; right: 0; margin: 0 auto; height: 82%; z-index: 2; animation-delay: -2s; }
+.story-candle--left { left: 2%; z-index: 1; filter: drop-shadow(0 24px 30px rgba(0, 0, 0, .55)) brightness(.82); animation-delay: -4s; }
+.story-candle--right { right: 2%; z-index: 1; filter: drop-shadow(0 24px 30px rgba(0, 0, 0, .55)) brightness(.82); }
+.story-inner:hover .story-candle--left { transform: translateX(-10px) rotate(-3deg); }
+.story-inner:hover .story-candle--right { transform: translateX(10px) rotate(3deg); }
+.story-inner:hover .story-candle--center { transform: translateY(-8px) scale(1.02); }
+@keyframes story-bob { from { translate: 0 0; } to { translate: 0 -10px; } }
+@media (max-width: 899px) {
+    .story-visual { order: -1; height: 280px; }
 }
 
 // ---------- Cotton or wooden wick ----------

@@ -1,0 +1,57 @@
+{{!-- Homepage hero: a full-width, candle-lit stage. Choosing a candle on the right swaps the big faded
+      name, the candle (a cut-out photo when one exists, otherwise its photo in an arch), the words and the
+      floating scent-note ingredients (pinktomato-showcase.js). Products: the newest five, or the admin's
+      homepage picks. Wording comes from the admin (Content → Hero & Banners). --}}
+<section class="showcase" data-pt-showcase aria-roledescription="carousel" aria-label="Featured candles"
+    data-cutout-url="{{cdn 'img/cutouts/ID.webp'}}">
+    <div class="showcase-stage">
+        <span class="showcase-glow" aria-hidden="true"></span>
+        <span class="showcase-embers" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        <p class="showcase-word" aria-hidden="true" data-pt-showcase-word>{{#each (limit products.new 1)}}{{name}}{{/each}}</p>
+        <div class="showcase-notes" aria-hidden="true" data-pt-showcase-notes></div>
+
+        <div class="showcase-inner container">
+            <div class="showcase-copy" aria-live="polite">
+                <p class="showcase-eyebrow" data-pt-showcase-eyebrow>Hand-poured in North Dakota</p>
+                {{#each (limit products.new 1)}}
+                    <h1 class="showcase-title" data-pt-showcase-title>{{name}}</h1>
+                    <p class="showcase-text" data-pt-showcase-text></p>
+                    <ul class="showcase-chips" data-pt-showcase-chips></ul>
+                    <div class="showcase-actions">
+                        <a class="button button-light" href="{{url}}" data-pt-showcase-link>Shop this candle {{> components/pinktomato/icon name="arrow-right" size="16"}}</a>
+                        <a class="showcase-all" href="/shop-all/" data-pt-showcase-all>Shop All</a>
+                    </div>
+                {{/each}}
+            </div>
+
+            <div class="showcase-figure" data-pt-showcase-figure>
+                <span class="showcase-arch-glow" aria-hidden="true"></span>
+                <div class="showcase-arch" data-pt-showcase-arch>
+                    {{#each (limit products.new 1)}}
+                        <img class="showcase-img is-current" src="{{getImage image 'zoom_size' (cdn theme_settings.default_image_product)}}" alt="{{name}}">
+                    {{/each}}
+                </div>
+                <span class="showcase-floor" aria-hidden="true"></span>
+            </div>
+
+            <div class="showcase-side">
+                <p class="showcase-tagline" data-pt-showcase-tagline>Made to linger</p>
+                <p class="showcase-side-text" data-pt-showcase-side-text>Small batches of coconut soy wax and toxic-free fragrance, with a wooden wick that softly crackles.</p>
+                <ul class="showcase-thumbs" role="tablist" aria-label="Choose a candle" data-pt-showcase-thumbs>
+                    {{#each (limit products.new 5)}}
+                        <li role="presentation">
+                            <button type="button" role="tab" class="showcase-thumb{{#if @first}} is-active{{/if}}" aria-selected="{{#if @first}}true{{else}}false{{/if}}" aria-label="{{name}}"
+                                data-id="{{id}}" data-name="{{name}}" data-url="{{url}}" data-image="{{getImage image 'zoom_size' (cdn theme_settings.default_image_product)}}">
+                                <img src="{{getImage image 'productgallery_size' (cdn theme_settings.default_image_product)}}" alt="" loading="lazy">
+                                <span class="showcase-thumb-bar" aria-hidden="true"></span>
+                            </button>
+                        </li>
+                    {{/each}}
+                </ul>
+                <p class="showcase-count" aria-hidden="true"><span data-pt-showcase-index>01</span> / <span data-pt-showcase-total>05</span></p>
+            </div>
+        </div>
+    </div>
+    {{!-- The admin's saved hero wording arrives here (a hidden marker the script reads). --}}
+    {{{region name="pt_home_showcase"}}}
+</section>

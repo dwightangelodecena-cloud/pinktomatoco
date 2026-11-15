@@ -4,6 +4,7 @@ import {
 } from '../lib/adminApi.js';
 import { ArrowRight, PencilIcon, PlusIcon, TrashIcon } from '../Icons.jsx';
 import { Section } from './ContentFields.jsx';
+import { ShippingSetup, describeZone } from './ShippingSetup.jsx';
 import { Empty, Loading, Panel, Problem, useAdminData } from './shared.jsx';
 
 const COUNTRIES = [
@@ -189,6 +190,7 @@ function ZoneForm({ zone, onSave, onCancel }) {
 function Shipping() {
   const { data: zones, error, setError, reload } = useAdminData(getShipping);
   const [editing, setEditing] = useState(null); // { kind: 'zone' | 'method', zoneId, item }
+  const [setupZone, setSetupZone] = useState(null);
 
   const run = async (fn) => {
     setError('');
@@ -204,11 +206,32 @@ function Shipping() {
   const noMethods = zones?.some((z) => z.enabled && z.methods.filter((m) => m.enabled).length === 0 && !z.freeShipping.enabled);
 
   return (
-    <Section title="Shipping" intro="Where you ship to and what shoppers pay for it. Changes apply at checkout straight away.">
+    <Section title="Shipping" intro="What customers pay to get their order. Changes apply at checkout straight away.">
       <Problem>{error}</Problem>
       {!zones && !error && <Loading />}
-      {noMethods && <p className="form-message error" role="alert">A shipping area has no shipping options, so shoppers there can't finish checkout. Add a shipping option below.</p>}
-      {zones?.length === 0 && <Empty>No shipping areas yet. Add one to start shipping.</Empty>}
+      {zones?.length === 0 && <Empty>You don't ship anywhere yet. Open "Advanced" below to add the United States.</Empty>}
+
+      {/* The simple view: one sentence per area and one button to set it up. */}
+      {zones?.map((z) => {
+        const d = describeZone(z);
+        return (
+          <div key={z.id} className={`ship-summary ${d.ok ? 'is-ok' : 'is-missing'}`}>
+            {setupZone === z.id ? (
+              <ShippingSetup zone={z} onCancel={() => setSetupZone(null)} onDone={() => { setSetupZone(null); reload(); }} />
+            ) : (
+              <>
+                <p><span className="ship-dot" aria-hidden="true" />{d.text}</p>
+                <button type="button" className="button button-primary button-small" onClick={() => setSetupZone(z.id)}>{d.ok ? 'Change shipping' : 'Set up shipping'}</button>
+              </>
+            )}
+          </div>
+        );
+      })}
+
+      <details className="ship-advanced">
+        <summary>Advanced: shipping areas and options</summary>
+        <p className="content-hint">For more control: ship to other countries or only some states, offer several options at checkout, or charge by weight. Most stores never need this.</p>
+      {noMethods && <p className="form-message error" role="alert">A shipping area has no shipping options, so shoppers there can't finish checkout.</p>}
       {zones?.map((z) => (
         <article key={z.id} className="settings-card">
           {editing?.kind === 'zone' && editing.item.id === z.id ? (
@@ -263,6 +286,7 @@ function Shipping() {
       ) : (
         <button type="button" className="button button-small" onClick={() => setEditing({ kind: 'zone', item: {} })}><PlusIcon size={14} /> Add shipping area</button>
       )}
+      </details>
     </Section>
   );
 }
@@ -270,25 +294,26 @@ function Shipping() {
 function Payments() {
   const { data: methods, error } = useAdminData(getPayments);
   return (
-    <Section title="Payments" intro="How shoppers can pay at checkout.">
+    <Section title="Payments" intro="How customers can pay at checkout.">
       <Problem>{error}</Problem>
       {!methods && !error && <Loading />}
-      {methods?.length === 0 && <p className="form-message error" role="alert">No payment methods are switched on, so shoppers can't pay. Set one up in BigCommerce (button below).</p>}
-      {methods?.length > 0 && (
-        <ul className="content-rows">
-          {methods.map((m) => (
-            <li key={m.code}>
-              <div className="content-row-main">
-                <strong>{m.name}</strong>
-                <small>{m.testMode ? 'Test mode: no real money is taken. Use it for the test order, then turn it off before launch.' : 'Live'}</small>
-              </div>
-              <span className={`content-state ${m.testMode ? '' : 'is-on'}`}>{m.testMode ? 'Test' : 'On'}</span>
-            </li>
-          ))}
-        </ul>
+      {methods?.length === 0 && <p className="form-message error" role="alert">No way to pay is switched on yet, so customers can't check out.</p>}
+      {methods?.some((m) => m.testMode) && (
+        <div className="pay-warning" role="alert">
+          <strong>A test payment option is switched on.</strong>
+          <span>With "{methods.filter((m) => m.testMode).map((m) => m.name).join('", "')}" on, customers could place orders without really paying. Use it for one test order, then switch it off in payment settings.</span>
+        </div>
       )}
-      <p className="content-notice" role="note">Connecting a payment provider (Stripe, PayPal, BigCommerce Payments) means signing in to that provider with the business's bank details, which BigCommerce only allows in its own settings page.</p>
-      <a className="button button-small" href={`${CONTROL_PANEL}/settings/payment`} target="_blank" rel="noreferrer">Open payment settings in BigCommerce <ArrowRight size={14} /></a>
+      {methods?.length > 0 && (
+        <>
+          <p className="pay-lead">Customers can pay with:</p>
+          <div className="pay-chips">
+            {methods.filter((m) => !m.testMode).map((m) => <span key={m.code} className="pay-chip">{m.name === 'BigCommerce Payments' ? 'Credit & debit cards' : m.name.replace(/^BigCommerce Payments /, '')}</span>)}
+          </div>
+        </>
+      )}
+      <p className="content-hint">To add or remove a way to pay, open payment settings. Connecting a provider means signing in with the business's bank details, which BigCommerce only allows there.</p>
+      <a className="button button-small" href={`${CONTROL_PANEL}/settings/payment`} target="_blank" rel="noreferrer">Open payment settings <ArrowRight size={14} /></a>
     </Section>
   );
 }

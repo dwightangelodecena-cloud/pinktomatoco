@@ -163,20 +163,30 @@ function Home({ draft, products, featuredIds }) {
 
   return (
     <>
-      <section className="mosaic container">
-        {h.heroImages.map((src, i) => (
-          <div key={i} className={`mosaic-item mosaic-item-${i}`} style={{ animation: 'none' }}>
-            <div className="mosaic-item-bg" style={{ backgroundImage: `url("${src}")` }} />
-            {i === 0 && (
-              <div className="mosaic-overlay">
-                <p className="hero-eyebrow">{h.heroEyebrow}</p>
-                <h1 className="hero-title">{h.heroTitle}</h1>
-                <span className="button button-light">{h.heroButton} <ArrowRight /></span>
-              </div>
-            )}
+      {/* The candle showcase hero, shown still on its first candle. */}
+      {chosen[0] && (
+        <section className="showcase container is-ready is-in">
+          <div className="showcase-stage">
+            <span className="showcase-glow" aria-hidden="true" />
+            <p className="showcase-word" aria-hidden="true">{chosen[0].name}</p>
+            <div className="showcase-copy">
+              <p className="showcase-eyebrow">{h.heroEyebrow}</p>
+              <h1 className="showcase-title">{chosen[0].name}</h1>
+              <p className="showcase-text">{(chosen[0].description_html || '').replace(/<[^>]+>/g, ' ').replace(/s+/g, ' ').trim().split(/(?<=[.!?])s/)[0]}</p>
+              <div className="showcase-actions"><span className="button button-light">Shop this candle <ArrowRight /></span><span className="showcase-all">{h.heroButton}</span></div>
+            </div>
+            <div className="showcase-figure"><span className="showcase-arch-glow" aria-hidden="true" /><div className="showcase-arch"><img className="showcase-img" src={chosen[0].images?.[0]} alt="" /></div></div>
+            <div className="showcase-side">
+              <p className="showcase-tagline">{h.heroTitle}</p>
+              <p className="showcase-side-text">{h.heroText}</p>
+              <ul className="showcase-thumbs">
+                {chosen.slice(0, 5).map((p, i) => <li key={p.id}><span className={`showcase-thumb ${i === 0 ? 'is-active' : ''}`}><img src={p.images?.[0]} alt="" /></span></li>)}
+              </ul>
+              <p className="showcase-count"><span>01</span> / <span>0{Math.min(5, chosen.length)}</span></p>
+            </div>
           </div>
-        ))}
-      </section>
+        </section>
+      )}
 
       {h.showValueProps && (
         <section className="value-props container">
@@ -200,12 +210,17 @@ function Home({ draft, products, featuredIds }) {
       {h.showStory && (
         <section className="story-band container">
           <div className="story-inner reveal is-visible">
-            <div className="story-bg" style={{ backgroundImage: `url("${h.storyImage}")` }} />
+            <span className="story-glow" aria-hidden="true" />
             <div className="story-copy">
               <p className="eyebrow">{h.storyEyebrow}</p>
               <h2 className="story-title">{h.storyTitle}</h2>
               <p className="story-text">{h.storyText}</p>
               <span className="button button-light">{h.storyButton} <ArrowRight /></span>
+            </div>
+            <div className="story-visual" aria-hidden="true">
+              {chosen.slice(0, 3).map((pr, i) => (
+                <img key={pr.id} className={`story-candle story-candle--${['center', 'left', 'right'][i]}`} style={{ borderRadius: 24, objectFit: 'cover', aspectRatio: '3 / 4' }} src={pr.images?.[0]} alt="" />
+              ))}
             </div>
           </div>
         </section>

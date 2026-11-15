@@ -2,28 +2,12 @@
 products:
     new:
         limit: 8
+        summary: 160
 ---
 {{#partial "hero"}}
     {{{region name="home_below_menu"}}}
 
-    <div class="pt-slot">
-    {{{region name="pt_home_hero"}}}
-    <div class="pt-default">
-    <section class="mosaic container">
-        <div class="mosaic-item mosaic-item-0" style="--i: 0">
-            <div class="mosaic-item-bg" style="background-image: url('{{cdn 'img/hero/hero-1.jpg'}}')"></div>
-            <div class="mosaic-overlay">
-                <p class="hero-eyebrow">Hand-poured in North Dakota</p>
-                <h1 class="hero-title">Candles &amp; wax melts made to linger</h1>
-                <a href="/shop-all/" class="button button-light">Shop All {{> components/pinktomato/icon name="arrow-right" size="16"}}</a>
-            </div>
-        </div>
-        <div class="mosaic-item mosaic-item-1" style="--i: 1"><div class="mosaic-item-bg" style="background-image: url('{{cdn 'img/hero/hero-2.jpg'}}')"></div></div>
-        <div class="mosaic-item mosaic-item-2" style="--i: 2"><div class="mosaic-item-bg" style="background-image: url('{{cdn 'img/hero/hero-3.jpg'}}')"></div></div>
-        <div class="mosaic-item mosaic-item-3" style="--i: 3"><div class="mosaic-item-bg" style="background-image: url('{{cdn 'img/hero/hero-4.jpg'}}')"></div></div>
-    </section>
-    </div>
-    </div>
+    {{> components/pinktomato/home-showcase}}
 
     <div class="pt-slot">
     {{{region name="pt_home_values"}}}

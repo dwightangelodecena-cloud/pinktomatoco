@@ -9,7 +9,8 @@ export const DEFAULT_CONTENT = {
   },
   home: {
     heroEyebrow: 'Hand-poured in North Dakota',
-    heroTitle: 'Candles & wax melts made to linger',
+    heroTitle: 'Made to linger',
+    heroText: 'Small batches of coconut soy wax and toxic-free fragrance, with a wooden wick that softly crackles.',
     heroButton: 'Shop All',
     heroImages: ['/images/hero/hero-1.jpg', '/images/hero/hero-2.jpg', '/images/hero/hero-3.jpg', '/images/hero/hero-4.jpg'],
     showValueProps: true,
