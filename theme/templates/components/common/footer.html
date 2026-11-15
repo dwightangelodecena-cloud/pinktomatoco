@@ -76,12 +76,17 @@
 {{{region name="ssl_site_seal--global"}}}
 
 <div class="drawer-overlay" data-pt-cart-overlay></div>
-<aside class="cart-preview" aria-hidden="true" aria-label="Your Cart" data-pt-cart>
+<aside class="cart-preview" aria-hidden="true" aria-label="Your cart and wishlist" data-pt-cart
+    data-wishlist-url="{{urls.account.wishlists.all}}" data-login-url="{{urls.auth.login}}" data-signed-in="{{#if customer}}1{{else}}0{{/if}}">
     <div class="cart-preview-header">
-        <h2 class="cart-preview-title">Your Cart</h2>
-        <button type="button" class="icon-button" aria-label="Close cart" data-pt-cart-close>{{> components/pinktomato/icon name="close" size="20"}}</button>
+        <div class="cart-tabs" role="tablist" aria-label="Cart or wishlist">
+            <button type="button" role="tab" class="cart-tab is-active" aria-selected="true" data-pt-drawer-tab="cart">{{> components/pinktomato/icon name="cart" size="17"}} Cart</button>
+            <button type="button" role="tab" class="cart-tab" aria-selected="false" data-pt-drawer-tab="wishlist">{{> components/pinktomato/icon name="heart" size="17"}} Wishlist</button>
+        </div>
+        <button type="button" class="icon-button" aria-label="Close" data-pt-cart-close>{{> components/pinktomato/icon name="close" size="20"}}</button>
     </div>
     <div class="cart-drawer-body" data-pt-cart-body></div>
+    <div class="cart-drawer-body wishlist-drawer-body" data-pt-wishlist-body hidden></div>
 </aside>
 
 <button type="button" class="back-to-top" aria-label="Back to top" tabindex="-1" data-pt-back-to-top>

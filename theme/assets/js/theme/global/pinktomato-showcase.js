@@ -110,8 +110,16 @@ export default function pinkTomatoShowcase(context) {
     let timer = null;
     const pad = (n) => String(n).padStart(2, '0');
 
+    // A colour chosen in the admin wins; otherwise the warm tints take turns.
+    const fromHex = (hex) => {
+        const n = parseInt(hex.slice(1), 16);
+        const [r, g, b] = [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+        const dark = (v) => Math.round(v * 0.16 + 14);
+        return { glow: `rgba(${r}, ${g}, ${b}, .55)`, bg: `rgb(${dark(r)}, ${dark(g)}, ${dark(b)})` };
+    };
     const tint = (i) => {
-        const t = TINTS[i % TINTS.length];
+        const chosen = thumbs[i] && thumbs[i].dataset.color;
+        const t = chosen ? fromHex(chosen) : TINTS[i % TINTS.length];
         root.style.setProperty('--showcase-glow', t.glow);
         root.style.setProperty('--showcase-bg', t.bg);
     };
@@ -278,6 +286,7 @@ export default function pinkTomatoShowcase(context) {
                 if (slide.cutout) t.dataset.cutout = slide.cutout;
                 t.dataset.notes = JSON.stringify(slide.notes || []);
                 t.dataset.images = JSON.stringify(slide.images || []);
+                if (slide.color) t.dataset.color = slide.color;
             }
         });
         select(picked.length ? 0 : current, { first: true });

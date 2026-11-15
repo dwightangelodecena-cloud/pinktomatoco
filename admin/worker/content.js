@@ -86,6 +86,7 @@ function heroSlides(slides, origin) {
     id: Number(s.id),
     cutout: s.cutout ? imageUrl(s.cutout, origin) : '',
     notes: (s.notes || []).map((n) => text(n, 40)).filter(Boolean).slice(0, 8),
+    color: /^#[0-9a-f]{6}$/i.test(String(s.color || '')) ? String(s.color).toLowerCase() : '',
     images: (s.images || []).slice(0, 4).map((src) => imageUrl(src, origin)),
   }));
   return JSON.stringify(list);

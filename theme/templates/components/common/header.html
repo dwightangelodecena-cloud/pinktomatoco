@@ -92,13 +92,11 @@
             {{else}}
                 <a class="tool-link desktop-only" href="{{urls.auth.login}}?from=index.php">{{> components/pinktomato/icon name="user" size="18"}} Log in</a>
             {{/if}}
-            {{!-- Wishlist in the top bar (the bottom tab bar on phones was removed). --}}
-            <a class="icon-button" href="{{urls.account.wishlists.all}}" aria-label="Wishlist" title="Wishlist">{{> components/pinktomato/icon name="heart" size="20"}}</a>
             <button type="button" class="icon-button" aria-label="Search" aria-expanded="false" data-pt-search-toggle>
                 {{> components/pinktomato/icon name="search" size="20"}}
             </button>
-            <a class="icon-button cart-preview-trigger" href="{{urls.cart}}" aria-label="Cart" data-pt-cart-open>
-                {{> components/pinktomato/icon name="cart" size="20"}}
+            <a class="icon-button cart-preview-trigger" href="{{urls.cart}}" aria-label="Cart and wishlist" title="Cart & wishlist" data-pt-cart-open>
+                {{> components/pinktomato/icon name="cart-heart" size="22"}}
                 <span class="cart-preview-quantity cart-quantity">0</span>
             </a>
         </div>

@@ -38,7 +38,13 @@ export default function HeroPreview({ draft, slides, fallback }) {
   const chips = notes.filter((n) => n.length > 2 && !/^(wax|melt|wick|wooden|candle)$/i.test(n)).slice(0, 4);
   const art = [...(s.images || []).map((src) => ({ img: src })), ...artFor(notes).map((svg) => ({ svg }))];
   const cutout = s.cutout || (CUTOUTS.includes(p.id) ? `/cutouts/${p.id}.webp` : '');
-  const tint = TINTS[index % TINTS.length];
+  const hexTint = (hex) => {
+    const n = parseInt(hex.slice(1), 16);
+    const [r, g, b] = [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+    const dark = (v) => Math.round(v * 0.16 + 14);
+    return { glow: `rgba(${r}, ${g}, ${b}, .55)`, bg: `rgb(${dark(r)}, ${dark(g)}, ${dark(b)})` };
+  };
+  const tint = s.color ? hexTint(s.color) : TINTS[index % TINTS.length];
 
   return (
     <section data-preview="hero" className="showcase is-ready is-in" style={{ '--showcase-glow': tint.glow, '--showcase-bg': tint.bg }} key={`${p.id}-${index}`}>

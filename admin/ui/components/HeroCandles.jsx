@@ -8,6 +8,32 @@ import CUTOUTS, { LABEL_NOTES } from '../../../theme/assets/js/theme/global/pink
 import { ChevronDown, ImageIcon, PlusIcon, TrashIcon } from '../Icons.jsx';
 
 const MAX = 5;
+// Warm shades that suit the site, plus "Automatic" (the site picks).
+const SWATCHES = [
+  ['Automatic', ''], ['Amber', '#e89650'], ['Tomato rose', '#c8474f'], ['Caramel', '#d6966e'], ['Honey', '#ecba78'],
+  ['Blush', '#f0aaa0'], ['Lavender', '#a98bd0'], ['Sage', '#8fae7a'], ['Ocean', '#6fa3c4'],
+];
+
+function ColorPick({ value, onChange }) {
+  return (
+    <div className="form-field">
+      <span className="form-field-title">Background colour</span>
+      <div className="hero-swatches">
+        {SWATCHES.map(([name, hex]) => (
+          <button key={name} type="button" title={name} aria-label={name} aria-pressed={(value || '') === hex}
+            className={`hero-swatch ${hex ? '' : 'is-auto'}`} style={hex ? { background: hex } : undefined} onClick={() => onChange(hex)}>
+            {hex ? '' : 'Auto'}
+          </button>
+        ))}
+        <label className="hero-swatch is-custom" title="Pick any colour">
+          <input type="color" value={value || '#e89650'} onChange={(e) => onChange(e.target.value)} aria-label="Pick any colour" />
+          <span>Custom</span>
+        </label>
+      </div>
+      <small className="content-hint">The glow behind this candle on the homepage. "Auto" uses the site's warm shades in turn.</small>
+    </div>
+  );
+}
 const splitNotes = (text) => text.split(',').map((n) => n.trim()).filter(Boolean);
 
 // Uploads a photo with its background removed (used for the candle and for ingredient pictures).
@@ -100,6 +126,7 @@ function CandleRow({ slide, index, count, products, onChange, onRemove, onMove }
           <small className="content-hint">Each note becomes a floating ingredient, like taro, rose, apple or bergamot. They also show as little tags under the candle's name.</small>
         </label>
         <NotesPreview notes={slide.notes || []} />
+        <ColorPick value={slide.color || ''} onChange={(color) => set({ color })} />
         <div className="form-field">
           <span className="form-field-title">Your own ingredient pictures (optional, up to 4)</span>
           <div className="hero-ingredients">
