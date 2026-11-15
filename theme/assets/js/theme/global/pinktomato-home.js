@@ -220,8 +220,65 @@ async function initFeatured(token) {
     }
 }
 
+// Shop by category appears once the store has at least two visible categories besides Shop All.
+function initCategories() {
+    const section = document.querySelector('[data-pt-home-categories]');
+    if (!section) return;
+    const tiles = Array.from(section.querySelectorAll('[data-pt-category-tile]'));
+    if (tiles.length < 2) return;
+    tiles.forEach((tile, i) => { tile.dataset.ptReveal = String(i * 80); });
+    section.hidden = false;
+}
+
+const REVIEWS_QUERY = `query HomeReviews {
+  site { products(first: 50) { edges { node {
+    name path
+    reviews(first: 5) { edges { node { title text rating author { name } } } }
+  } } } }
+}`;
+const stars = (n) => Array.from({ length: 5 }, (_, i) => `<span class="${i < n ? 'is-on' : ''}">${icon('star', 16)}</span>`).join('');
+
+// Kind words: only real, approved BigCommerce reviews (4 stars and up). No reviews, no section.
+async function initReviews(token) {
+    const section = document.querySelector('[data-pt-home-reviews]');
+    const cards = section && section.querySelector('[data-pt-review-cards]');
+    if (!cards || !token) return;
+    try {
+        const response = await fetch('/graphql', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+            body: JSON.stringify({ query: REVIEWS_QUERY }),
+        });
+        const { data } = await response.json();
+        const reviews = data.site.products.edges.flatMap(({ node: p }) => p.reviews.edges.map(({ node: r }) => ({ ...r, product: p })))
+            .filter((r) => r.rating >= 4 && (r.text || r.title))
+            .slice(0, 6);
+        if (!reviews.length) return;
+        cards.innerHTML = reviews.map((r, i) => `<figure class="reveal review-card" data-pt-reveal="${i * 90}">
+            <div class="review-stars" aria-label="${r.rating} out of 5 stars">${stars(r.rating)}</div>
+            ${r.title ? `<h3>${escapeHtml(r.title)}</h3>` : ''}
+            <blockquote><p>${escapeHtml(r.text || "")}</p></blockquote>
+            <figcaption><strong>${escapeHtml(r.author && r.author.name ? r.author.name : 'A happy customer')}</strong>
+                <a href="${escapeHtml(r.product.path)}">${escapeHtml(r.product.name)}</a></figcaption>
+        </figure>`).join('');
+        section.hidden = false;
+        // The new cards fade in like the rest of the page.
+        const observer = new IntersectionObserver((entries) => entries.filter((e) => e.isIntersecting).forEach((e) => {
+            e.target.style.transitionDelay = `${e.target.dataset.ptReveal || 0}ms`;
+            e.target.classList.add('is-visible');
+            observer.unobserve(e.target);
+        }), { rootMargin: '0px 0px -8% 0px' });
+        Array.from(section.querySelectorAll('[data-pt-reveal]')).forEach((el) => observer.observe(el));
+    } catch (err) {
+        // No reviews section if they can't load.
+    }
+}
+
 export default function pinkTomatoHome(context) {
+    initCategories();
     initReveals();
+    initReviews(context.storefrontApiToken);
     // A saved "hide the mood finder" choice arrives as a marker in its content slot.
     if (!document.querySelector('[data-pt-hide-mood]')) initMoodFinder(context.storefrontApiToken);
     initFeatured(context.storefrontApiToken);

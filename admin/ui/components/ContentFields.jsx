@@ -98,7 +98,7 @@ export function Messages({ items, onChange }) {
         ))}
       </ul>
       <form className="content-add" onSubmit={add}>
-        <input className="form-input" aria-label="New message" placeholder="New message, e.g. Free shipping on orders over $50" value={text} onChange={(e) => setText(e.target.value)} />
+        <input className="form-input" aria-label="New message" placeholder="New message, e.g. Hand-poured in North Dakota" value={text} onChange={(e) => setText(e.target.value)} />
         <button className="button button-primary button-small" type="submit" disabled={!text.trim()}><PlusIcon size={16} /> Add message</button>
       </form>
     </>

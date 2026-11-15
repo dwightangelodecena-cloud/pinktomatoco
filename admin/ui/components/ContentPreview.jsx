@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import {
-  ArrowRight, CartIcon, FlameIcon, HeartIcon, LeafIcon, MapPinIcon, MenuIcon, MonitorIcon, PaymentIcons,
+  ArrowRight, CartIcon, CheckIcon, ClockIcon, FlameIcon, HeartIcon, LeafIcon, MapPinIcon, MenuIcon, MonitorIcon, PaymentIcons,
   PhoneIcon, SearchIcon, ShieldCheckIcon, UserIcon,
 } from '../Icons.jsx';
 import { priceRange } from '../lib/pricing.js';
@@ -11,6 +11,23 @@ const WIDTHS = { computer: 1280, phone: 390 };
 const ANNOUNCEMENT_ICONS = [MapPinIcon, LeafIcon, ShieldCheckIcon];
 const VALUE_ICONS = [MapPinIcon, LeafIcon, ShieldCheckIcon, FlameIcon];
 const PROCESS_ICONS = [LeafIcon, ShieldCheckIcon, FlameIcon, MapPinIcon];
+const CARE_ICONS = [FlameIcon, CheckIcon, ClockIcon, ShieldCheckIcon];
+const pointsOf = (text) => String(text || '').split(/\r?\n/).map((l) => l.trim()).filter(Boolean).slice(0, 5);
+
+function WickCard({ card, wood }) {
+  return (
+    <article className={`reveal is-visible wick-card wick-card--${wood ? 'wood' : 'cotton'}`}>
+      <span className="wick-visual" aria-hidden="true">
+        <span className={`wick-flame ${wood ? 'wick-flame--wide' : ''}`} />
+        <span className={`wick-stick ${wood ? 'wick-stick--wood' : ''}`} />
+        {wood && <span className="wick-crackle"><i /><i /><i /></span>}
+      </span>
+      <h3>{card.title}</h3>
+      <p>{card.text}</p>
+      <ul className="wick-points">{pointsOf(card.points).map((pt, i) => <li key={i}><CheckIcon size={16} />{pt}</li>)}</ul>
+    </article>
+  );
+}
 
 // A frame with the admin's own copy of the store's styles, so the phone view gets the store's
 // real phone layout. The sections are drawn into it from the unsaved edits, as you type.
@@ -180,6 +197,30 @@ function Home({ draft, products, featuredIds }) {
         <div className="product-grid">{chosen.map((p) => <ProductCard key={p.id} p={p} />)}</div>
       </section>
 
+      {h.showStory && (
+        <section className="story-band container">
+          <div className="story-inner reveal is-visible">
+            <div className="story-bg" style={{ backgroundImage: `url("${h.storyImage}")` }} />
+            <div className="story-copy">
+              <p className="eyebrow">{h.storyEyebrow}</p>
+              <h2 className="story-title">{h.storyTitle}</h2>
+              <p className="story-text">{h.storyText}</p>
+              <span className="button button-light">{h.storyButton} <ArrowRight /></span>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {h.showWicks && (
+        <section className="wick-guide container">
+          <div className="reveal is-visible wick-head"><p className="eyebrow">{h.wicksEyebrow}</p><h2 className="section-title">{h.wicksTitle}</h2></div>
+          <div className="wick-cards">
+            <WickCard card={h.wicks[0] || {}} wood />
+            <WickCard card={h.wicks[1] || {}} />
+          </div>
+        </section>
+      )}
+
       {h.showMood && first && (
         <section className="mood-finder container">
           <div className="mood-inner">
@@ -211,6 +252,39 @@ function Home({ draft, products, featuredIds }) {
               return <li key={i} className="process-step"><span className="process-icon"><Icon size={24} /><span className="process-num">{i + 1}</span></span><h3>{s.title}</h3><p>{s.text}</p></li>;
             })}
           </ol>
+        </section>
+      )}
+
+      {h.showCare && (
+        <section className="care-tips container">
+          <div className="care-panel">
+            <div className="reveal is-visible care-head"><p className="eyebrow">{h.careEyebrow}</p><h2 className="section-title">{h.careTitle}</h2></div>
+            <ol className="care-list">
+              {h.careTips.map((t, i) => {
+                const Icon = CARE_ICONS[i % 4];
+                return <li key={i} className="reveal is-visible care-tip"><span className="care-num">0{i + 1}</span><span className="care-icon"><Icon size={22} /></span><h3>{t.title}</h3><p>{t.text}</p></li>;
+              })}
+            </ol>
+          </div>
+        </section>
+      )}
+
+      {h.showFaq && (
+        <section className="home-faq container">
+          <div className="reveal is-visible faq-head">
+            <p className="eyebrow">{h.faqEyebrow}</p>
+            <h2 className="section-title">{h.faqTitle}</h2>
+            <p className="faq-intro">{h.faqIntro}</p>
+            <span className="button button-primary">Contact us <ArrowRight /></span>
+          </div>
+          <div className="faq-list">
+            {h.faqItems.filter((f) => f.q.trim()).map((f, i) => (
+              <details key={i} className="reveal is-visible faq-item" open={i === 0}>
+                <summary>{f.q}<span className="faq-toggle" aria-hidden="true" /></summary>
+                <div className="faq-answer"><p>{f.a}</p></div>
+              </details>
+            ))}
+          </div>
         </section>
       )}
 

@@ -1,0 +1,235 @@
+// Extra homepage sections: categories, story band, wick guide, candle care, reviews and FAQ.
+// Templates: templates/components/pinktomato/home-*.html (and their admin widget versions in admin/worker/content.js).
+
+// ---------- Shop by category ----------
+.home-categories { padding-top: 90px; }
+.category-tiles {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+.category-tile {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    min-height: 260px;
+    padding: 22px;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    color: #fff;
+    background: radial-gradient(130% 120% at 20% 0%, #c98a6f 0%, #8f4f45 45%, #3a2629 100%);
+    isolation: isolate;
+}
+.category-tile-img {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1.2s var(--ease);
+}
+.category-tile-glow {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(180deg, rgba(43, 32, 36, 0) 35%, rgba(43, 32, 36, .72) 100%);
+}
+.category-tile-text { display: grid; gap: 6px; }
+.category-tile-name { font-family: var(--font-display); font-size: 26px; line-height: 1.1; }
+.category-tile-go { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; opacity: .85; }
+.category-tile-go svg { transition: transform .3s var(--ease); }
+.category-tile:hover { color: #fff; }
+.category-tile:hover .category-tile-img { transform: scale(1.06); }
+.category-tile:hover .category-tile-go svg { transform: translateX(4px); }
+
+// ---------- Story band ----------
+.story-band { padding-top: 90px; }
+.story-inner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 460px;
+    overflow: hidden;
+    border-radius: 32px;
+    isolation: isolate;
+}
+.story-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background-size: cover;
+    background-position: center;
+    animation: slow-zoom 22s ease-in-out infinite alternate;
+}
+.story-inner::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(90deg, rgba(36, 24, 22, .86) 0%, rgba(36, 24, 22, .55) 45%, rgba(36, 24, 22, .05) 100%);
+}
+.story-copy { max-width: 540px; padding: clamp(32px, 6vw, 72px); color: #fbefe6; }
+.story-copy .eyebrow { color: #f5c8b8; }
+.story-title { margin: 6px 0 16px; color: #fff; font-size: clamp(32px, 4.2vw, 54px); line-height: 1.05; font-weight: 400; }
+.story-text { margin: 0 0 28px; font-size: 17px; line-height: 1.65; color: rgba(255, 240, 230, .88); }
+@media (max-width: 639px) {
+    .story-inner { min-height: 420px; align-items: flex-end; }
+    .story-inner::after { background: linear-gradient(180deg, rgba(36, 24, 22, .1) 0%, rgba(36, 24, 22, .88) 70%); }
+}
+
+// ---------- Cotton or wooden wick ----------
+.wick-guide { padding-top: 90px; }
+.wick-head { text-align: center; margin-bottom: 36px; }
+.wick-cards { display: grid; gap: 18px; }
+@media (min-width: 768px) { .wick-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; } }
+.wick-card {
+    position: relative;
+    padding: clamp(28px, 4vw, 44px);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    transition: transform .4s var(--ease), box-shadow .4s var(--ease);
+}
+.wick-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+.wick-card--wood { background: radial-gradient(120% 120% at 100% 0%, var(--blush) 0%, var(--surface) 60%); }
+.wick-card h3 { margin: 18px 0 8px; font-size: 26px; font-weight: 400; }
+.wick-card > p { margin: 0 0 18px; color: var(--muted); font-size: 16px; line-height: 1.6; }
+.wick-points { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.wick-points li { display: flex; align-items: center; gap: 10px; font-size: 15px; }
+.wick-points svg { flex: none; padding: 3px; width: 22px; height: 22px; border-radius: 50%; color: #fff; background: var(--accent); }
+
+// A tiny animated flame for each wick type.
+.wick-visual { position: relative; display: block; width: 64px; height: 64px; border-radius: 20px; background: #2b2024; }
+.wick-stick { position: absolute; left: 50%; bottom: 12px; width: 2px; height: 12px; margin-left: -1px; border-radius: 1px; background: #1a1210; }
+.wick-stick--wood { width: 6px; margin-left: -3px; background: linear-gradient(180deg, #2a1a12, #8a6040); }
+.wick-flame {
+    position: absolute;
+    left: 50%;
+    bottom: 22px;
+    width: 12px;
+    height: 26px;
+    margin-left: -6px;
+    border-radius: 50% 50% 46% 46% / 66% 66% 34% 34%;
+    background: radial-gradient(ellipse 62% 72% at 50% 84%, #fffbea 0%, #ffe6a0 24%, #ffb54a 52%, #ff7b30 74%, rgba(255, 110, 40, 0) 86%);
+    filter: drop-shadow(0 0 6px rgba(255, 170, 70, .9));
+    transform-origin: 50% 94%;
+    animation: wick-flicker 2.2s ease-in-out infinite;
+}
+.wick-flame--wide { width: 20px; height: 22px; margin-left: -10px; animation-duration: 1.7s; }
+.wick-crackle i {
+    position: absolute;
+    left: 50%;
+    bottom: 34px;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    background: #ffd38c;
+    opacity: 0;
+    animation: wick-crackle 2.4s ease-out infinite;
+}
+.wick-crackle i:nth-child(2) { animation-delay: .8s; --x: 10px; }
+.wick-crackle i:nth-child(3) { animation-delay: 1.6s; --x: -9px; }
+@keyframes wick-flicker {
+    0%, 100% { transform: rotate(-2deg) scale(1, 1); }
+    30% { transform: rotate(2deg) scale(.96, 1.06); }
+    60% { transform: rotate(-1deg) scale(1.03, .96); }
+}
+@keyframes wick-crackle {
+    0% { opacity: 0; transform: translate(0, 0); }
+    10% { opacity: 1; }
+    40% { opacity: 0; transform: translate(var(--x, 6px), -14px); }
+    100% { opacity: 0; }
+}
+
+// ---------- Candle care ----------
+.care-tips { padding-top: 90px; }
+.care-panel {
+    padding: clamp(32px, 5vw, 64px);
+    border-radius: 32px;
+    background: linear-gradient(160deg, var(--cream) 0%, var(--blush) 100%);
+}
+.care-head { text-align: center; margin-bottom: 36px; }
+.care-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
+@media (min-width: 640px) { .care-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1100px) { .care-list { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.care-tip {
+    position: relative;
+    padding: 26px 22px 24px;
+    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, .72);
+    border: 1px solid rgba(255, 255, 255, .9);
+    backdrop-filter: blur(4px);
+}
+.care-num { position: absolute; top: 18px; right: 20px; font-family: var(--font-display); font-size: 30px; line-height: 1; color: rgba(200, 71, 79, .22); }
+.care-icon { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 14px; color: #fff; background: var(--accent); }
+.care-tip h3 { margin: 16px 0 6px; font-family: var(--font-body); font-size: 16px; font-weight: 600; letter-spacing: 0; }
+.care-tip p { margin: 0; font-size: 14px; line-height: 1.6; color: var(--text); }
+
+// ---------- Kind words (real reviews) ----------
+.home-reviews { padding-top: 90px; }
+.review-cards { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.review-card {
+    position: relative;
+    margin: 0;
+    padding: 28px;
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    border: 1px solid var(--line);
+}
+.review-card::before {
+    content: '\201C';
+    position: absolute;
+    top: 6px;
+    right: 22px;
+    font-family: var(--font-display);
+    font-size: 84px;
+    line-height: 1;
+    color: var(--blush-2);
+}
+.review-stars { display: flex; gap: 2px; color: var(--line-strong); }
+.review-stars .is-on { color: #e0a43a; }
+.review-stars svg { fill: currentColor; }
+.review-card h3 { margin: 14px 0 6px; font-family: var(--font-body); font-size: 16px; font-weight: 600; letter-spacing: 0; }
+.review-card blockquote { margin: 0; }
+.review-card blockquote p { margin: 10px 0 18px; font-size: 15px; line-height: 1.65; color: var(--text); }
+.review-card figcaption { display: grid; gap: 2px; font-size: 14px; }
+.review-card figcaption a { color: var(--accent-dark); font-size: 13px; }
+
+// ---------- FAQ ----------
+.home-faq { display: grid; gap: 28px; padding-top: 90px; }
+@media (min-width: 900px) { .home-faq { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 56px; align-items: start; } }
+.faq-head .section-title { margin-bottom: 12px; }
+.faq-intro { margin: 0 0 22px; color: var(--muted); font-size: 16px; }
+.faq-list { display: grid; gap: 10px; }
+.faq-item { border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); transition: border-color .3s, box-shadow .3s; }
+.faq-item[open] { border-color: transparent; box-shadow: var(--shadow); }
+.faq-item summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 22px;
+    font-weight: 600;
+    color: var(--ink);
+    cursor: pointer;
+    list-style: none;
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-toggle { position: relative; flex: none; width: 28px; height: 28px; border-radius: 50%; background: var(--blush); transition: background-color .3s, transform .4s var(--ease); }
+.faq-toggle::before, .faq-toggle::after { content: ''; position: absolute; left: 50%; top: 50%; width: 12px; height: 2px; margin: -1px 0 0 -6px; border-radius: 1px; background: var(--accent-dark); transition: transform .4s var(--ease), background-color .3s; }
+.faq-toggle::after { transform: rotate(90deg); }
+.faq-item[open] .faq-toggle { background: var(--accent); transform: rotate(180deg); }
+.faq-item[open] .faq-toggle::before, .faq-item[open] .faq-toggle::after { background: #fff; }
+.faq-item[open] .faq-toggle::after { transform: rotate(0deg); }
+.faq-answer { padding: 0 22px 20px; }
+.faq-answer p { margin: 0; color: var(--text); line-height: 1.65; }
+.faq-item[open] .faq-answer { animation: faq-open .45s var(--ease); }
+@keyframes faq-open { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+    .story-bg, .wick-flame, .wick-crackle i { animation: none; }
+}

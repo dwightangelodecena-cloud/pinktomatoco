@@ -4,6 +4,7 @@ import { STORE_URL, getAdminProducts, getContent, saveContent } from '../lib/adm
 import ContentPreview from './ContentPreview.jsx';
 import { ArrowRight, EyeIcon, EyeOffIcon, FileIcon, GridIcon, ImageIcon, LayersIcon, MegaphoneIcon, RefreshIcon, SaveIcon, TagIcon, UndoIcon } from '../Icons.jsx';
 import { Cards, Messages, PhotoSlots, PolicySections, Section, Text } from './ContentFields.jsx';
+import { PlusIcon, TrashIcon } from '../Icons.jsx';
 import HomepageProducts from './HomepageProducts.jsx';
 import ProductManager from './ProductManager.jsx';
 import CategoryManager from './CategoryManager.jsx';
@@ -48,6 +49,43 @@ function HeroBanners({ draft, edit }) {
   );
 }
 
+// Questions and answers for the homepage FAQ.
+function FaqItems({ items, onChange }) {
+  const patch = (i, change) => onChange(items.map((f, n) => (n === i ? { ...f, ...change } : f)));
+  return (
+    <>
+      <div className="content-cards is-wide">
+        {items.map((f, i) => (
+          <fieldset key={i}>
+            <legend>Question {i + 1}</legend>
+            <Text label="Question" value={f.q} onChange={(q) => patch(i, { q })} />
+            <Text label="Answer" rows={3} value={f.a} onChange={(a) => patch(i, { a })} />
+            <button type="button" className="content-tool is-danger" onClick={() => onChange(items.filter((_, n) => n !== i))}><TrashIcon size={14} /> Delete question</button>
+          </fieldset>
+        ))}
+      </div>
+      {items.length < 10 && <button type="button" className="content-tool" onClick={() => onChange([...items, { q: '', a: '' }])}><PlusIcon size={14} /> Add question</button>}
+    </>
+  );
+}
+
+// The two wick cards: title, short text and a few points (one per line).
+function WickCards({ items, onChange }) {
+  const patch = (i, change) => onChange(items.map((c, n) => (n === i ? { ...c, ...change } : c)));
+  return (
+    <div className="content-cards">
+      {items.map((c, i) => (
+        <fieldset key={i}>
+          <legend>{i === 0 ? 'Left card (wooden wick look)' : 'Right card (cotton wick look)'}</legend>
+          <Text label="Title" value={c.title} onChange={(title) => patch(i, { title })} />
+          <Text label="Text" rows={2} value={c.text} onChange={(text) => patch(i, { text })} />
+          <Text label="Points" rows={3} value={c.points} onChange={(points) => patch(i, { points })} hint="One point per line, up to 5." />
+        </fieldset>
+      ))}
+    </div>
+  );
+}
+
 function Homepage({ draft, edit, onProductsSaved }) {
   const home = draft.home;
   const text = (name) => (value) => edit('home', { [name]: value }, name);
@@ -62,6 +100,18 @@ function Homepage({ draft, edit, onProductsSaved }) {
       <Section title="Why Pink Tomato" intro="The four short facts under the hero." shown={home.showValueProps} onToggle={toggle('showValueProps')}>
         <Cards label="Fact" items={home.valueProps} onChange={(valueProps) => edit('home', { valueProps }, 'valueProps')} />
       </Section>
+      <Section title="Story band" intro="The large photo with a short story, under the featured products." shown={home.showStory} onToggle={toggle('showStory')}>
+        <Text label="Small heading" value={home.storyEyebrow} onChange={text('storyEyebrow')} />
+        <Text label="Heading" value={home.storyTitle} onChange={text('storyTitle')} />
+        <Text label="Text" rows={3} value={home.storyText} onChange={text('storyText')} />
+        <Text label="Button text" value={home.storyButton} onChange={text('storyButton')} />
+        <PhotoSlots images={[home.storyImage]} labels={['Background photo']} onChange={([storyImage]) => edit('home', { storyImage })} />
+      </Section>
+      <Section title="Cotton or wooden wick?" intro="Two cards that explain the wick choices." shown={home.showWicks} onToggle={toggle('showWicks')}>
+        <Text label="Small heading" value={home.wicksEyebrow} onChange={text('wicksEyebrow')} />
+        <Text label="Heading" value={home.wicksTitle} onChange={text('wicksTitle')} />
+        <WickCards items={home.wicks} onChange={(wicks) => edit('home', { wicks }, 'wicks')} />
+      </Section>
       <Section title="Mood finder" intro="Built from candles whose description has Mood and Scent Notes lines." shown={home.showMood} onToggle={toggle('showMood')}>
         <Text label="Small heading" value={home.moodEyebrow} onChange={text('moodEyebrow')} />
         <Text label="Heading" value={home.moodTitle} onChange={text('moodTitle')} />
@@ -71,6 +121,18 @@ function Homepage({ draft, edit, onProductsSaved }) {
         <Text label="Heading" value={home.processTitle} onChange={text('processTitle')} />
         <Cards label="Step" items={home.processSteps} onChange={(processSteps) => edit('home', { processSteps }, 'processSteps')} />
       </Section>
+      <Section title="Candle care" intro="Four tips for a better, longer burn." shown={home.showCare} onToggle={toggle('showCare')}>
+        <Text label="Small heading" value={home.careEyebrow} onChange={text('careEyebrow')} />
+        <Text label="Heading" value={home.careTitle} onChange={text('careTitle')} />
+        <Cards label="Tip" items={home.careTips} onChange={(careTips) => edit('home', { careTips }, 'careTips')} />
+      </Section>
+      <Section title="Questions (FAQ)" intro="Questions shoppers can open and close. Up to 10." shown={home.showFaq} onToggle={toggle('showFaq')}>
+        <Text label="Small heading" value={home.faqEyebrow} onChange={text('faqEyebrow')} />
+        <Text label="Heading" value={home.faqTitle} onChange={text('faqTitle')} />
+        <Text label="Text under the heading" value={home.faqIntro} onChange={text('faqIntro')} />
+        <FaqItems items={home.faqItems} onChange={(faqItems) => edit('home', { faqItems }, 'faqItems')} />
+      </Section>
+      <p className="content-hint">"Shop by category" and "Kind words" fill in by themselves: categories from Content → Categories (shown once there are two), and reviews from real customer reviews (shown once there are any).</p>
       <Section title="Journal" shown={home.showJournal} onToggle={toggle('showJournal')}>
         <Text label="Small heading" value={home.journalEyebrow} onChange={text('journalEyebrow')} />
         <Text label="Heading" value={home.journalTitle} onChange={text('journalTitle')} />

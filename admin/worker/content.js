@@ -39,6 +39,23 @@ const SLOTS = {
     region: 'pt_home_journal',
     template: `{{#if show}}<section class="latest-blog-posts container"><div class="reveal blog-card" data-pt-reveal="0"><p class="eyebrow">{{eyebrow}}</p><h2 class="section-title">{{title}}</h2><p class="blog-empty">{{text}}</p><a href="/shop-all/" class="button button-primary">{{button}} ${svg('arrow-right', 16)}</a></div></section>{{else}}${HIDDEN}{{/if}}`,
   },
+  // The four sections below match templates/components/pinktomato/home-{story,wicks,care,faq}.html.
+  story: {
+    region: 'pt_home_story',
+    template: `{{#if show}}<section class="story-band container"><div class="story-inner reveal" data-pt-reveal="0"><div class="story-bg" style="background-image: url('{{image}}')"></div><div class="story-copy"><p class="eyebrow">{{eyebrow}}</p><h2 class="story-title">{{title}}</h2><p class="story-text">{{text}}</p><a href="/shop-all/" class="button button-light">{{button}} ${svg('arrow-right', 16)}</a></div></div></section>{{else}}${HIDDEN}{{/if}}`,
+  },
+  wicks: {
+    region: 'pt_home_wicks',
+    template: `{{#if show}}<section class="wick-guide container"><div class="reveal wick-head" data-pt-reveal="0"><p class="eyebrow">{{eyebrow}}</p><h2 class="section-title">{{title}}</h2></div><div class="wick-cards"><article class="reveal wick-card wick-card--wood" data-pt-reveal="0"><span class="wick-visual" aria-hidden="true"><span class="wick-flame wick-flame--wide"></span><span class="wick-stick wick-stick--wood"></span><span class="wick-crackle"><i></i><i></i><i></i></span></span><h3>{{wood.title}}</h3><p>{{wood.text}}</p><ul class="wick-points">{{#each wood.points}}<li><svg class="pt-i" width="16" height="16" aria-hidden="true"><use href="#pt-check"></use></svg>{{this}}</li>{{/each}}</ul></article><article class="reveal wick-card wick-card--cotton" data-pt-reveal="120"><span class="wick-visual" aria-hidden="true"><span class="wick-flame"></span><span class="wick-stick"></span></span><h3>{{cotton.title}}</h3><p>{{cotton.text}}</p><ul class="wick-points">{{#each cotton.points}}<li><svg class="pt-i" width="16" height="16" aria-hidden="true"><use href="#pt-check"></use></svg>{{this}}</li>{{/each}}</ul></article></div></section>{{else}}${HIDDEN}{{/if}}`,
+  },
+  care: {
+    region: 'pt_home_care',
+    template: `{{#if show}}<section class="care-tips container"><div class="care-panel"><div class="reveal care-head" data-pt-reveal="0"><p class="eyebrow">{{eyebrow}}</p><h2 class="section-title">{{title}}</h2></div><ol class="care-list">{{#each tips}}<li class="reveal care-tip" data-pt-reveal="{{delay}}"><span class="care-num">{{num}}</span><span class="care-icon"><svg class="pt-i" width="22" height="22" aria-hidden="true"><use href="#pt-{{icon}}"></use></svg></span><h3>{{title}}</h3><p>{{text}}</p></li>{{/each}}</ol></div></section>{{else}}${HIDDEN}{{/if}}`,
+  },
+  faq: {
+    region: 'pt_home_faq',
+    template: `{{#if show}}<section class="home-faq container"><div class="reveal faq-head" data-pt-reveal="0"><p class="eyebrow">{{eyebrow}}</p><h2 class="section-title">{{title}}</h2><p class="faq-intro">{{intro}}</p><a href="/contact-us/" class="button button-primary">Contact us ${svg('arrow-right', 16)}</a></div><div class="faq-list">{{#each items}}<details class="reveal faq-item" data-pt-reveal="{{delay}}"><summary>{{q}}<span class="faq-toggle" aria-hidden="true"></span></summary><div class="faq-answer"><p>{{a}}</p></div></details>{{/each}}</div></section>{{else}}${HIDDEN}{{/if}}`,
+  },
   newsletter: {
     region: 'pt_footer_newsletter--global',
     template: '<h2 class="footer-heading">{{heading}}</h2><p class="footer-sub">{{text}}</p>',
@@ -56,6 +73,10 @@ const SLOTS = {
 const ANNOUNCEMENT_ICONS = ['map-pin', 'leaf', 'shield'];
 const VALUE_ICONS = ['map-pin', 'leaf', 'shield', 'flame'];
 const PROCESS_ICONS = ['leaf', 'shield', 'flame', 'map-pin'];
+const CARE_ICONS = ['flame', 'check', 'clock', 'shield'];
+// "One point per line" in the editor becomes a short list.
+const lines = (value, max = 5) => String(value || '').split('\n').map((l) => text(l, 120)).filter(Boolean).slice(0, max);
+const wick = (c = {}) => ({ title: text(c.title, 60), text: text(c.text, 240), points: lines(c.points) });
 
 // Photos left at the React site's built-in paths are served by this Worker from its own files.
 const imageUrl = (src, origin) => {
@@ -84,6 +105,10 @@ function widgetSettings(key, value, origin, featuredIds) {
       products: { eyebrow: text(v.productsEyebrow, 80), title: text(v.productsTitle, 120), ids: featuredIds },
       mood: { show: v.showMood !== false, eyebrow: text(v.moodEyebrow, 80), title: text(v.moodTitle, 120) },
       process: { show: v.showProcess !== false, eyebrow: text(v.processEyebrow, 80), title: text(v.processTitle, 120), steps: (v.processSteps || []).slice(0, 4).map((s, i) => ({ title: text(s.title, 80), text: text(s.text, 240), icon: PROCESS_ICONS[i % 4], num: i + 1, delay: 200 + i * 220 })) },
+      story: { show: v.showStory !== false, eyebrow: text(v.storyEyebrow, 80), title: text(v.storyTitle, 120), text: text(v.storyText, 400), button: text(v.storyButton, 40), image: imageUrl(v.storyImage || '/images/hero/hero-2.jpg', origin) },
+      wicks: { show: v.showWicks !== false, eyebrow: text(v.wicksEyebrow, 80), title: text(v.wicksTitle, 120), wood: wick(v.wicks?.[0]), cotton: wick(v.wicks?.[1]) },
+      care: { show: v.showCare !== false, eyebrow: text(v.careEyebrow, 80), title: text(v.careTitle, 120), tips: (v.careTips || []).slice(0, 4).map((t, i) => ({ title: text(t.title, 80), text: text(t.text, 240), icon: CARE_ICONS[i % 4], num: `0${i + 1}`, delay: i * 90 })) },
+      faq: { show: v.showFaq !== false, eyebrow: text(v.faqEyebrow, 80), title: text(v.faqTitle, 120), intro: text(v.faqIntro, 200), items: (v.faqItems || []).filter((f) => text(f.q)).slice(0, 10).map((f, i) => ({ q: text(f.q, 160), a: text(f.a, 600), delay: i * 60 })) },
       journal: { show: v.showJournal !== false, eyebrow: text(v.journalEyebrow, 80), title: text(v.journalTitle, 120), text: text(v.journalText, 400), button: text(v.journalButton, 40) },
     };
   }

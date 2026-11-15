@@ -6,6 +6,7 @@ import Admin from './Admin.jsx';
 import './site.css';
 import './admin.css';
 import './extra.css';
+import './home-extra.css';
 
 function App() {
   const [state, setState] = useState({ status: 'loading' });
