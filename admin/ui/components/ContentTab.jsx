@@ -6,6 +6,7 @@ import { ArrowRight, EyeIcon, EyeOffIcon, FileIcon, GridIcon, ImageIcon, LayersI
 import { Cards, Messages, PolicySections, Section, Text } from './ContentFields.jsx';
 import { PlusIcon, TrashIcon } from '../Icons.jsx';
 import HomepageProducts from './HomepageProducts.jsx';
+import HeroCandles from './HeroCandles.jsx';
 import ProductManager from './ProductManager.jsx';
 import CategoryManager from './CategoryManager.jsx';
 import { Filter, Loading, Problem } from './shared.jsx';
@@ -27,7 +28,7 @@ const PAGES = [
   { value: 'footer', label: 'Footer', path: '/' },
 ];
 
-const HERO_FIELDS = ['heroEyebrow', 'heroTitle', 'heroText', 'heroButton', 'heroImages'];
+const HERO_FIELDS = ['heroEyebrow', 'heroTitle', 'heroText', 'heroButton', 'heroImages', 'heroSlides'];
 const pick = (source, fields) => Object.fromEntries(fields.map((f) => [f, source[f]]));
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
@@ -43,6 +44,9 @@ function HeroBanners({ draft, edit }) {
         <Text label="Tagline (right side)" value={home.heroTitle} onChange={(heroTitle) => edit('home', { heroTitle }, 'heroTitle')} />
         <Text label="Short text under the tagline" rows={2} value={home.heroText} onChange={(heroText) => edit('home', { heroText }, 'heroText')} />
         <Text label="Link text (goes to Shop All)" value={home.heroButton} onChange={(heroButton) => edit('home', { heroButton }, 'heroButton')} />
+      </Section>
+      <Section Icon={ImageIcon} title="Hero candles" intro="Up to five candles, in order. Upload a photo and its background is removed automatically. Type scent notes (like Taro, Rose, Apple) and matching ingredients float around the candle.">
+        <HeroCandles slides={home.heroSlides || []} onChange={(heroSlides) => edit('home', { heroSlides })} />
       </Section>
     </>
   );

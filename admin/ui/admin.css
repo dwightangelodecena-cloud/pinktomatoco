@@ -305,3 +305,25 @@ a.admin-tile:hover { border-color: var(--accent); transform: translateY(-2px); }
 .pay-lead { margin: 0 0 8px; font-weight: 600; }
 .pay-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
 .pay-chip { padding: 8px 14px; border-radius: 999px; background: #eef6f0; color: #1f5133; font-size: 14px; font-weight: 600; }
+
+/* Hero candles editor */
+.hero-candles { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 12px; }
+.hero-candle { position: relative; display: grid; grid-template-columns: auto 150px minmax(0, 1fr); gap: 16px; padding: 16px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: #fff; }
+.hero-candle-photo { display: grid; gap: 6px; justify-items: center; align-content: start; text-align: center; }
+.hero-candle-photo img { width: 130px; height: 150px; object-fit: contain; border-radius: 12px; background: repeating-conic-gradient(#f2ebe6 0 25%, #fff 0 50%) 0 0 / 16px 16px; }
+.hero-candle-photo img.is-photo { object-fit: cover; }
+.hero-candle-photo small { font-size: 12px; color: var(--muted); }
+.hero-candle-main { display: grid; gap: 10px; min-width: 0; }
+.hero-candle-remove { position: absolute; top: 12px; right: 12px; }
+.hero-notes-preview { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-height: 8px; padding: 8px; border-radius: 12px; background: #2a1d17; }
+.hero-notes-preview:empty { display: none; }
+.hero-note-art { width: 40px; height: 40px; }
+.hero-note-art svg { width: 100%; height: 100%; }
+.hero-notes-preview small { color: #f5d9c8; font-size: 12px; }
+.hero-ingredients { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.hero-ingredient { position: relative; width: 56px; height: 56px; border-radius: 10px; background: #2a1d17; }
+.hero-ingredient img { width: 100%; height: 100%; object-fit: contain; }
+.hero-ingredient button { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border: 0; border-radius: 50%; background: var(--accent); color: #fff; cursor: pointer; line-height: 1; }
+.hero-candles-empty { display: grid; gap: 10px; justify-items: start; padding: 14px; border: 1px dashed var(--line-strong, #e2d2cc); border-radius: var(--radius-sm); }
+.hero-candles-empty p { margin: 0; }
+@media (max-width: 720px) { .hero-candle { grid-template-columns: 1fr; } .hero-candle .content-order { display: none; } }

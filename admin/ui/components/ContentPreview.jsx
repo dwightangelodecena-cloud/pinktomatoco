@@ -158,31 +158,33 @@ function Home({ draft, products, featuredIds }) {
   const h = draft.home;
   const visible = (products || []).filter((p) => p.is_visible);
   const chosen = featuredIds?.length ? featuredIds.map((id) => visible.find((p) => p.id === id)).filter(Boolean) : visible.slice(0, 8);
+  const heroList = (h.heroSlides || []).map((s) => ({ s, p: (products || []).find((x) => x.id === s.id) })).filter((x) => x.p);
+  const hero = heroList.length ? heroList.map((x) => ({ ...x.p, images: [x.s.cutout || x.p.images?.[0]] })) : chosen;
   const moods = useMemo(() => visible.map((p) => ({ p, profile: scentProfile(p) })).filter((x) => x.profile), [visible]);
   const first = moods[0];
 
   return (
     <>
       {/* The candle showcase hero, shown still on its first candle. */}
-      {chosen[0] && (
+      {hero[0] && (
         <section className="showcase container is-ready is-in">
           <div className="showcase-stage">
             <span className="showcase-glow" aria-hidden="true" />
-            <p className="showcase-word" aria-hidden="true">{chosen[0].name}</p>
+            <p className="showcase-word" aria-hidden="true">{hero[0].name}</p>
             <div className="showcase-copy">
               <p className="showcase-eyebrow">{h.heroEyebrow}</p>
-              <h1 className="showcase-title">{chosen[0].name}</h1>
-              <p className="showcase-text">{(chosen[0].description_html || '').replace(/<[^>]+>/g, ' ').replace(/s+/g, ' ').trim().split(/(?<=[.!?])s/)[0]}</p>
+              <h1 className="showcase-title">{hero[0].name}</h1>
+              <p className="showcase-text">{(hero[0].description_html || '').replace(/<[^>]+>/g, ' ').replace(/s+/g, ' ').trim().split(/(?<=[.!?])s/)[0]}</p>
               <div className="showcase-actions"><span className="button button-light">Shop this candle <ArrowRight /></span><span className="showcase-all">{h.heroButton}</span></div>
             </div>
-            <div className="showcase-figure"><span className="showcase-arch-glow" aria-hidden="true" /><div className="showcase-arch"><img className="showcase-img" src={chosen[0].images?.[0]} alt="" /></div></div>
+            <div className="showcase-figure"><span className="showcase-arch-glow" aria-hidden="true" /><div className="showcase-arch"><img className="showcase-img" src={hero[0].images?.[0]} alt="" /></div></div>
             <div className="showcase-side">
               <p className="showcase-tagline">{h.heroTitle}</p>
               <p className="showcase-side-text">{h.heroText}</p>
               <ul className="showcase-thumbs">
-                {chosen.slice(0, 5).map((p, i) => <li key={p.id}><span className={`showcase-thumb ${i === 0 ? 'is-active' : ''}`}><img src={p.images?.[0]} alt="" /></span></li>)}
+                {hero.slice(0, 5).map((p, i) => <li key={p.id}><span className={`showcase-thumb ${i === 0 ? 'is-active' : ''}`}><img src={p.images?.[0]} alt="" /></span></li>)}
               </ul>
-              <p className="showcase-count"><span>01</span> / <span>0{Math.min(5, chosen.length)}</span></p>
+              <p className="showcase-count"><span>01</span> / <span>0{Math.min(5, hero.length)}</span></p>
             </div>
           </div>
         </section>

@@ -1,7 +1,7 @@
 // Homepage hero (components/pinktomato/home-showcase.html). Choosing a candle thumbnail swaps the big
 // faded name, the candle, the words and the floating scent-note ingredients with an animation; it also
 // moves on by itself every few seconds until the shopper picks one. Styles: scss/pinktomato/_showcase.scss.
-import CUTOUTS from './pinktomato-cutouts';
+import CUTOUTS, { LABEL_NOTES } from './pinktomato-cutouts';
 import { artFor, notesFromText } from './pinktomato-notes';
 
 // Warm tints only, in the site's palette (espresso, amber, tomato-rose, caramel, blush).
@@ -100,7 +100,17 @@ export default function pinkTomatoShowcase(context) {
     const totalEl = $('[data-pt-showcase-total]');
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!thumbsList || !arch) return;
-    const cutoutUrl = (id) => (CUTOUTS.includes(Number(id)) ? root.dataset.cutoutUrl.replace('ID.webp', `${id}.webp`) : '');
+    const cutoutUrl = (d) => d.cutout || (CUTOUTS.includes(Number(d.id)) ? root.dataset.cutoutUrl.replace('ID.webp', `${d.id}.webp`) : '');
+    const list = (json) => { try { const v = JSON.parse(json || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; } };
+    // Scent notes: typed in the admin, else the description's "Scent Notes:" line, else the label, else the name.
+    const notesOf = (d) => {
+        const typed = list(d.notes);
+        if (typed.length) return typed;
+        const fromText = notesFromText(d.description || '');
+        if (fromText.length) return fromText;
+        if (LABEL_NOTES[Number(d.id)]) return LABEL_NOTES[Number(d.id)];
+        return String(d.name || '').split(/s+/);
+    };
 
     // Wording saved in the admin (Content → Hero & Banners).
     const copy = root.querySelector('[data-pt-showcase-copy]');
@@ -127,13 +137,13 @@ export default function pinkTomatoShowcase(context) {
     const showNotes = (d) => {
         if (!notesLayer) return;
         Array.from(notesLayer.children).forEach((el) => { el.classList.add('is-leaving'); setTimeout(() => el.remove(), 700); });
-        // No "Scent Notes:" line in the description? The candle's name usually says it (Pink Peony, Earl Grey…).
-        const notes = notesFromText(d.description || '');
-        const art = artFor(notes.length ? notes : String(d.name || '').split(/s+/));
+        // Uploaded ingredient pictures come first, then the drawn ingredients for each scent note.
+        const pictures = list(d.images).map((src) => `<img src="${escapeHtml(src)}" alt="">`);
+        const art = [...pictures, ...artFor(notesOf(d))];
         SPOTS.forEach((spot, n) => {
             const el = document.createElement('span');
             el.className = 'showcase-note';
-            el.style.cssText = `left:${spot.x}%;top:${spot.y}%;--s:${spot.s}px;--r:${spot.r}deg;--d:${n * 90}ms;--f:${6 + (n % 3) * 1.5}s`;
+            el.style.cssText = `left:${spot.x}%;top:${spot.y}%;--s:${spot.s + 10}px;--r:${spot.r}deg;--d:${n * 90}ms;--f:${6 + (n % 3) * 1.5}s`;
             el.innerHTML = art[n % art.length];
             notesLayer.appendChild(el);
         });
@@ -141,13 +151,13 @@ export default function pinkTomatoShowcase(context) {
 
     const showChips = (d) => {
         if (!chips) return;
-        const notes = notesFromText(d.description || '').slice(0, 4);
+        const notes = notesOf(d).filter((n) => n.length > 2 && !/^(wax|melt|wick|wooden|candle)$/i.test(n)).slice(0, 4);
         chips.innerHTML = notes.map((n) => `<li>${escapeHtml(n)}</li>`).join('');
         chips.hidden = !notes.length;
     };
 
     const showCandle = (d) => {
-        const cut = cutoutUrl(d.id);
+        const cut = cutoutUrl(d);
         figure.classList.toggle('is-cutout', Boolean(cut));
         const img = new Image();
         img.className = 'showcase-img is-entering';
@@ -237,8 +247,10 @@ export default function pinkTomatoShowcase(context) {
 
     // Descriptions (story, scent notes) and the admin's homepage picks come from GraphQL.
     const token = context.storefrontApiToken;
+    const slides = list(copy ? copy.dataset.slides : '').filter((x) => x && Number(x.id) > 0).slice(0, 5);
     const marker = document.querySelector('[data-pt-featured]');
-    const picked = marker ? marker.dataset.ptFeatured.split(',').map(Number).filter(Boolean).slice(0, 5) : [];
+    const picked = slides.length ? slides.map((x) => Number(x.id))
+        : (marker ? marker.dataset.ptFeatured.split(',').map(Number).filter(Boolean).slice(0, 5) : []);
     const ids = picked.length ? picked : thumbs.map((t) => Number(t.dataset.id)).filter(Boolean);
     if (!token || !ids.length) return;
     fetchProducts(token, ids).then((products) => {
@@ -256,7 +268,14 @@ export default function pinkTomatoShowcase(context) {
         }
         products.forEach((p) => {
             const t = thumbs.find((x) => Number(x.dataset.id) === p.entityId);
-            if (t) t.dataset.description = p.plainTextDescription || '';
+            if (!t) return;
+            t.dataset.description = p.plainTextDescription || '';
+            const slide = slides.find((x) => Number(x.id) === p.entityId);
+            if (slide) {
+                if (slide.cutout) t.dataset.cutout = slide.cutout;
+                t.dataset.notes = JSON.stringify(slide.notes || []);
+                t.dataset.images = JSON.stringify(slide.images || []);
+            }
         });
         select(picked.length ? 0 : current, { first: true });
         schedule();

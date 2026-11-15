@@ -12,6 +12,8 @@ export const DEFAULT_CONTENT = {
     heroTitle: 'Made to linger',
     heroText: 'Small batches of coconut soy wax and toxic-free fragrance, with a wooden wick that softly crackles.',
     heroButton: 'Shop All',
+    // Candles in the homepage hero (empty: the homepage picks or the newest five).
+    heroSlides: [],
     heroImages: ['/images/hero/hero-1.jpg', '/images/hero/hero-2.jpg', '/images/hero/hero-3.jpg', '/images/hero/hero-4.jpg'],
     showValueProps: true,
     valueProps: [

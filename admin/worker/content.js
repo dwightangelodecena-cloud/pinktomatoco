@@ -22,7 +22,7 @@ const SLOTS = {
   // The homepage hero (templates/components/pinktomato/home-showcase.html) reads this marker.
   showcase: {
     region: 'pt_home_showcase',
-    template: '<span data-pt-showcase-copy data-eyebrow="{{eyebrow}}" data-tagline="{{tagline}}" data-text="{{text}}" data-button="{{button}}" hidden></span>',
+    template: '<span data-pt-showcase-copy data-eyebrow="{{eyebrow}}" data-tagline="{{tagline}}" data-text="{{text}}" data-button="{{button}}" data-slides="{{slides}}" hidden></span>',
   },
   values: {
     region: 'pt_home_values',
@@ -80,6 +80,17 @@ const ANNOUNCEMENT_ICONS = ['map-pin', 'leaf', 'shield'];
 const VALUE_ICONS = ['map-pin', 'leaf', 'shield', 'flame'];
 const PROCESS_ICONS = ['leaf', 'shield', 'flame', 'map-pin'];
 const CARE_ICONS = ['flame', 'check', 'clock', 'shield'];
+// The hero's candles: product, its cut-out photo, scent notes and ingredient pictures, as JSON for the theme.
+function heroSlides(slides, origin) {
+  const list = (Array.isArray(slides) ? slides : []).filter((s) => Number.isInteger(Number(s.id)) && Number(s.id) > 0).slice(0, 5).map((s) => ({
+    id: Number(s.id),
+    cutout: s.cutout ? imageUrl(s.cutout, origin) : '',
+    notes: (s.notes || []).map((n) => text(n, 40)).filter(Boolean).slice(0, 8),
+    images: (s.images || []).slice(0, 4).map((src) => imageUrl(src, origin)),
+  }));
+  return JSON.stringify(list);
+}
+
 // "One point per line" in the editor becomes a short list.
 const lines = (value, max = 5) => String(value || '').split('\n').map((l) => text(l, 120)).filter(Boolean).slice(0, max);
 const wick = (c = {}) => ({ title: text(c.title, 60), text: text(c.text, 240), points: lines(c.points) });
@@ -105,7 +116,7 @@ function widgetSettings(key, value, origin, featuredIds) {
   if (key === 'home') {
     const v = value;
     return {
-      showcase: { eyebrow: text(v.heroEyebrow, 60), tagline: text(v.heroTitle, 80), text: text(v.heroText, 220), button: text(v.heroButton, 40) },
+      showcase: { eyebrow: text(v.heroEyebrow, 60), tagline: text(v.heroTitle, 80), text: text(v.heroText, 220), button: text(v.heroButton, 40), slides: heroSlides(v.heroSlides, origin) },
       values: { show: v.showValueProps !== false, items: (v.valueProps || []).slice(0, 4).map((c, i) => ({ title: text(c.title, 80), text: text(c.text, 200), icon: VALUE_ICONS[i % 4], delay: i * 90 })) },
       products: { eyebrow: text(v.productsEyebrow, 80), title: text(v.productsTitle, 120), ids: featuredIds },
       mood: { show: v.showMood !== false, eyebrow: text(v.moodEyebrow, 80), title: text(v.moodTitle, 120) },
