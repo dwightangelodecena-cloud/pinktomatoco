@@ -2,7 +2,7 @@
 // faded name, the candle, the words and the floating scent-note ingredients with an animation; it also
 // moves on by itself every few seconds until the shopper picks one. Styles: scss/pinktomato/_showcase.scss.
 import CUTOUTS, { LABEL_NOTES } from './pinktomato-cutouts';
-import { artFor, notesFromText } from './pinktomato-notes';
+import { artFor, notesFromText, storyText } from './pinktomato-notes';
 
 // Warm tints only, in the site's palette (espresso, amber, tomato-rose, caramel, blush).
 const TINTS = [
@@ -26,23 +26,6 @@ const QUERY = `query Showcase($ids: [Int!]) {
     defaultImage { zoom: url(width: 1000) thumb: url(width: 300) }
   } } } }
 }`;
-
-// The story part of a description: the first sentence or two before "Mood:" / "Scent Notes:",
-// skipping lines like "All candles are hand-poured…" and "What is our candle constructed with?".
-function storyText(text) {
-    const before = String(text || '').split(/\b(?:mood|scent notes?|burn time)\s*:/i)[0];
-    const sentences = (before.replace(/\s+/g, ' ').match(/[^.!?]+[.!?]+/g) || [])
-        .map((s) => s.trim())
-        .filter((s) => s.length > 25 && !/^all (our )?candles|constructed with|^-|\?$/i.test(s));
-    let out = '';
-    for (const s of sentences) {
-        if ((out + s).length > 170 && out) break;
-        out += `${s} `;
-    }
-    out = out.trim();
-    if (out.length > 190) out = `${out.slice(0, 180).replace(/\s+\S*$/, '')}…`;
-    return out || 'Hand-poured in small batches with coconut soy wax and toxic-free fragrance.';
-}
 
 async function fetchProducts(token, ids) {
     const response = await fetch('/graphql', {

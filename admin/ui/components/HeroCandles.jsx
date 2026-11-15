@@ -51,6 +51,7 @@ function NotesPreview({ notes }) {
 }
 
 function CandleRow({ slide, index, count, products, onChange, onRemove, onMove }) {
+  const last = count === 1;
   const product = products.find((p) => p.id === slide.id);
   const [notesText, setNotesText] = useState((slide.notes || []).join(', '));
   const set = (patch) => onChange({ ...slide, ...patch });
@@ -106,7 +107,7 @@ function CandleRow({ slide, index, count, products, onChange, onRemove, onMove }
           <small className="content-hint">The background is removed automatically. These float alongside the drawn ingredients.</small>
         </div>
       </div>
-      <button type="button" className="content-tool is-danger hero-candle-remove" onClick={onRemove}><TrashIcon size={14} /> Remove</button>
+      <button type="button" className="content-tool is-danger hero-candle-remove" disabled={last} title={last ? 'The hero needs at least one candle' : undefined} onClick={onRemove}><TrashIcon size={14} /> Remove</button>
     </li>
   );
 }
@@ -145,11 +146,12 @@ export default function HeroCandles({ slides, onChange }) {
           />
         ))}
       </ul>
-      {slides.length < MAX && (
-        <button type="button" className="content-tool" onClick={() => onChange([...slides, { id: 0, cutout: '', notes: [], images: [] }])}>
-          <PlusIcon size={14} /> Add a candle
+      <div className="hero-candles-foot">
+        <span className="content-count"><span />{slides.length} of {MAX} candles (at least 1)</span>
+        <button type="button" className="content-tool" disabled={slides.length >= MAX} onClick={() => onChange([...slides, { id: 0, cutout: '', notes: [], images: [] }])}>
+          <PlusIcon size={14} /> {slides.length >= MAX ? 'Five is the most' : 'Add a candle'}
         </button>
-      )}
+      </div>
       <button type="button" className="link-button" onClick={() => onChange([])}>Go back to the newest five automatically</button>
     </>
   );

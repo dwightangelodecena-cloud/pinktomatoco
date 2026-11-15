@@ -158,3 +158,21 @@ export function artFor(notes) {
     if (!kinds.length) kinds.push('wax');
     return kinds.slice(0, 6).map((k) => `<svg viewBox="0 0 100 100" aria-hidden="true">${ART[k]()}</svg>`);
 }
+
+// The story part of a description: the first sentence or two before "Mood:" / "Scent Notes:",
+// skipping lines like "All candles are hand-poured…" and "What is our candle constructed with?".
+export function storyText(text) {
+    const before = String(text || '').split(/\b(?:mood|scent notes?|burn time)\s*:/i)[0];
+    const sentences = (before.replace(/\s+/g, ' ').match(/[^.!?]+[.!?]+/g) || [])
+        .map((s) => s.trim())
+        .filter((s) => s.length > 25 && !/^all (our )?candles|constructed with|^-|\?$/i.test(s));
+    let out = '';
+    for (const s of sentences) {
+        if ((out + s).length > 170 && out) break;
+        out += `${s} `;
+    }
+    out = out.trim();
+    if (out.length > 190) out = `${out.slice(0, 180).replace(/\s+\S*$/, '')}…`;
+    return out || 'Hand-poured in small batches with coconut soy wax and toxic-free fragrance.';
+}
+

@@ -327,3 +327,5 @@ a.admin-tile:hover { border-color: var(--accent); transform: translateY(-2px); }
 .hero-candles-empty { display: grid; gap: 10px; justify-items: start; padding: 14px; border: 1px dashed var(--line-strong, #e2d2cc); border-radius: var(--radius-sm); }
 .hero-candles-empty p { margin: 0; }
 @media (max-width: 720px) { .hero-candle { grid-template-columns: 1fr; } .hero-candle .content-order { display: none; } }
+.hero-candles-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+.hero-candle-remove:disabled { opacity: .45; cursor: not-allowed; }

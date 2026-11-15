@@ -6,6 +6,7 @@ import {
 } from '../Icons.jsx';
 import { priceRange } from '../lib/pricing.js';
 import { scentProfile } from '../lib/productText.js';
+import HeroPreview from './HeroPreview.jsx';
 
 const WIDTHS = { computer: 1280, phone: 390 };
 const ANNOUNCEMENT_ICONS = [MapPinIcon, LeafIcon, ShieldCheckIcon];
@@ -86,6 +87,7 @@ function Header({ draft }) {
       <header className="main-header">
         <div className="primary-navigation">
           <span className="icon-button navigation-toggle"><MenuIcon /></span>
+          <span className="nav-logo is-visible"><img src="/logo.webp" alt="" /></span>
           <nav className="main-menu" aria-label="Main">
             <ul className="main-menu-list">
               {['Shop', 'Shop All', 'Shipping & Returns', 'Contact Us', 'Blog'].map((l) => (
@@ -100,7 +102,6 @@ function Header({ draft }) {
           </div>
         </div>
       </header>
-      <div className="header-logo"><span className="logo"><img src="/logo.webp" alt="" className="logo-image" /></span></div>
     </>
   );
 }
@@ -159,36 +160,13 @@ function Home({ draft, products, featuredIds }) {
   const visible = (products || []).filter((p) => p.is_visible);
   const chosen = featuredIds?.length ? featuredIds.map((id) => visible.find((p) => p.id === id)).filter(Boolean) : visible.slice(0, 8);
   const heroList = (h.heroSlides || []).map((s) => ({ s, p: (products || []).find((x) => x.id === s.id) })).filter((x) => x.p);
-  const hero = heroList.length ? heroList.map((x) => ({ ...x.p, images: [x.s.cutout || x.p.images?.[0]] })) : chosen;
   const moods = useMemo(() => visible.map((p) => ({ p, profile: scentProfile(p) })).filter((x) => x.profile), [visible]);
   const first = moods[0];
 
   return (
     <>
-      {/* The candle showcase hero, shown still on its first candle. */}
-      {hero[0] && (
-        <section className="showcase container is-ready is-in">
-          <div className="showcase-stage">
-            <span className="showcase-glow" aria-hidden="true" />
-            <p className="showcase-word" aria-hidden="true">{hero[0].name}</p>
-            <div className="showcase-copy">
-              <p className="showcase-eyebrow">{h.heroEyebrow}</p>
-              <h1 className="showcase-title">{hero[0].name}</h1>
-              <p className="showcase-text">{(hero[0].description_html || '').replace(/<[^>]+>/g, ' ').replace(/s+/g, ' ').trim().split(/(?<=[.!?])s/)[0]}</p>
-              <div className="showcase-actions"><span className="button button-light">Shop this candle <ArrowRight /></span><span className="showcase-all">{h.heroButton}</span></div>
-            </div>
-            <div className="showcase-figure"><span className="showcase-arch-glow" aria-hidden="true" /><div className="showcase-arch"><img className="showcase-img" src={hero[0].images?.[0]} alt="" /></div></div>
-            <div className="showcase-side">
-              <p className="showcase-tagline">{h.heroTitle}</p>
-              <p className="showcase-side-text">{h.heroText}</p>
-              <ul className="showcase-thumbs">
-                {hero.slice(0, 5).map((p, i) => <li key={p.id}><span className={`showcase-thumb ${i === 0 ? 'is-active' : ''}`}><img src={p.images?.[0]} alt="" /></span></li>)}
-              </ul>
-              <p className="showcase-count"><span>01</span> / <span>0{Math.min(5, hero.length)}</span></p>
-            </div>
-          </div>
-        </section>
-      )}
+      {/* The candle showcase hero: click a thumbnail to switch candles, like on the store. */}
+      <HeroPreview draft={draft} slides={heroList} fallback={chosen.slice(0, 5)} />
 
       {h.showValueProps && (
         <section className="value-props container">
@@ -220,9 +198,11 @@ function Home({ draft, products, featuredIds }) {
               <span className="button button-light">{h.storyButton} <ArrowRight /></span>
             </div>
             <div className="story-visual" aria-hidden="true">
-              {chosen.slice(0, 3).map((pr, i) => (
-                <img key={pr.id} className={`story-candle story-candle--${['center', 'left', 'right'][i]}`} style={{ borderRadius: 24, objectFit: 'cover', aspectRatio: '3 / 4' }} src={pr.images?.[0]} alt="" />
-              ))}
+              {/* The same three cut-out candles as the store's story band. */}
+              <span className="story-shelf" />
+              <img className="story-candle story-candle--left" src="/cutouts/113.webp" alt="" />
+              <img className="story-candle story-candle--right" src="/cutouts/115.webp" alt="" />
+              <img className="story-candle story-candle--center" src="/cutouts/128.webp" alt="" />
             </div>
           </div>
         </section>
