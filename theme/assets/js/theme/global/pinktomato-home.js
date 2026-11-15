@@ -226,7 +226,20 @@ function initCategories() {
     if (!section) return;
     const tiles = Array.from(section.querySelectorAll('[data-pt-category-tile]'));
     if (tiles.length < 2) return;
-    tiles.forEach((tile, i) => { tile.dataset.ptReveal = String(i * 80); });
+    // Tiles without their own photo (set in the admin, Content → Categories) show a cut-out candle.
+    const CANDLE_FOR = { candles: 128, 'wax melts': 132, floral: 120, 'fresh & citrus': 113, 'warm & woody': 130, 'sweet & cozy': 133 };
+    const fallback = [115, 133, 129, 121, 117, 118];
+    tiles.forEach((tile, i) => {
+        tile.dataset.ptReveal = String(i * 80);
+        const link = tile.querySelector('.category-tile');
+        if (!link || link.querySelector('.category-tile-img')) return;
+        const id = CANDLE_FOR[(tile.dataset.name || '').trim().toLowerCase()] || fallback[i % fallback.length];
+        const img = document.createElement('img');
+        img.className = 'category-tile-img is-cutout';
+        img.alt = '';
+        img.src = section.dataset.cutoutUrl.replace('ID.webp', `${id}.webp`);
+        link.prepend(img);
+    });
     section.hidden = false;
 }
 

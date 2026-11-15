@@ -487,3 +487,23 @@ a.admin-tile:hover { border-color: var(--accent); transform: translateY(-2px); }
 .content-section.is-collapsible > .content-section-head:hover { background: #fff6f3; }
 .content-section-chevron { display: grid; place-items: center; flex: none; width: 28px; height: 28px; margin-top: 0; border-radius: 50%; background: #f6ece8; font-size: 14px; color: var(--ink); }
 .content-section.is-open .content-section-chevron { background: var(--accent); color: #fff; }
+
+/* Checkboxes across the admin: rounded, warm, with a clear tick. */
+.admin-shell input[type='checkbox'] {
+  appearance: none; -webkit-appearance: none; flex: none; display: inline-grid; place-content: center;
+  width: 20px; height: 20px; margin: 0; border: 1.5px solid #d9c6bf; border-radius: 6px; background: #fff; cursor: pointer;
+  transition: background-color .15s, border-color .15s, box-shadow .15s;
+}
+.admin-shell input[type='checkbox']::after {
+  content: ''; width: 10px; height: 6px; margin-top: -2px; border: solid #fff; border-width: 0 0 2.5px 2.5px;
+  transform: rotate(-45deg) scale(0); transition: transform .15s;
+}
+.admin-shell input[type='checkbox']:checked { border-color: var(--accent, #c8474f); background: var(--accent, #c8474f); }
+.admin-shell input[type='checkbox']:checked::after { transform: rotate(-45deg) scale(1); }
+.admin-shell input[type='checkbox']:hover:not(:disabled) { border-color: var(--accent, #c8474f); }
+.admin-shell input[type='checkbox']:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(200, 71, 79, .25); }
+.admin-shell input[type='checkbox']:disabled { cursor: not-allowed; opacity: .55; }
+/* Category choices on a product: pill-shaped tick boxes. */
+.content-checks .content-default { padding: 8px 14px; border: 1px solid var(--line-strong, #e2d2cc); border-radius: 999px; background: #fff; cursor: pointer; transition: border-color .15s, background-color .15s; }
+.content-checks .content-default:has(input:checked) { border-color: var(--accent, #c8474f); background: #fff1ef; }
+.content-checks .content-default:has(input:disabled) { cursor: default; }

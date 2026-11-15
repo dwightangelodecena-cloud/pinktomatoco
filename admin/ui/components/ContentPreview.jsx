@@ -49,7 +49,11 @@ function Frame({ width, height, scale, children, focus }) {
   useEffect(() => {
     if (!body || !focus?.key) return;
     const target = body.querySelector(`[data-preview="${focus.key}"]`);
-    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Scroll only inside the preview (scrollIntoView would also move the admin page itself).
+    if (target) {
+      const win = target.ownerDocument.defaultView;
+      win.scrollTo({ top: target.getBoundingClientRect().top + win.scrollY - 12, behavior: 'smooth' });
+    }
     // A short glow shows which part is being edited.
     if (target) {
       target.classList.remove('preview-flash');

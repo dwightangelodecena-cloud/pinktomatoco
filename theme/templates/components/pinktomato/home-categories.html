@@ -1,6 +1,6 @@
 {{!-- Shop by category: built from the store's visible categories (added in the admin, Content → Categories).
       Hidden until there are at least two besides Shop All (pinktomato-home.js shows it). --}}
-<section class="home-categories container" data-pt-home-categories hidden>
+<section class="home-categories container" data-pt-home-categories hidden data-cutout-url="{{cdn 'img/cutouts/ID.webp'}}">
     <div class="reveal section-head" data-pt-reveal="0">
         <div>
             <p class="eyebrow">Shop by category</p>
@@ -11,9 +11,9 @@
     <ul class="category-tiles">
         {{#each categories}}
             {{#if name '!==' 'Shop All'}}
-                <li class="reveal" data-pt-category-tile>
+                <li class="reveal" data-pt-category-tile data-name="{{name}}">
                     <a class="category-tile" href="{{url}}">
-                        {{#if image}}<img class="category-tile-img" src="{{getImage image 'category_size' (cdn theme_settings.default_image_brand)}}" alt="" loading="lazy">{{/if}}
+                        {{#if image}}<img class="category-tile-img is-photo" src="{{getImage image 'category_size' (cdn theme_settings.default_image_brand)}}" alt="" loading="lazy">{{/if}}
                         <span class="category-tile-glow" aria-hidden="true"></span>
                         <span class="category-tile-text">
                             <span class="category-tile-name">{{name}}</span>

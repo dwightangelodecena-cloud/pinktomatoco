@@ -51,6 +51,7 @@
         <ul class="footer-menu">
             <li class="footer-menu-header">Categories</li>
             <li><a href="/shop-all/">Shop All</a></li>
+            {{#each categories}}{{#if name '!==' 'Shop All'}}<li><a href="{{url}}">{{name}}</a></li>{{/if}}{{/each}}
         </ul>
         <ul class="footer-menu">
             <li class="footer-menu-header">Account</li>
