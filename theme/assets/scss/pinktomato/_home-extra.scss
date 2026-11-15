@@ -434,3 +434,19 @@ body:has([data-pt-compact-header]) .header-logo { display: none; }
     .contact-photo { height: 150px; }
     .contact-aside { padding: 20px; }
 }
+
+// Sitemap links: easy to tap on a phone (at least 40px tall).
+.sitemap-columns a, .page .sitemap a { display: inline-flex; align-items: center; min-height: 40px; }
+
+// Contact on very small phones (e.g. iPhone SE): the layout never grows wider than the screen, and
+// Google's "I'm not a robot" box (a fixed 304px) is scaled down to fit inside the form.
+.contact-layout { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 960px) { .contact-layout { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); } }
+.contact-main, .contact-page .contact-form { min-width: 0; }
+@media (max-width: 380px) {
+    .contact-page .contact-form { padding: 18px; }
+    .contact-page .g-recaptcha { transform: scale(.86); transform-origin: left top; height: 68px; }
+}
+// The form's grid column may shrink below the robot box's fixed width (the box itself is scaled above).
+.contact-page .contact-form, .contact-fields { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 640px) { .contact-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

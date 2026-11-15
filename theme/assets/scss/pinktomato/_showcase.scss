@@ -339,3 +339,21 @@
     .showcase-note:nth-child(6) { left: 80% !important; top: 46% !important; }
     .showcase + .pt-slot .value-props, .showcase ~ .pt-slot:first-of-type .value-props { margin-top: -64px; }
 }
+
+// Every browser: draw the real font weights only (never a faked bold), with automatic optical sizing.
+body { font-synthesis: none; font-optical-sizing: auto; }
+
+// Phones turned sideways (short, wide screens): candle and words side by side, so the hero fits.
+@media (orientation: landscape) and (max-height: 520px) {
+    .showcase-stage { min-height: 0; padding: 18px 0 70px; }
+    .showcase-inner { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; align-items: center; }
+    .showcase-figure, .showcase-figure.is-cutout { order: 0; max-width: 220px; justify-self: center; }
+    .showcase-copy { order: -1; text-align: left; justify-items: start; }
+    .showcase-eyebrow { justify-self: start; }
+    .showcase-title { font-size: 30px; }
+    .showcase-chips, .showcase-actions { justify-content: flex-start; }
+    .showcase-side { grid-column: 1 / -1; justify-items: center; }
+    .showcase-tagline, .showcase-side-text, .showcase-count { display: none; }
+    .showcase-word { font-size: 16vw; }
+    .showcase-note { --s: 30px !important; }
+}
