@@ -12,6 +12,14 @@
             <li>{{> components/pinktomato/icon name="return" size="18"}}<span><strong>Returns</strong>Include your order number and we'll guide you.</span></li>
             <li>{{> components/pinktomato/icon name="map-pin" size="18"}}<span><strong>Hand-poured in</strong>Watford City, North Dakota</span></li>
         </ul>
+        <div class="contact-next">
+            <p class="contact-next-title">What happens next</p>
+            <ol>
+                <li><span>1</span>You send the form.</li>
+                <li><span>2</span>It arrives in our inbox.</li>
+                <li><span>3</span>We reply to your email.</li>
+            </ol>
+        </div>
         <a class="contact-link" href="/shipping-returns/">Shipping &amp; Returns policy {{> components/pinktomato/icon name="arrow-right" size="14"}}</a>
     </aside>
     <div class="contact-main">
@@ -28,6 +36,10 @@
             {{inject 'contactQuestion' (lang 'forms.validate.contact.question')}}
             {{#if forms.contact.error}}<p class="form-message error" role="alert">{{forms.contact.error}}</p>{{/if}}
             <input type="hidden" name="page_id" value="{{forms.contact.page_id}}">
+            <div class="contact-form-head">
+                <h2>Send us a message</h2>
+                <p>Fields marked Required must be filled in.</p>
+            </div>
             <div class="contact-fields">
                 {{#if forms.contact.name}}
                     <label class="form-field"><span class="form-field-title">Full Name</span>

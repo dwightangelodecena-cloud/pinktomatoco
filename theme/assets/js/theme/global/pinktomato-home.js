@@ -221,26 +221,46 @@ async function initFeatured(token) {
 }
 
 // Shop by category appears once the store has at least two visible categories besides Shop All.
-function initCategories() {
+// Shop by category appears once the store has at least two visible categories besides Shop All.
+// Tiles without their own photo (set in the admin, Content → Categories) show one of that category's
+// product photos, as taken (background kept).
+const CATEGORY_PRODUCT = { candles: 128, 'wax melts': 132, floral: 120, 'fresh & citrus': 113, 'warm & woody': 130, 'sweet & cozy': 133 };
+const FALLBACK_PRODUCTS = [115, 133, 129, 121, 117, 118];
+
+function initCategories(token) {
     const section = document.querySelector('[data-pt-home-categories]');
     if (!section) return;
     const tiles = Array.from(section.querySelectorAll('[data-pt-category-tile]'));
     if (tiles.length < 2) return;
-    // Tiles without their own photo (set in the admin, Content → Categories) show a cut-out candle.
-    const CANDLE_FOR = { candles: 128, 'wax melts': 132, floral: 120, 'fresh & citrus': 113, 'warm & woody': 130, 'sweet & cozy': 133 };
-    const fallback = [115, 133, 129, 121, 117, 118];
+    const wanted = [];
     tiles.forEach((tile, i) => {
         tile.dataset.ptReveal = String(i * 80);
         const link = tile.querySelector('.category-tile');
         if (!link || link.querySelector('.category-tile-img')) return;
-        const id = CANDLE_FOR[(tile.dataset.name || '').trim().toLowerCase()] || fallback[i % fallback.length];
-        const img = document.createElement('img');
-        img.className = 'category-tile-img is-cutout';
-        img.alt = '';
-        img.src = section.dataset.cutoutUrl.replace('ID.webp', `${id}.webp`);
-        link.prepend(img);
+        const id = CATEGORY_PRODUCT[(tile.dataset.name || '').trim().toLowerCase()] || FALLBACK_PRODUCTS[i % FALLBACK_PRODUCTS.length];
+        wanted.push({ link, id });
     });
     section.hidden = false;
+    if (!wanted.length || !token) return;
+    fetch('/graphql', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ query: 'query Tiles($ids: [Int!]) { site { products(entityIds: $ids, first: 20) { edges { node { entityId defaultImage { url(width: 700) } } } } } }', variables: { ids: wanted.map((w) => w.id) } }),
+    })
+        .then((r) => r.json())
+        .then(({ data }) => {
+            const url = new Map(data.site.products.edges.map((e) => [e.node.entityId, e.node.defaultImage && e.node.defaultImage.url]));
+            wanted.forEach(({ link, id }) => {
+                if (!url.get(id)) return;
+                const img = document.createElement('img');
+                img.className = 'category-tile-img is-photo';
+                img.alt = '';
+                img.src = url.get(id);
+                link.prepend(img);
+            });
+        })
+        .catch(() => { /* the warm gradient stays */ });
 }
 
 const REVIEWS_QUERY = `query HomeReviews {
@@ -289,7 +309,7 @@ async function initReviews(token) {
 }
 
 export default function pinkTomatoHome(context) {
-    initCategories();
+    initCategories(context.storefrontApiToken);
     initReveals();
     initReviews(context.storefrontApiToken);
     // A saved "hide the mood finder" choice arrives as a marker in its content slot.

@@ -6,9 +6,11 @@ const money = (n) => `$${Number(n || 0).toFixed(2)}`;
 const split = (t) => t.split(/[,/·]/).map((x) => x.trim().replace(/\.$/, '')).filter(Boolean);
 
 function glance(text) {
-  const facts = { mood: [], notes: [], burn: '', story: [] };
+  const facts = { mood: [], notes: [], burn: '', story: [], all: [] };
   String(text || '').split(/\n+/).map((l) => l.trim()).filter(Boolean).forEach((line) => {
     const m = line.match(/^(mood|scent notes?|notes|burn time)\s*:\s*(.+)$/i);
+    // Every other line, for descriptions that are only the standard text (no story of their own).
+    if (!m) facts.all.push(line);
     if (!m) { if (!/^[-•*]|constructed with|^all (our )?candles/i.test(line)) facts.story.push(line); return; }
     const k = m[1].toLowerCase();
     if (k === 'mood') facts.mood = split(m[2]);
@@ -58,7 +60,7 @@ export default function ProductPreview({ name, description, images, options, row
           </div>
         </div>
         <div className="product-preview-story">
-          <div>{(facts.story.length ? facts.story : ['Your description shows here.']).slice(0, 4).map((p, i) => <p key={i}>{p}</p>)}</div>
+          <div className="product-preview-desc">{(facts.story.length ? facts.story : facts.all.length ? facts.all : ['Your description shows here.']).slice(0, 8).map((p, i) => <p key={i}>{p}</p>)}</div>
           {(facts.mood.length > 0 || facts.notes.length > 0 || facts.burn) && (
             <div className="glance-card">
               <p className="eyebrow">At a glance</p>

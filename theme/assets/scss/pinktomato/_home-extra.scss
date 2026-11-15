@@ -44,16 +44,7 @@
 .category-tile-go svg { transition: transform .3s var(--ease); }
 .category-tile:hover { color: #fff; }
 .category-tile:hover .category-tile-img { transform: scale(1.06); }
-// A cut-out candle standing in the tile's warm light (when the category has no photo of its own).
-.category-tile { background: radial-gradient(90% 80% at 50% 38%, #b8735a 0%, #6e3a33 50%, #2c1c1d 100%); }
-.category-tile-img.is-cutout {
-    inset: 10% 12% 30%;
-    width: 76%;
-    height: 60%;
-    object-fit: contain;
-    filter: drop-shadow(0 18px 22px rgba(0, 0, 0, .45));
-}
-.category-tile:hover .category-tile-img.is-cutout { transform: translateY(-6px) scale(1.05); }
+
 .category-tile:hover .category-tile-go svg { transform: translateX(4px); }
 
 // ---------- Story band ----------
@@ -386,3 +377,24 @@ body:has([data-pt-compact-header]) .header-logo { display: none; }
 .contact-page .form-input:focus { border-color: var(--accent); background: var(--surface); box-shadow: 0 0 0 4px var(--accent-soft); outline: none; }
 .contact-page .form-actions { margin: 0; padding: 0; }
 .contact-page .form-actions .button { display: inline-flex; align-items: center; gap: 8px; }
+
+// Contact card, refined: compact panel that stays in view, candle fully visible, next-step guide.
+@media (min-width: 960px) {
+    .contact-layout { align-items: start; }
+    .contact-aside { position: sticky; top: 96px; min-height: 560px; }
+}
+.contact-aside { padding-bottom: 210px; }
+.contact-candle { right: 18px; bottom: 18px; width: 40%; max-width: 200px; }
+.contact-next { position: relative; z-index: 1; display: grid; gap: 8px; margin-top: 6px; max-width: 250px; }
+.contact-next-title { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #f5c8b8; }
+.contact-next ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.contact-next li { display: flex; align-items: center; gap: 10px; font-size: 14px; color: rgba(255, 238, 225, .8); }
+.contact-next li span { display: grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 50%; font-size: 12px; font-weight: 700; color: #2b2024; background: #f0b48f; }
+.contact-link { position: absolute; left: clamp(28px, 4vw, 44px); bottom: 28px; padding: 0; }
+.contact-form-head h2 { margin: 0 0 4px; font-size: 26px; }
+.contact-form-head p { margin: 0; font-size: 14px; color: var(--muted); }
+.contact-page .contact-form { box-shadow: 0 20px 50px rgba(43, 32, 36, .06); }
+@media (max-width: 959px) {
+    .contact-aside { padding-bottom: 180px; }
+    .contact-candle { width: 34%; }
+}

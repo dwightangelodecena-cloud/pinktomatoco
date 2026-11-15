@@ -368,7 +368,7 @@ a.admin-tile:hover { border-color: var(--accent); transform: translateY(-2px); }
 
 /* Product editor with a live product-page preview */
 .product-edit-split { display: grid; gap: 20px; align-items: start; }
-@media (min-width: 1200px) { .product-edit-split { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .product-preview { position: sticky; top: 16px; } }
+@media (min-width: 1200px) { .product-edit-split { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .product-preview { position: sticky; top: max(16px, calc(50vh - 340px)); } }
 .product-preview { display: grid; gap: 8px; }
 .product-preview-label { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
 .product-preview-page { display: grid; gap: 22px; padding: 22px; border-radius: 18px; border: 1px solid var(--line); background: #fdf8f5; }
@@ -507,3 +507,4 @@ a.admin-tile:hover { border-color: var(--accent); transform: translateY(-2px); }
 .content-checks .content-default { padding: 8px 14px; border: 1px solid var(--line-strong, #e2d2cc); border-radius: 999px; background: #fff; cursor: pointer; transition: border-color .15s, background-color .15s; }
 .content-checks .content-default:has(input:checked) { border-color: var(--accent, #c8474f); background: #fff1ef; }
 .content-checks .content-default:has(input:disabled) { cursor: default; }
+.product-preview-desc { max-height: 260px; overflow: auto; }
