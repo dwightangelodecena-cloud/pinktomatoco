@@ -80,7 +80,7 @@ export async function salesSummary(bc, since) {
   const newest = orders.slice(0, ITEMS_FOR_NEWEST);
   const items = await Promise.all(newest.map((o) => bc.list(`/v2/orders/${o.id}/products?limit=250`)));
   newest.forEach((o, i) => {
-    o.order_items = items[i].map((p) => ({ id: p.id, name: p.name, quantity: p.quantity, unit_price: Number(p.price_inc_tax) }));
+    o.order_items = items[i].map((p) => ({ id: p.id, product_id: p.product_id, name: p.name, quantity: p.quantity, unit_price: Number(p.price_inc_tax) }));
   });
   return { orders, itemsCoverAll: orders.length <= ITEMS_FOR_NEWEST };
 }
