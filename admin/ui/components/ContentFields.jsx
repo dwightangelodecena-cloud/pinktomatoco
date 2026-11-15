@@ -21,8 +21,9 @@ export function Section({ Icon, title, intro, shown, onToggle, children, collaps
   if (collapsible) {
     return (
       <section className={`content-section is-collapsible ${open ? 'is-open' : ''}`} onFocusCapture={point}>
-        <header>
-          <button type="button" className="content-section-toggle" aria-expanded={open} onClick={() => { setOpen((o) => !o); point(); }}>
+        {/* The whole header strip opens and closes the section (not just the arrow). */}
+        <header className="content-section-head" onClick={(e) => { if (e.target.closest('.content-row-tools')) return; setOpen((o) => !o); point(); }}>
+          <button type="button" className="content-section-toggle" aria-expanded={open} onClick={(e) => e.stopPropagation() || (setOpen((o) => !o), point())}>
             <span className="content-section-chevron" aria-hidden="true">▸</span>
             <span>
               <h3>{Icon && <Icon size={18} />} {title}</h3>

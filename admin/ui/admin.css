@@ -481,3 +481,9 @@ a.admin-tile:hover { border-color: var(--accent); transform: translateY(-2px); }
 .dash-rank li > span:first-child { display: flex; justify-content: space-between; gap: 8px; font-size: 14px; }
 .dash-rank b::before { content: counter(rank) '  '; color: var(--muted); font-weight: 400; }
 .dash-rank small { color: var(--muted); }
+
+/* Fold-away sections: the whole header is the click target, with a bigger arrow. */
+.content-section.is-collapsible > .content-section-head { cursor: pointer; }
+.content-section.is-collapsible > .content-section-head:hover { background: #fff6f3; }
+.content-section-chevron { display: grid; place-items: center; flex: none; width: 28px; height: 28px; margin-top: 0; border-radius: 50%; background: #f6ece8; font-size: 14px; color: var(--ink); }
+.content-section.is-open .content-section-chevron { background: var(--accent); color: #fff; }
