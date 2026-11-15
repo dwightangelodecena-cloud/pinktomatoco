@@ -1,6 +1,6 @@
 {
   "name": "Pink Tomato",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "template_engine": "handlebars_v4",
   "meta": {
     "price": 0,

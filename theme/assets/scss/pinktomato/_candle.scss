@@ -47,8 +47,9 @@ $wax-top: 114px; // where the wax surface sits, from the top of .pt-candle
 
 // The candle is the centrepiece here: the big centred logo goes, and the bar shows the small one (pinktomato-layout.js).
 body:has(.pt-candle-room) .header-logo { display: none; }
-.pt-candle-room.is-pointer .pt-wick-btn:focus,
-.pt-candle-room.is-pointer .pt-flame-btn:focus { outline: none !important; box-shadow: none !important; }
+// No focus ring on the wick or flame (the pulsing ring on the wick already shows where to tap).
+.pt-candle-room .pt-wick-btn:focus, .pt-candle-room .pt-wick-btn:focus-visible,
+.pt-candle-room .pt-flame-btn:focus, .pt-candle-room .pt-flame-btn:focus-visible { outline: none !important; box-shadow: none !important; }
 .pt-candle-room .pt-wick-btn, .pt-candle-room .pt-flame-btn { -webkit-tap-highlight-color: transparent; }
 
 // ---------- The scene: words, candle, floating motes ----------
@@ -213,7 +214,6 @@ body:has(.pt-candle-room) .header-logo { display: none; }
     background: none;
     cursor: pointer;
 }
-.pt-wick-btn:focus-visible { outline: 2px solid rgba(255, 214, 170, .8); outline-offset: 2px; }
 .pt-wick {
     position: absolute;
     left: 50%;
@@ -315,7 +315,6 @@ body:has(.pt-candle-room) .header-logo { display: none; }
     visibility: hidden;
 }
 .is-lit .pt-flame-btn { visibility: visible; }
-.pt-flame-btn:focus-visible { outline: 2px solid rgba(255, 214, 170, .8); outline-offset: 2px; }
 .pt-flame {
     position: relative;
     width: 24px;
@@ -413,14 +412,20 @@ body:has(.pt-candle-room) .header-logo { display: none; }
     box-shadow: 0 30px 80px rgba(0, 0, 0, .45), -30px 10px 110px rgba(255, 160, 70, .16);
     transform-origin: 50% 70%;
 }
-// Unlit, the form is out of the way entirely (it takes no space, so the room stays compact).
+// Unlit, the form is invisible but keeps its space, so the room is the same size lit or unlit.
 .pt-candle-room.is-ready:not(.is-lit):not(.is-closing) .pt-candle-card {
-    position: absolute;
-    top: 0;
-    right: 0;
     visibility: hidden;
     opacity: 0;
     pointer-events: none;
+}
+// Except where that space would just be empty: the long sign-up form, and phones (form under the candle).
+.pt-candle-room.is-ready:not(.is-lit):not(.is-closing) .auth-card--wide.pt-candle-card {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+@media (max-width: 991px) {
+    .pt-candle-room.is-ready:not(.is-lit):not(.is-closing) .pt-candle-card { position: absolute; top: 0; right: 0; }
 }
 // Fields are focused for the shopper after lighting; keep the field's own rounded focus style, not the browser's box.
 .pt-candle-room .auth-input:focus,

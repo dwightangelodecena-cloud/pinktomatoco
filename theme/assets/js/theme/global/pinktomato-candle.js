@@ -142,7 +142,14 @@ export default function pinkTomatoCandle() {
             setCard(false);
             follow(1300);
             busy = false;
-            wick.focus({ preventScroll: true });
+            // Move focus off the hidden form without showing a ring on the wick.
+            if (card.contains(document.activeElement)) document.activeElement.blur();
+            // Leaving an empty field makes BigCommerce's check show "enter a valid email"; nobody is
+            // filling the form in now, so clear those so the hidden card (and the room) keep their size.
+            setTimeout(() => {
+                Array.from(card.querySelectorAll('.form-inlineMessage')).forEach((m) => m.remove());
+                Array.from(card.querySelectorAll('.form-field--error')).forEach((f) => f.classList.remove('form-field--error'));
+            }, 50);
         }, reduced ? 0 : 650);
         // The smoke drifts off on its own.
         setTimeout(() => room.classList.remove('is-out'), 2200);
