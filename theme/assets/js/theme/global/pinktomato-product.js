@@ -1,6 +1,6 @@
 import { card } from './pinktomato-home';
 import { LABEL_NOTES } from './pinktomato-cutouts';
-import { artFor, notesFromText } from './pinktomato-notes';
+import { noteArt, notePhotos, notesFromText } from './pinktomato-notes';
 
 // Under the price: the candle's scent notes with their little ingredient drawings.
 function initScentRow(productId) {
@@ -9,10 +9,10 @@ function initScentRow(productId) {
     const desc = document.querySelector('[data-pt-description]');
     const notes = notesFromText(desc ? desc.innerText : '').length ? notesFromText(desc.innerText) : (LABEL_NOTES[Number(productId)] || []);
     if (!notes.length) return;
-    const art = artFor(notes);
+    const photos = notePhotos();
     const row = document.createElement('div');
     row.className = 'product-scents';
-    row.innerHTML = `<span class="product-scents-label">Scent notes</span><ul>${notes.slice(0, 4).map((n, i) => `<li><span class="product-scent-art" aria-hidden="true">${art[i % art.length]}</span>${n.replace(/[<>&]/g, '')}</li>`).join('')}</ul>`;
+    row.innerHTML = `<span class="product-scents-label">Scent notes</span><ul>${notes.slice(0, 4).map((n, i) => `<li><span class="product-scent-art" aria-hidden="true">${noteArt(n, photos)}</span>${n.replace(/[<>&]/g, '')}</li>`).join('')}</ul>`;
     header.appendChild(row);
 }
 // Product page and Quick View extras: sold-out sizes, price pop, "Added" state, zoom origin, sticky buy bar.

@@ -62,6 +62,11 @@ const SLOTS = {
     region: 'pt_home_faq',
     template: `{{#if show}}<section class="home-faq container"><div class="reveal faq-head" data-pt-reveal="0"><p class="eyebrow">{{eyebrow}}</p><h2 class="section-title">{{title}}</h2><p class="faq-intro">{{intro}}</p><a href="/contact-us/" class="button button-primary">Contact us ${svg('arrow-right', 16)}</a></div><div class="faq-list">{{#each items}}<details class="reveal faq-item" data-pt-reveal="{{delay}}"><summary>{{q}}<span class="faq-toggle" aria-hidden="true"></span></summary><div class="faq-answer"><p>{{a}}</p></div></details>{{/each}}</div></section>{{else}}${HIDDEN}{{/if}}`,
   },
+  // Scent-note photos (Content → Products → Scent notes), by note name, for every page (templates/components/common/footer.html).
+  notePhotos: {
+    region: 'pt_note_photos--global',
+    template: '<span data-pt-note-photos="{{photos}}" hidden></span>',
+  },
   newsletter: {
     region: 'pt_footer_newsletter--global',
     template: '<h2 class="footer-heading">{{heading}}</h2><p class="footer-sub">{{text}}</p>',
@@ -129,6 +134,14 @@ function widgetSettings(key, value, origin, featuredIds) {
       journal: { show: v.showJournal !== false, eyebrow: text(v.journalEyebrow, 80), title: text(v.journalTitle, 120), text: text(v.journalText, 400), button: text(v.journalButton, 40) },
     };
   }
+  if (key === 'notePhotos') {
+    const photos = {};
+    for (const [note, src] of Object.entries(value.photos || {}).slice(0, 80)) {
+      const name = text(note, 40).toLowerCase().replace(/\s+/g, ' ');
+      if (name && src) photos[name] = imageUrl(src, origin);
+    }
+    return { notePhotos: { photos: JSON.stringify(photos) } };
+  }
   if (key === 'footer') {
     return {
       newsletter: { heading: text(value.heading, 80), text: text(value.text, 200) },
@@ -195,7 +208,7 @@ async function savePage(bc, type, change) {
 
 // Saved editor copies, keyed like the React site's site_content rows.
 export async function getContent(env) {
-  const keys = ['announcement', 'home', 'shipping', 'contact', 'blog', 'footer', 'featured'];
+  const keys = ['announcement', 'home', 'shipping', 'contact', 'blog', 'footer', 'featured', 'notePhotos'];
   const values = await Promise.all(keys.map((k) => env.STORE.get(`content:${k}`, 'json')));
   return Object.fromEntries(keys.map((k, i) => [k, values[i]]).filter(([, v]) => v));
 }
@@ -217,7 +230,7 @@ export async function saveContent(bc, env, origin, pages) {
       // The featured list lives in the homepage's products slot, so that slot is saved again.
       const home = next.home || { productsEyebrow: 'Just poured', productsTitle: 'New Products' };
       await saveSlot(bc, env, 'products', widgetSettings('home', home, origin, featuredIds).products);
-    } else if (['announcement', 'home', 'footer'].includes(key)) {
+    } else if (['announcement', 'home', 'footer', 'notePhotos'].includes(key)) {
       const settings = widgetSettings(key, value, origin, featuredIds);
       for (const [slot, s] of Object.entries(settings)) await saveSlot(bc, env, slot, s);
     } else {

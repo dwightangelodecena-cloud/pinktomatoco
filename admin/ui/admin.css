@@ -516,3 +516,13 @@ a.admin-tile:hover { border-color: var(--accent); transform: translateY(-2px); }
 .hero-swatch.is-auto { background: conic-gradient(#e89650, #c8474f, #d6966e, #ecba78, #f0aaa0, #e89650); color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.4); }
 .hero-swatch.is-custom { display: inline-flex; align-items: center; gap: 6px; width: auto; height: 34px; padding: 0 12px 0 4px; border-radius: 999px; background: #fff; font-size: 12px; }
 .hero-swatch.is-custom input { width: 26px; height: 26px; padding: 0; border: 0; border-radius: 50%; background: none; cursor: pointer; }
+/* Scent notes: one row per note with its drawing or photo, and a photo upload. */
+.note-photos { list-style: none; display: grid; gap: 8px; margin: 4px 0 0; padding: 0; }
+.note-photo-row { display: flex; align-items: center; gap: 12px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+.note-photo-thumb { flex: none; width: 44px; height: 44px; border-radius: 50%; object-fit: cover; background: var(--cream); }
+.note-photo-thumb.is-drawing { display: grid; place-items: center; background: #2a1d17; }
+.note-photo-thumb.is-drawing svg { width: 32px; height: 32px; }
+.note-photo-name { flex: 1; min-width: 0; display: grid; font-weight: 600; color: var(--ink); overflow-wrap: anywhere; }
+.note-photo-name small { font-size: 12px; font-weight: 400; color: var(--muted); }
+.note-photo-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+@media (max-width: 480px) { .note-photo-row { flex-wrap: wrap; } .note-photo-actions { width: 100%; justify-content: flex-start; padding-left: 56px; } }

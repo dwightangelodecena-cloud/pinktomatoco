@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
-import { deleteProduct, getAdminProducts, getCategories, saveProduct, setProductVisible } from '../lib/adminApi.js';
+import { deleteProduct, getAdminProducts, getCategories, getContent, saveContent, saveProduct, setProductVisible } from '../lib/adminApi.js';
 import { priceRange } from '../lib/pricing.js';
 import { descriptionToText, textToDescription } from '../lib/productText.js';
 import { ArrowRight, PencilIcon, PlusIcon, TrashIcon } from '../Icons.jsx';
 import { ImageUpload, Section, Text } from './ContentFields.jsx';
 import ProductPreview from './ProductPreview.jsx';
 // The store's own ingredient drawings and label notes, so the preview here matches the website.
-import { artFor, noteKind, notesFromText } from '../../../theme/assets/js/theme/global/pinktomato-notes.js';
+import { noteArt, noteKey, noteKind, notesFromText } from '../../../theme/assets/js/theme/global/pinktomato-notes.js';
 import { LABEL_NOTES } from '../../../theme/assets/js/theme/global/pinktomato-cutouts.js';
 
 // Scent notes live in the description as a "Scent Notes:" line (the website reads that line for the
@@ -22,27 +22,58 @@ function ScentNotes({ description, productId, onChange }) {
   const fromText = notesFromText(description);
   const label = LABEL_NOTES[productId] || [];
   const [value, setValue] = useState((fromText.length ? fromText : []).join(', '));
+  // Photos are kept by note name, so one "Taro Root" photo shows on every candle with that note.
+  const [photos, setPhotos] = useState({});
+  const [photoStatus, setPhotoStatus] = useState(null);
+  useEffect(() => {
+    getContent().then((c) => setPhotos((c.notePhotos && c.notePhotos.photos) || {})).catch(() => {});
+  }, []);
   const notes = value.split(',').map((n) => n.trim()).filter(Boolean);
-  const unknown = notes.filter((n) => !noteKind(n));
   const update = (v) => {
     setValue(v);
     onChange(withNotes(description, v.split(',').map((n) => n.trim()).filter(Boolean)));
+  };
+  const savePhoto = async (note, url) => {
+    const next = Object.assign({}, photos);
+    if (url) next[noteKey(note)] = url; else delete next[noteKey(note)];
+    setPhotos(next);
+    setPhotoStatus({ type: 'info', text: 'Saving photo…' });
+    try {
+      await saveContent([{ key: 'notePhotos', value: { photos: next } }]);
+      setPhotoStatus({ type: 'success', text: url ? `Photo saved for ${note}. It shows wherever ${note} is a scent note.` : `Photo removed from ${note}. Its drawing shows again.` });
+    } catch (err) {
+      setPhotoStatus({ type: 'error', text: err.message });
+    }
   };
   return (
     <div className="form-field">
       <span className="form-field-title">Scent notes</span>
       <input className="form-input" placeholder="e.g. Taro Root, Black Tea, Heavy Milk" value={value} onChange={(e) => update(e.target.value)} />
-      <small className="content-hint">Separate with commas. They show on the product page with little ingredient drawings, and float around the candle in the homepage showcase.</small>
+      <small className="content-hint">Separate with commas. They show on the product page and float around the candle in the homepage showcase. Each note uses a little drawing, or a photo you add below.</small>
       {!fromText.length && !value && label.length > 0 && (
         <button type="button" className="content-tool" onClick={() => update(label.join(', '))}>Use the notes from the label: {label.join(', ')}</button>
       )}
       {notes.length > 0 && (
-        <div className="hero-notes-preview">
-          {/* Drawings come from the theme's own library (trusted markup). */}
-          {artFor(notes).map((svg, i) => <span key={i} className="hero-note-art" dangerouslySetInnerHTML={{ __html: svg }} />)}
-          {unknown.length > 0 && <small>No drawing yet for: {unknown.join(', ')}</small>}
-        </div>
+        <ul className="note-photos">
+          {notes.map((note) => {
+            const photo = photos[noteKey(note)];
+            return (
+              <li key={note} className="note-photo-row">
+                {photo
+                  ? <img className="note-photo-thumb" src={photo} alt="" />
+                  // Drawings come from the theme's own library (trusted markup).
+                  : <span className="note-photo-thumb is-drawing" dangerouslySetInnerHTML={{ __html: noteArt(note, {}) }} />}
+                <span className="note-photo-name">{note}<small>{photo ? 'Photo' : noteKind(note) ? 'Drawing' : 'No drawing yet, add a photo'}</small></span>
+                <span className="note-photo-actions">
+                  <ImageUpload label={photo ? 'Change photo' : 'Add photo'} keep shape="square" onUploaded={(url) => savePhoto(note, url)} />
+                  {photo && <button type="button" className="content-tool is-danger" onClick={() => savePhoto(note, '')}>Remove</button>}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
       )}
+      {photoStatus && <p className={`form-message ${photoStatus.type}`} role="status">{photoStatus.text}</p>}
     </div>
   );
 }

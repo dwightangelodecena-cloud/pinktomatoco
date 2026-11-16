@@ -176,3 +176,27 @@ export function storyText(text) {
     return out || 'Hand-poured in small batches with coconut soy wax and toxic-free fragrance.';
 }
 
+
+// Photos the admin uploaded for scent notes (Content → Products → Scent notes), keyed by note name,
+// so one "Taro Root" photo shows on every candle with that note. Saved into a hidden marker on every page.
+export const noteKey = (note) => String(note || '').trim().toLowerCase().replace(/\s+/g, ' ');
+export function notePhotos() {
+    const el = typeof document !== 'undefined' ? document.querySelector('[data-pt-note-photos]') : null;
+    if (!el) return {};
+    try {
+        const value = JSON.parse(el.getAttribute('data-pt-note-photos') || '{}');
+        return value && typeof value === 'object' ? value : {};
+    } catch (e) {
+        return {};
+    }
+}
+const safeSrc = (src) => (/^https:\/\/[^\s"'<>]+$/.test(String(src || '')) ? src : '');
+export const notePhoto = (note, photos = notePhotos()) => safeSrc(photos[noteKey(note)]);
+
+// One picture for one note: its uploaded photo when there is one, otherwise its drawing.
+export function noteArt(note, photos = notePhotos()) {
+    const src = notePhoto(note, photos);
+    if (src) return `<img src="${src}" alt="" loading="lazy">`;
+    const kind = noteKind(note) || 'wax';
+    return `<svg viewBox="0 0 100 100" aria-hidden="true">${ART[kind]()}</svg>`;
+}

@@ -2,7 +2,7 @@
 // faded name, the candle, the words and the floating scent-note ingredients with an animation; it also
 // moves on by itself every few seconds until the shopper picks one. Styles: scss/pinktomato/_showcase.scss.
 import CUTOUTS, { LABEL_NOTES } from './pinktomato-cutouts';
-import { artFor, notesFromText, storyText } from './pinktomato-notes';
+import { artFor, noteArt, notePhoto, notePhotos, notesFromText, storyText } from './pinktomato-notes';
 
 // Warm tints only, in the site's palette (espresso, amber, tomato-rose, caramel, blush).
 const TINTS = [
@@ -129,7 +129,11 @@ export default function pinkTomatoShowcase(context) {
         if (!notesLayer) return;
         // Uploaded ingredient pictures come first, then the drawn ingredients for each scent note.
         const pictures = list(d.images).map((src) => `<img src="${escapeHtml(src)}" alt="">`);
-        const art = [...pictures, ...artFor(notesOf(d))];
+        // Notes with an uploaded photo (Content → Products) use it; the rest are drawn.
+        const photos = notePhotos();
+        const withPhoto = notesOf(d).filter((n) => notePhoto(n, photos));
+        const drawn = notesOf(d).filter((n) => !notePhoto(n, photos));
+        const art = [...pictures, ...withPhoto.map((n) => noteArt(n, photos)), ...(drawn.length || (!pictures.length && !withPhoto.length) ? artFor(drawn) : [])];
         // Same ingredients already floating (e.g. the descriptions just loaded): keep them as they are.
         const key = `${d.id}|${notesOf(d).join(',')}|${list(d.images).join(',')}`;
         if (notesLayer.dataset.key === key) return;
