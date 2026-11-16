@@ -7,9 +7,6 @@ const DOCS = [
     { id: 'privacy', title: 'Privacy Policy', url: '/privacy-policy/' },
 ];
 
-// "I agree" needs both: scrolled to the end, and the pop-up open long enough to read (in total).
-const MIN_READ_MS = 30000;
-
 const cache = {};
 function loadDoc(url) {
     if (!cache[url]) {
@@ -33,7 +30,7 @@ function buildDialog(onAgree) {
     const dialog = document.createElement('dialog');
     dialog.className = 'pt-doc-dialog';
     dialog.innerHTML = `
-        <div class="pt-doc-card">
+        <div class="pt-doc-card" tabindex="-1">
             <header class="pt-doc-head">
                 <div>
                     <p class="pt-doc-eyebrow">Before you join</p>
@@ -44,13 +41,14 @@ function buildDialog(onAgree) {
             <nav class="pt-doc-tabs" aria-label="Jump to">
                 ${DOCS.map((d) => `<button type="button" data-pt-jump="${d.id}">${d.title}</button>`).join('')}
             </nav>
-            <div class="pt-doc-body" tabindex="0" autofocus>
+            <div class="pt-doc-body" tabindex="0">
                 ${DOCS.map((d) => `<section class="pt-doc-section" id="pt-doc-${d.id}"><h3>${d.title}</h3><div data-pt-doc-text="${d.id}"><p class="pt-doc-loading">Loading…</p></div></section>`).join('')}
             </div>
             <div class="pt-doc-progress" aria-hidden="true"><span></span></div>
             <footer class="pt-doc-foot">
                 <button type="button" class="button button-secondary pt-doc-cancel">Not now</button>
-                <button type="button" class="button button-primary pt-doc-agree" disabled>Read to the end</button>
+                <p class="pt-doc-hint">Scroll to the bottom to agree <span aria-hidden="true">&darr;</span></p>
+                <button type="button" class="button button-primary pt-doc-agree" hidden>I agree</button>
             </footer>
         </div>`;
     document.body.appendChild(dialog);
@@ -64,8 +62,6 @@ function buildDialog(onAgree) {
     dialog.addEventListener('click', (event) => { if (event.target === dialog) close(); });
     dialog.addEventListener('close', () => {
         document.documentElement.classList.remove('pt-doc-open');
-        if (openedAt) { readMs += Date.now() - openedAt; openedAt = 0; }
-        clearInterval(ticker);
     });
 
     // The tab for whichever document is in view is highlighted; tapping a tab jumps to it.
@@ -78,34 +74,22 @@ function buildDialog(onAgree) {
         const section = dialog.querySelector(`#pt-doc-${tab.dataset.ptJump}`);
         body.scrollTo({ top: section.offsetTop - body.offsetTop, behavior: 'smooth' });
     }));
-    // "I agree" only works once the reader has scrolled to the end of both documents.
+    // "I agree" appears once the reader has scrolled to the bottom of both documents.
     const agreeButton = dialog.querySelector('.pt-doc-agree');
+    const hint = dialog.querySelector('.pt-doc-hint');
     const bar = dialog.querySelector('.pt-doc-progress span');
     let loaded = 0;
-    let atEnd = false;
     let ready = false;
-    let readMs = 0;
-    let openedAt = 0;
-    let ticker = null;
-    const timeRead = () => readMs + (openedAt ? Date.now() - openedAt : 0);
     const checkEnd = () => {
         if (ready) return;
         const room = body.scrollHeight - body.clientHeight;
-        const done = room <= 0 ? 1 : Math.min(1, body.scrollTop / room);
-        bar.style.width = (done * 100) + '%';
-        if (loaded === DOCS.length && (room <= 0 || body.scrollTop >= room - 24)) atEnd = true;
-        const left = Math.ceil((MIN_READ_MS - timeRead()) / 1000);
-        if (atEnd && left <= 0) {
+        bar.style.width = (room <= 0 ? 100 : Math.min(1, body.scrollTop / room) * 100) + '%';
+        if (loaded === DOCS.length && (room <= 0 || body.scrollTop >= room - 24)) {
             ready = true;
-            clearInterval(ticker);
             bar.style.width = '100%';
-            agreeButton.disabled = false;
-            agreeButton.textContent = 'I agree';
+            hint.hidden = true;
+            agreeButton.hidden = false;
             agreeButton.classList.add('is-ready');
-        } else if (atEnd) {
-            agreeButton.textContent = `Keep reading · 0:${String(left).padStart(2, '0')}`;
-        } else {
-            agreeButton.textContent = 'Read to the end';
         }
     };
     body.addEventListener('scroll', () => { markTab(); checkEnd(); }, { passive: true });
@@ -124,10 +108,9 @@ function buildDialog(onAgree) {
                 return;
             }
             dialog.showModal();
+            // Focus the card (no ring), not the first button or the text, so nothing looks selected.
+            dialog.querySelector('.pt-doc-card').focus({ preventScroll: true });
             document.documentElement.classList.add('pt-doc-open');
-            openedAt = Date.now();
-            clearInterval(ticker);
-            if (!ready) ticker = setInterval(checkEnd, 1000);
             const section = jumpTo && dialog.querySelector(`#pt-doc-${jumpTo}`);
             body.scrollTop = section ? section.offsetTop - body.offsetTop : 0;
             markTab();

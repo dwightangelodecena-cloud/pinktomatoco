@@ -634,3 +634,22 @@ html.pt-doc-open { overflow: hidden; }
 .pt-doc-agree:disabled { opacity: 1; color: var(--muted); background: #efe3de; border-color: #efe3de; box-shadow: none; cursor: not-allowed; }
 .pt-doc-agree.is-ready { animation: pt-code-pop .45s var(--spring); }
 .pt-doc-body:focus, .pt-doc-body:focus-visible { outline: none !important; box-shadow: none !important; }
+// Until the bottom is reached, a hint sits where "I agree" will appear.
+.pt-doc-foot { align-items: center; }
+.pt-doc-hint { margin: 0; display: inline-flex; align-items: center; gap: 6px; padding: 0 6px; font-size: 14px; font-weight: 600; color: var(--muted); }
+.pt-doc-hint span { display: inline-block; animation: pt-doc-nudge 1.4s ease-in-out infinite; }
+.pt-doc-hint[hidden], .pt-doc-agree[hidden] { display: none !important; }
+.pt-doc-agree.is-ready { animation: pt-doc-appear .5s var(--spring) both; }
+@keyframes pt-doc-nudge { 0%, 100% { transform: none; } 50% { transform: translateY(4px); } }
+@keyframes pt-doc-appear { from { opacity: 0; transform: translateY(10px) scale(.9); } to { opacity: 1; transform: none; } }
+@media (max-width: 600px) { .pt-doc-hint { flex: 1; justify-content: center; } }
+.pt-doc-card:focus, .pt-doc-card:focus-visible { outline: none !important; }
+.pt-doc-body:focus-visible { outline: 2px solid var(--accent-soft) !important; outline-offset: -2px; }
+@media (max-width: 600px) {
+    // Phones: the hint gets its own line above the buttons.
+    .pt-doc-foot { flex-wrap: wrap; }
+    .pt-doc-hint { order: -1; flex: 1 1 100%; justify-content: center; padding: 0 0 2px; }
+    .pt-doc-foot .pt-doc-cancel { flex: 1 1 100%; }
+    .pt-doc-foot .pt-doc-agree:not([hidden]) ~ .pt-doc-cancel, .pt-doc-foot .pt-doc-cancel:has(~ .pt-doc-agree:not([hidden])) { flex: 1; }
+    .pt-doc-foot .pt-doc-agree { flex: 1; }
+}
