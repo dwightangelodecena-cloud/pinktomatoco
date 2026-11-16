@@ -37,6 +37,33 @@
                     });
             };
             (function () {
+                {{!-- Back and Forward never sign anyone in or out; only the Log in and Log out buttons do.
+                      The browser can show a saved copy of a page from before signing in or out, which
+                      would look like the old state. Each fresh page notes who is signed in; if Back/Forward
+                      brings up a saved copy from a different state, it is reloaded to show the real one. --}}
+                var KEY = 'pt-signed-in-as';
+                var me = String(window.ptCustomerId || 0);
+                var nav = window.performance && performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
+                var fromHistory = nav && nav.type === 'back_forward';
+                var latest = null;
+                try { latest = localStorage.getItem(KEY); } catch (e) {}
+                if (fromHistory && latest !== null && latest !== me) {
+                    document.documentElement.style.visibility = 'hidden';
+                    location.reload();
+                    return;
+                }
+                try { localStorage.setItem(KEY, me); } catch (e) {}
+                window.addEventListener('pageshow', function (event) {
+                    if (!event.persisted) return;
+                    var now = null;
+                    try { now = localStorage.getItem(KEY); } catch (e) {}
+                    if (now !== null && now !== me) {
+                        document.documentElement.style.visibility = 'hidden';
+                        location.reload();
+                    }
+                });
+            })();
+            (function () {
                 {{!-- Already signed in (for example after pressing Back from the admin): the sign-in and
                       create-account pages have nothing to do, so go home. Log out (?action=logout) and
                       password links are left alone. --}}
