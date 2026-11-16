@@ -1,8 +1,21 @@
 {{#partial "page"}}
-<div class="page page-narrow auth-sent">
-    <h1 class="page-heading">Your account has been created</h1>
-    <p>Thank you for creating your account at {{settings.store_name}}. You can now check out faster and see your orders.</p>
-    <a class="button button-primary" href="{{create_account.continue_url}}">Continue Shopping</a>
-</div>
+{{!-- After sign-up: the "you're all set" card, with the check that draws itself (pinktomato-success.js). --}}
+<section class="pt-done-page">
+    <div class="pt-success pt-success--page" role="status">
+        <span class="pt-success-glow" aria-hidden="true"></span>
+        <p class="pt-done-eyebrow">Welcome to the family</p>
+        <h1 class="pt-success-title" tabindex="-1">{{#if customer.first_name}}You're all set, {{customer.first_name}}{{else}}Your account is ready{{/if}}</h1>
+        <p class="pt-success-text">Thank you for joining Pink Tomato. You can now check out faster, save favourites to your wishlist and follow your orders.</p>
+        <svg class="pt-success-check" viewBox="0 0 120 96" aria-hidden="true">
+            <path class="pt-success-track" d="M22 49 L47 73 L98 22"/>
+            <path class="pt-success-line" d="M22 49 L47 73 L98 22"/>
+            <circle class="pt-success-spark" r="6" cx="22" cy="49"/>
+        </svg>
+        <div class="pt-done-actions">
+            <a class="button button-primary pt-success-btn" href="{{#if create_account.continue_url}}{{create_account.continue_url}}{{else}}/shop-all/{{/if}}">Continue shopping</a>
+            <a class="button button-secondary" href="{{urls.account.index}}">My account</a>
+        </div>
+    </div>
+</section>
 {{/partial}}
 {{> layout/base}}

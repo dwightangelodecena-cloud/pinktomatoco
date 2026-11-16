@@ -3,6 +3,8 @@
 // once the right code is typed. Forgot password: email -> code -> new password -> signed in.
 // The codes are made, emailed and checked by the Pink Tomato admin app (admin/worker/verify.js).
 // Until an email service is connected there, both pages simply work the way BigCommerce does.
+import { playSuccess, successCard } from './pinktomato-success';
+
 const API = 'https://pinktomato-admin.pinktomato-admin.workers.dev/verify';
 const RESEND_AFTER = 30; // seconds
 const VERIFIED_KEY = 'pt-verified-signup';
@@ -29,7 +31,8 @@ function post(path, body) {
 let configPromise = null;
 function isEnabled() {
     if (!configPromise) {
-        configPromise = fetch(`${API}/config`).then((r) => r.json()).then((c) => Boolean(c && c.enabled)).catch(() => false);
+        configPromise = fetch(`${API}/config`).then((r) => r.json()).then((c) => Boolean(c && c.enabled)).catch(() => null);
+        configPromise.then((on) => { if (on === null) configPromise = null; });
     }
     return configPromise;
 }
@@ -48,12 +51,6 @@ const verified = {
     },
 };
 
-function checkMark(text) {
-    return `<div class="pt-code-done" role="status">
-        <span class="pt-done-mark" aria-hidden="true"><svg viewBox="0 0 64 64"><circle class="pt-done-ring" cx="32" cy="32" r="28"/><path class="pt-done-path" d="M19 33.5l9 9 17-19"/></svg><span class="pt-done-sparks"><i></i><i></i><i></i><i></i><i></i><i></i></span></span>
-        <p class="pt-code-done-text">${esc(text)}</p>
-    </div>`;
-}
 
 // The code screen: six glowing boxes over one real input (so paste and phone autofill work).
 function codeScreen({ email, purpose, onVerified, onBack }) {
@@ -258,7 +255,12 @@ function initSignup(form) {
         const submit = form.querySelector('[type="submit"]');
         const done = busyButton(submit, 'Sending your code…');
         isEnabled().then((on) => {
-            if (!on) { confirmed = true; done(); form.submit(); return; }
+            if (on === false) { confirmed = true; done(); form.submit(); return; }
+            if (on === null) {
+                done();
+                showError(form, 'We couldn\x27t reach our email service to send your code. Please check your connection and try again.');
+                return;
+            }
             post('send', { email, purpose: 'signup' }).then(() => {
                 done();
                 const screen = codeScreen({
@@ -266,9 +268,16 @@ function initSignup(form) {
                     purpose: 'signup',
                     onVerified: (token, codeEl) => {
                         verified.set(email);
-                        codeEl.innerHTML = checkMark('Email confirmed. Creating your account…');
-                        confirmed = true;
-                        setTimeout(() => form.submit(), reduced() ? 0 : 1400);
+                        // "Email confirmed" card; Continue creates the account.
+                        const card = successCard({
+                            title: 'Email confirmed',
+                            text: 'Thank you. Tap continue to finish creating your account.',
+                            button: 'Continue',
+                            onContinue: (btn) => { btn.textContent = 'Creating your account…'; confirmed = true; form.submit(); },
+                        });
+                        codeEl.replaceWith(card);
+                        playSuccess(card);
+                        card.querySelector('.pt-success-title').focus({ preventScroll: true });
                     },
                     onBack: () => {
                         swap(panel, screen.el, form);
@@ -346,7 +355,12 @@ function newPasswordScreen({ email, token }) {
         }
         const done = busyButton(el.querySelector('[type="submit"]'), 'Saving…');
         post('reset', { email, purpose: 'reset', token, password: pass.value }).then(() => {
-            el.innerHTML = checkMark('Password saved. Signing you in…');
+            const card = successCard({
+                title: 'Password saved',
+                text: 'You\x27re all set. Tap continue and we\x27ll sign you in.',
+                button: 'Continue',
+                onContinue: (btn) => { btn.textContent = 'Signing you in…'; login.submit(); },
+            });
             // Sign in with the new password through the shop's normal sign-in.
             const login = document.createElement('form');
             login.method = 'post';
@@ -356,7 +370,9 @@ function newPasswordScreen({ email, token }) {
             login.querySelector('[name="login_email"]').value = email;
             login.querySelector('[name="login_pass"]').value = pass.value;
             document.body.appendChild(login);
-            setTimeout(() => login.submit(), reduced() ? 0 : 1300);
+            el.replaceWith(card);
+            playSuccess(card);
+            card.querySelector('.pt-success-title').focus({ preventScroll: true });
         }).catch((err) => {
             done();
             showError(el, esc(err.message) + (err.data && err.data.expired ? ' <a href="/login.php?action=reset_password">Start again</a>' : ''));

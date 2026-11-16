@@ -25,10 +25,15 @@ const ALLOWED_ORIGINS = [
   'http://localhost:3005',
 ];
 
+// The live domain, this store's BigCommerce addresses (theme previews run there) and the local preview.
+const allowedOrigin = (origin) => ALLOWED_ORIGINS.includes(origin)
+  || /^https:\/\/store-v7sdscf7vw(-[a-z0-9]+)?\.mybigcommerce\.com$/.test(origin)
+  || /^https:\/\/([a-z0-9-]+\.)?pinktomatoco\.com$/.test(origin);
+
 function cors(request) {
   const origin = request.headers.get('Origin') || '';
   return {
-    'Access-Control-Allow-Origin': ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0],
+    'Access-Control-Allow-Origin': allowedOrigin(origin) ? origin : ALLOWED_ORIGINS[0],
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Max-Age': '86400',

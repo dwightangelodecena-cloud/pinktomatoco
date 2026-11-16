@@ -738,3 +738,37 @@ html.pt-doc-open { overflow: hidden; }
 }
 .pt-gone { display: none !important; }
 
+
+// ---------- "You're all set" card (after a code, a new password, or on the account-created page) ----------
+// The check draws itself while a glowing spark rides its tip, the glow settles, then Continue rises in.
+.pt-success { position: relative; display: grid; justify-items: center; gap: 10px; padding: 34px 6px 8px; text-align: center; isolation: isolate; animation: pt-step-in .5s var(--ease) both; }
+.pt-success--page { width: unquote("min(560px, 100%)"); padding: 48px clamp(20px, 5vw, 48px) 40px; border-radius: 28px; border: 1px solid var(--line); background: linear-gradient(170deg, #fff 0%, #fbf0eb 100%); box-shadow: 0 30px 80px rgba(43, 32, 36, .10); overflow: hidden; }
+.pt-success-glow { position: absolute; z-index: -1; left: 50%; top: 42%; width: 300px; height: 230px; transform: translate(-50%, -50%) scale(.6); border-radius: 50%; background: radial-gradient(closest-side, rgba(245, 166, 90, .42), rgba(200, 71, 79, .12) 60%, transparent); opacity: 0; filter: blur(8px); transition: opacity .9s ease .35s, transform 1.2s var(--ease) .35s; pointer-events: none; }
+.pt-success.is-drawn .pt-success-glow, .pt-success .pt-success-glow { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+.pt-success.is-drawn .pt-success-glow { animation: pt-success-breathe 3.6s ease-in-out .4s infinite; }
+.pt-success-title { margin: 0; font-family: var(--font-display); font-size: clamp(28px, 4.6vw, 38px); font-weight: 500; line-height: 1.12; color: var(--ink); outline: none; animation: pt-rise .6s var(--ease) .05s both; }
+.pt-success-text { margin: 0; max-width: 420px; font-size: 15px; line-height: 1.6; color: var(--text); animation: pt-rise .6s var(--ease) .15s both; }
+.pt-success-check { width: 132px; height: 106px; margin: 18px 0 10px; overflow: visible; }
+.pt-success-track { fill: none; stroke: rgba(200, 71, 79, .08); stroke-width: 12; stroke-linecap: round; stroke-linejoin: round; }
+.pt-success-line {
+    fill: none; stroke: #f5a65a; stroke-width: 10; stroke-linecap: round; stroke-linejoin: round;
+    filter: drop-shadow(0 0 6px rgba(245, 150, 80, .9)) drop-shadow(0 0 16px rgba(200, 71, 79, .45));
+    transition: stroke .9s ease, filter 1.2s ease;
+}
+// Once drawn, the hot amber line cools into the shop's rose colour with a soft glow.
+.pt-success.is-drawn .pt-success-line { stroke: var(--accent); filter: drop-shadow(0 0 4px rgba(245, 150, 80, .55)) drop-shadow(0 0 10px rgba(200, 71, 79, .25)); }
+.pt-success-spark { fill: #fff3d6; opacity: 0; filter: drop-shadow(0 0 6px #ffb35c) drop-shadow(0 0 12px rgba(245, 150, 80, .9)); transition: opacity .25s; }
+.pt-success-btn, .pt-success .pt-done-actions { opacity: 0; transform: translateY(12px); }
+.pt-success.is-drawn .pt-success-btn, .pt-success.is-drawn .pt-done-actions { animation: pt-success-btn-in .55s var(--spring) .1s forwards; }
+.pt-success .pt-done-actions .pt-success-btn { opacity: 1; transform: none; animation: none; }
+.pt-success-btn { min-width: 220px; min-height: 52px; justify-content: center; font-size: 16px; }
+// A warm ring pulses out from Continue twice, to say "this is the next step".
+.pt-success.is-drawn .pt-success-btn { box-shadow: 0 0 0 0 rgba(245, 150, 80, .55); animation: pt-success-btn-in .55s var(--spring) .1s forwards, pt-success-ring 1.6s ease-out .7s 2; }
+.pt-success-btn.is-busy { opacity: .75 !important; }
+@keyframes pt-success-btn-in { to { opacity: 1; transform: none; } }
+@keyframes pt-success-ring { 0% { box-shadow: 0 0 0 0 rgba(245, 150, 80, .55); } 100% { box-shadow: 0 0 0 16px rgba(245, 150, 80, 0); } }
+@keyframes pt-success-breathe { 0%, 100% { opacity: .85; transform: translate(-50%, -50%) scale(1); } 50% { opacity: 1; transform: translate(-50%, -50%) scale(1.08); } }
+@media (prefers-reduced-motion: reduce) {
+    .pt-success, .pt-success-title, .pt-success-text, .pt-success.is-drawn .pt-success-glow { animation: none; }
+    .pt-success-btn, .pt-success .pt-done-actions { opacity: 1; transform: none; animation: none !important; }
+}
