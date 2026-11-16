@@ -64,9 +64,21 @@ export function useSlidePill(ref, selector, deps, memory) {
     };
 
     place(true);
+    // Measure again (without animating) whenever the list changes size: the web font arriving,
+    // counts appearing in the filter buttons, the window resizing.
     const onResize = () => place(false);
     window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
+    let observer = null;
+    if (window.ResizeObserver) {
+      observer = new ResizeObserver(onResize);
+      observer.observe(box);
+      Array.prototype.forEach.call(box.children, (child) => { if (child !== pill) observer.observe(child); });
+    }
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(onResize);
+    return () => {
+      window.removeEventListener('resize', onResize);
+      if (observer) observer.disconnect();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 }

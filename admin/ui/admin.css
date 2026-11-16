@@ -663,3 +663,6 @@ a.admin-tile:hover { border-color: var(--accent); transform: translateY(-2px); }
 .admin-filter.has-slide-pill button:hover:not([aria-pressed='true']) { color: var(--ink); background: var(--cream); }
 .admin-filter.has-slide-pill button[aria-pressed='true'] { color: #fff; }
 @media (max-width: 600px) { .admin-filter.has-slide-pill { border-radius: 22px; } }
+/* No click outline on the sidebar and filters (keyboard users still see a focus ring) */
+.admin-nav a:focus:not(:focus-visible), .admin-filter button:focus:not(:focus-visible) { outline: none; box-shadow: none; }
+.admin-nav a:focus-visible, .admin-filter button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
