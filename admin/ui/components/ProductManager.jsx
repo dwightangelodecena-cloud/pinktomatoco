@@ -11,7 +11,7 @@ import { LABEL_NOTES } from '../../../theme/assets/js/theme/global/pinktomato-cu
 
 // Scent notes live in the description as a "Scent Notes:" line (the website reads that line for the
 // product page, homepage showcase and mood finder). This field edits just that line.
-const NOTES_LINE = /^\s*scent notes?\s*:.*$/im;
+const NOTES_LINE = /^[ \t]*scent notes?[ \t]*:.*$/im;
 function withNotes(text, notes) {
   const line = notes.length ? `Scent Notes: ${notes.join(', ')}` : '';
   if (NOTES_LINE.test(text)) return text.replace(NOTES_LINE, line).replace(/\n{3,}/g, '\n\n').trim();
