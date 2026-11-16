@@ -23,7 +23,28 @@ function clearOtherPeoplesCart() {
         .catch(() => {});
 }
 
+// Logging out empties the cart first. BigCommerce keeps the cart in the browser after a log-out (as a
+// guest cart) and adds it to whoever signs in next, so on a shared phone or computer the next person
+// would see it. Every "Log out" link (header, phone menu, account pages) goes through here.
+function emptyCartOnLogout() {
+    document.addEventListener('click', (event) => {
+        const link = event.target.closest && event.target.closest('a[href*="action=logout"]');
+        if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey) return;
+        event.preventDefault();
+        let gone = false;
+        const leave = () => { if (!gone) { gone = true; window.location.href = link.href; } };
+        try { localStorage.removeItem('pt-wishlisted'); localStorage.removeItem('cart-quantity'); } catch (e) { /* private mode */ }
+        setTimeout(leave, 2500); // never keep someone waiting to log out
+        fetch('/api/storefront/carts', { credentials: 'same-origin' })
+            .then((r) => (r.ok ? r.json() : []))
+            .then((carts) => Promise.all((carts || []).map((cart) => fetch('/api/storefront/carts/' + cart.id, { method: 'DELETE', credentials: 'same-origin' }))))
+            .catch(() => {})
+            .then(leave);
+    }, true);
+}
+
 export default function pinkTomatoCart(context) {
+    emptyCartOnLogout();
     clearOtherPeoplesCart();
     const drawer = document.querySelector('[data-pt-cart]');
     if (!drawer) return;

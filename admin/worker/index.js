@@ -9,7 +9,6 @@ import { SETTABLE_STATUSES, countOrdersToHandle, getOrderDetails, listOrders, sa
 import { deleteReview, listCustomers, listReviews, listSubscribers, setReviewApproved } from './customers.js';
 import { saveUpload, serveUpload } from './media.js';
 import { getContent, saveContent } from './content.js';
-import { verifyRoute } from './verify.js';
 
 const json = (body, status = 200) => new Response(JSON.stringify(body), {
   status,
@@ -213,7 +212,6 @@ export default {
       if (pathname === '/remove_user') return await removeUser(request, env);
       if (pathname === '/dev-login') return await devLogin(request, env);
       if (pathname === '/shop-login' || pathname === '/shop-login/config') return await shopLogin(request, env);
-      if (pathname.startsWith('/verify/')) return await verifyRoute(request, env, pathname, async () => client(env, await storeToken(env)));
       if (pathname.startsWith('/media/')) return await serveUpload(env, pathname.slice(7));
       if (pathname.startsWith('/api/')) return await api(request, env, pathname);
       return env.ASSETS.fetch(request);
