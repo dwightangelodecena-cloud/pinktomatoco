@@ -21,7 +21,10 @@
     "CHANNEL_ID": "1",
     // Shop customer accounts whose Admin button opens this admin: 3 = Theresa, 8 = Dwight.
     // Matched by account number, not email, so a new sign-up using someone's email can't get in.
-    "ADMIN_CUSTOMER_IDS": "3,8"
+    "ADMIN_CUSTOMER_IDS": "3,8",
+    // Sender for the shop's email codes (sign up, forgot password). The domain is verified in Resend;
+    // RESEND_API_KEY is a secret (wrangler secret put).
+    "MAIL_FROM": "Pink Tomato Candle & Bath Co. <no-reply@pinktomatoco.com>"
   }
   // Secrets (never in this file): BC_CLIENT_ID, BC_CLIENT_SECRET, SESSION_SECRET.
   // Set with `npx wrangler secret put NAME`. For local work they go in .dev.vars, which git ignores.
