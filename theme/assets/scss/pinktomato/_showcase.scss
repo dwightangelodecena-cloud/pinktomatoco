@@ -600,3 +600,10 @@ body { font-synthesis: none; font-optical-sizing: auto; }
 .cart-summary .cart-additionalCheckoutButtons p::before { content: "or pay with"; display: inline-block; padding: 0 12px; font-size: 12px; line-height: 20px; letter-spacing: .04em; color: var(--muted); background: #f8e9e3; }
 .cart-summary .cart-additionalCheckoutButtons iframe, .cart-summary .cart-additionalCheckoutButtons button { width: 100% !important; max-width: none !important; }
 @media (max-width: 600px) { .cart-page .cart-summary { padding: 20px 18px; border-radius: 22px; } }
+
+// Footer: Terms of Use and Privacy Policy beside the copyright.
+.footer-legal { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; }
+.footer-legal a { color: inherit; opacity: .75; text-decoration: none; transition: opacity .2s; }
+.footer-legal a:hover { opacity: 1; text-decoration: underline; text-underline-offset: 3px; }
+// Phones: text links like "Shop all" and "View all products" get a bigger tap area.
+@media (pointer: coarse) { .text-link { min-height: 44px; padding: 0 2px; } }

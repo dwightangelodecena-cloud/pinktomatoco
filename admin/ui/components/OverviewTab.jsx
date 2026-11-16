@@ -13,10 +13,6 @@ const active = (orders) => orders.filter((o) => o.status !== 'cancelled');
 const sum = (orders) => orders.reduce((n, o) => n + Number(o.subtotal), 0);
 const whole = (n) => `$${Math.round(n).toLocaleString()}`;
 
-function greeting() {
-  const h = new Date().getHours();
-  return h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
-}
 
 // Loads everything the dashboard needs in one go; Refresh runs it again.
 function useDashboard() {
@@ -160,7 +156,6 @@ export default function OverviewTab({ counts, onChange }) {
     <section className="dash">
       <header className="dash-head">
         <div>
-          <h2>{greeting()}</h2>
           <p>{new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}{updated && ` · Updated ${updated.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}`}</p>
         </div>
         <button type="button" className="dash-refresh" onClick={refresh}><RefreshIcon size={15} /> Refresh numbers</button>
