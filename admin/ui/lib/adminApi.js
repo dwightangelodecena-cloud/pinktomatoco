@@ -34,6 +34,12 @@ export const getRecentOrders = (days = 90) => api(`/api/sales?days=${days}`).the
 
 export const getCustomers = () => api('/api/customers');
 export const getSubscribers = () => api('/api/subscribers');
+export const deleteCustomer = (id, pin) => api('/api/customers', { action: 'delete', id, pin });
+// Profile: the admin's 6-digit security code, asked for before deleting a customer.
+export const getProfile = () => api('/api/profile');
+export const setPin = (current, next) => api('/api/profile', { action: 'setPin', current, next });
+export const sendPinReset = () => api('/api/profile', { action: 'sendReset' });
+export const resetPin = (code, next) => api('/api/profile', { action: 'resetPin', code, next });
 
 export const getAdminProducts = () => api('/api/products');
 export const saveProduct = (id, product) => api('/api/products', id ? { action: 'update', id, product } : { action: 'create', product });

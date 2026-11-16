@@ -6,7 +6,8 @@ import { createSession, readSession, verifyBigCommerceJwt } from './crypto.js';
 import { createProduct, deleteCategory, deleteProduct, listAdminProducts, listCategories, saveCategory, setProductVisible, updateProduct } from './catalog.js';
 import { deleteMethod, deleteTaxRate, deleteZone, getPayments, getShipping, getTax, saveMethod, saveTaxRate, saveZone } from './checkout-settings.js';
 import { SETTABLE_STATUSES, countOrdersToHandle, getOrderDetails, listOrders, salesSummary, setOrderStatus } from './orders.js';
-import { deleteReview, listCustomers, listReviews, listSubscribers, setReviewApproved } from './customers.js';
+import { deleteCustomer, deleteReview, listCustomers, listReviews, listSubscribers, setReviewApproved } from './customers.js';
+import { checkPin, pinStatus, resetPin, sendPinReset, setPin } from './pin.js';
 import { saveUpload, serveUpload } from './media.js';
 import { getContent, saveContent } from './content.js';
 import { verifyRoute } from './verify.js';
@@ -105,6 +106,8 @@ async function devLogin(request, env) {
   return openAdmin(request.url, await createSession(env, { storeHash: env.STORE_HASH, user: { email: 'local developer' } }));
 }
 
+const adminIds = (env) => String(env.ADMIN_CUSTOMER_IDS || '').split(',').map((s) => Number(s.trim())).filter(Boolean);
+
 async function api(request, env, path) {
   const session = await readSession(request, env);
   if (!session) return json({ error: 'Your session has ended. Open the admin again from the BigCommerce control panel.' }, 401);
@@ -189,7 +192,20 @@ async function api(request, env, path) {
       if (!Array.isArray(body.pages) || body.pages.length === 0) return json({ error: 'Nothing to save.' }, 400);
       return json(await saveContent(bc, env, url.origin, body.pages));
     }
-    case 'GET /api/customers': return json(await listCustomers(bc));
+    case 'GET /api/customers': return json(await listCustomers(bc, adminIds(env)));
+    case 'POST /api/customers': {
+      // Deleting needs the admin's security code (Profile tab).
+      if (body.action !== 'delete' || !isId(body.id)) return json({ error: 'Unknown action.' }, 400);
+      await checkPin(env, session.email, String(body.pin || ''));
+      return json(await deleteCustomer(bc, Number(body.id), adminIds(env)));
+    }
+    case 'GET /api/profile': return json({ email: session.email, ...(await pinStatus(env, session.email)) });
+    case 'POST /api/profile': {
+      if (body.action === 'setPin') return json(await setPin(env, session.email, { current: String(body.current || ''), next: String(body.next || '') }));
+      if (body.action === 'sendReset') return json(await sendPinReset(env, session.email));
+      if (body.action === 'resetPin') return json(await resetPin(env, session.email, { code: String(body.code || ''), next: String(body.next || '') }));
+      return json({ error: 'Unknown action.' }, 400);
+    }
     case 'GET /api/subscribers': return json(await listSubscribers(bc));
     case 'GET /api/reviews': return json(await listReviews(bc));
     case 'POST /api/reviews': {

@@ -44,7 +44,7 @@ export function topProducts(orders, limit = 5) {
 export function mergeCustomers(accounts, orders) {
   const people = new Map();
   for (const a of accounts) {
-    people.set(a.email.trim().toLowerCase(), { email: a.email, name: a.name, joined: a.joined, orders: 0, spent: 0, lastOrder: null });
+    people.set(a.email.trim().toLowerCase(), { id: a.id, protected: Boolean(a.protected), email: a.email, name: a.name, joined: a.joined, orders: 0, spent: 0, lastOrder: null });
   }
   for (const o of orders) {
     if (!o.email) continue;

@@ -10,7 +10,8 @@ import ReviewsTab from './components/ReviewsTab.jsx';
 import ContentTab from './components/ContentTab.jsx';
 import SubscribersTab from './components/SubscribersTab.jsx';
 import { Panel } from './components/shared.jsx';
-import { BarChartIcon, CloseIcon, FileIcon, GridIcon, HeartIcon, LogOutIcon, MenuIcon, PackageIcon, Star, StoreIcon, TruckIcon, UsersIcon } from './Icons.jsx';
+import { BarChartIcon, CloseIcon, FileIcon, GridIcon, HeartIcon, LogOutIcon, MenuIcon, PackageIcon, Star, StoreIcon, TruckIcon, UserIcon, UsersIcon } from './Icons.jsx';
+import ProfileTab from './components/ProfileTab.jsx';
 import { endSession } from './api.js';
 import { useSlidePill } from './lib/slidePill.js';
 
@@ -59,6 +60,10 @@ const GROUPS = [
   {
     label: 'Audience',
     tabs: [{ id: 'subscribers', label: 'Subscribers', Icon: HeartIcon, Panel: SubscribersTab }],
+  },
+  {
+    label: 'You',
+    tabs: [{ id: 'profile', label: 'Profile', Icon: UserIcon, Panel: ProfileTab }],
   },
 ];
 const TABS = GROUPS.flatMap((g) => g.tabs);

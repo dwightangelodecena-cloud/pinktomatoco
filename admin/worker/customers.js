@@ -1,5 +1,6 @@
+import { AdminError } from './bigcommerce.js';
 // Customers, newsletter subscribers and product reviews.
-export async function listCustomers(bc) {
+export async function listCustomers(bc, adminIds = []) {
   const customers = [];
   for (let page = 1, pages = 1; page <= pages; page++) {
     const { data, meta } = await bc.get(`/v3/customers?limit=250&page=${page}&sort=date_created:desc`);
@@ -11,6 +12,8 @@ export async function listCustomers(bc) {
     name: [c.first_name, c.last_name].filter(Boolean).join(' ') || c.email,
     email: c.email,
     joined: c.date_created,
+    // Admin accounts (the shop's Admin button) can't be deleted from here.
+    protected: adminIds.includes(c.id),
   }));
 }
 
@@ -49,3 +52,10 @@ export const setReviewApproved = (bc, productId, id, approved) =>
   bc.put(`/v3/catalog/products/${productId}/reviews/${id}`, { status: approved ? 'approved' : 'disapproved' });
 
 export const deleteReview = (bc, productId, id) => bc.delete(`/v3/catalog/products/${productId}/reviews/${id}`);
+
+// Deletes one customer account (their orders stay in BigCommerce). Admin accounts are refused.
+export async function deleteCustomer(bc, id, adminIds = []) {
+  if (adminIds.includes(id)) throw new AdminError('Admin accounts can\x27t be deleted from here.');
+  await bc.delete(`/v3/customers?id:in=${id}`);
+  return { ok: true };
+}

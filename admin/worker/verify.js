@@ -38,6 +38,7 @@ function cors(request) {
   };
 }
 
+export const emailEnabled = (env) => Boolean(env.RESEND_API_KEY && env.MAIL_FROM);
 const enabled = (env) => Boolean(env.RESEND_API_KEY && env.MAIL_FROM);
 const cleanEmail = (value) => String(value || '').trim().toLowerCase().slice(0, 254);
 const validEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
@@ -94,7 +95,9 @@ async function findCustomer(bc, email) {
 }
 
 function emailHtml(code, purpose) {
-  const line = purpose === 'signup' ? 'Here is your code to finish creating your Pink Tomato account.' : 'Here is your code to choose a new password for your Pink Tomato account.';
+  const line = purpose === 'signup' ? 'Here is your code to finish creating your Pink Tomato account.'
+    : purpose === 'pin' ? 'Here is your code to choose a new admin security code. If you didn\x27t ask for it, someone may be trying to change it.'
+      : 'Here is your code to choose a new password for your Pink Tomato account.';
   const digits = code.split('').map((d) => `<td style="width:44px;height:56px;border:1px solid #e2d2cc;border-radius:12px;background:#fdf8f5;font:600 28px Georgia,serif;color:#2b2024;text-align:center">${d}</td>`).join('<td style="width:8px"></td>');
   return `<!doctype html><html><body style="margin:0;background:#f7efea;padding:32px 12px;font-family:Helvetica,Arial,sans-serif;color:#5c4f53">
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0"><tr><td align="center">
@@ -107,8 +110,9 @@ function emailHtml(code, purpose) {
 </table></td></tr></table></body></html>`;
 }
 
-async function sendEmail(env, to, code, purpose) {
-  const subject = purpose === 'signup' ? `${code} is your Pink Tomato code` : `${code} is your Pink Tomato password code`;
+export async function sendEmail(env, to, code, purpose) {
+  const subject = purpose === 'signup' ? `${code} is your Pink Tomato code`
+    : purpose === 'pin' ? `${code} is your Pink Tomato admin code` : `${code} is your Pink Tomato password code`;
   const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },

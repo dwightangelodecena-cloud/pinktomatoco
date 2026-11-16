@@ -116,3 +116,28 @@ export const Empty = ({ children }) => <p className="admin-empty">{children}</p>
 export const Problem = ({ children }) => (children ? <p className="form-message error" role="alert">{children}</p> : null);
 export const Loading = () => <div className="skeleton skeleton-block" aria-label="Loading" />;
 export const formatDate = (value) => new Date(value).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+
+// A 6-digit code box: numbers only, shown as dots, with six little slots underneath.
+export function PinInput({ label, value, onChange, autoFocus, hint }) {
+  return (
+    <label className="pin-field">
+      <span className="form-field-title">{label}</span>
+      <span className="pin-wrap">
+        <input
+          className="pin-input"
+          type="password"
+          inputMode="numeric"
+          autoComplete="off"
+          maxLength={6}
+          autoFocus={autoFocus}
+          value={value}
+          onChange={(e) => onChange(e.target.value.replace(/\D/g, '').slice(0, 6))}
+        />
+        <span className="pin-slots" aria-hidden="true">
+          {[0, 1, 2, 3, 4, 5].map((i) => <i key={i} className={i < value.length ? 'is-filled' : i === value.length ? 'is-next' : ''} />)}
+        </span>
+      </span>
+      {hint && <small className="content-hint">{hint}</small>}
+    </label>
+  );
+}
