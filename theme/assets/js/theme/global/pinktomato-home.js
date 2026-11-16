@@ -42,9 +42,16 @@ function initReveals() {
         return;
     }
     const observer = new IntersectionObserver((entries) => {
-        entries.filter((e) => e.isIntersecting).forEach((e) => {
-            show(e.target);
-            observer.unobserve(e.target);
+        entries.forEach((e) => {
+            // The four fact cards under the hero come and go: they appear as you scroll down
+            // from the header and slide away again when you scroll back up to it.
+            const repeat = e.target.closest('.value-props');
+            if (e.isIntersecting) {
+                show(e.target);
+                if (!repeat) observer.unobserve(e.target);
+            } else if (repeat && e.boundingClientRect.top > 0) {
+                e.target.classList.remove('is-visible');
+            }
         });
     }, { rootMargin: '0px 0px -8% 0px' });
     items.forEach((el) => observer.observe(el));
