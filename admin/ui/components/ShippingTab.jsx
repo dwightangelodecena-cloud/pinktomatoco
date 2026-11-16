@@ -2,7 +2,7 @@ import { useState } from 'react';
 import {
   CONTROL_PANEL, deleteMethod, deleteTaxRate, deleteZone, getPayments, getShipping, getTax, saveMethod, saveTaxRate, saveZone,
 } from '../lib/adminApi.js';
-import { ArrowRight, PencilIcon, PlusIcon, TrashIcon } from '../Icons.jsx';
+import { ArrowRight, PencilIcon, PlusIcon, TrashIcon, TruckIcon } from '../Icons.jsx';
 import { Section } from './ContentFields.jsx';
 import { ShippingSetup, describeZone } from './ShippingSetup.jsx';
 import { Empty, Loading, Panel, Problem, useAdminData } from './shared.jsx';
@@ -389,7 +389,7 @@ function Tax() {
 
 export default function ShippingTab() {
   return (
-    <Panel title="Shipping, Payments & Tax" intro="Everything shoppers pay at checkout besides the products.">
+    <Panel title="Shipping, Payments & Tax" icon={<TruckIcon size={22} />} intro="What shoppers pay for delivery, how they can pay you, and any sales tax.">
       {/* Wide screens: shipping on the left, payments and tax beside it on the right. */}
       <div className="settings-layout">
         <div className="settings-main"><Shipping /></div>

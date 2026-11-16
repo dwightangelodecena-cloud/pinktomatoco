@@ -20,6 +20,7 @@ import pinkTomatoCart from './global/pinktomato-cart';
 import pinkTomatoCandle from './global/pinktomato-candle';
 import pinkTomatoShowcase from './global/pinktomato-showcase';
 import pinkTomatoWishlist from './global/pinktomato-wishlist';
+import pinkTomatoVerify from './global/pinktomato-verify';
 
 export default class Global extends PageManager {
     onReady() {
@@ -41,5 +42,6 @@ export default class Global extends PageManager {
         pinkTomatoCandle();
         pinkTomatoShowcase(this.context);
         pinkTomatoWishlist();
+        pinkTomatoVerify();
     }
 }

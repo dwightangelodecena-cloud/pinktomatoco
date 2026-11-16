@@ -1,28 +1,40 @@
 {{#partial "page"}}
-
-<section class="page">
-    <div class="page-content page-content--centered">
-        <h1 class="page-heading" tabindex="0" role="status" aria-live="assertive">
+{{!-- After the newsletter form in the footer: a warm card with a check that draws itself (or a gentle note if something went wrong). --}}
+<section class="pt-done-page">
+    <div class="pt-done-card{{#if subscription.error}} is-error{{/if}}">
+        <span class="pt-done-glow" aria-hidden="true"></span>
+        <span class="pt-done-mark" aria-hidden="true">
             {{#if subscription.error}}
-                {{lang 'newsletter.subscribed_heading_error'}}
+                <svg viewBox="0 0 64 64"><circle class="pt-done-ring" cx="32" cy="32" r="28"/><path class="pt-done-path" d="M32 18v18"/><path class="pt-done-path pt-done-dot" d="M32 45v.5"/></svg>
             {{else}}
-                {{lang 'newsletter.subscribed_heading'}}
+                <svg viewBox="0 0 64 64"><circle class="pt-done-ring" cx="32" cy="32" r="28"/><path class="pt-done-path" d="M19 33.5l9 9 17-19"/></svg>
             {{/if}}
-        </h1>
+            <span class="pt-done-sparks"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        </span>
 
+        <p class="pt-done-eyebrow">Pink Tomato candle club</p>
+        <h1 class="pt-done-title" tabindex="-1" role="status" aria-live="polite">
+            {{#if subscription.error}}We couldn't sign you up{{else}}You're on the list!{{/if}}
+        </h1>
         {{#if subscription.error}}
-            {{> components/common/alert/alert-error subscription.error}}
+            <p class="pt-done-text">{{subscription.error}}</p>
+            <p class="pt-done-text">Please check the email address and try again at the bottom of any page.</p>
         {{else}}
-            {{> components/common/alert/alert-success (lang 'newsletter.subscribed_message')}}
+            <p class="pt-done-text">Thanks for joining. New scents and restocks will land in your inbox, straight from our little studio in North Dakota.</p>
         {{/if}}
 
+        <div class="pt-done-actions">
+            <a class="button button-primary" href="/shop-all/">Shop candles {{> components/pinktomato/icon name="arrow-right" size="16"}}</a>
+            <a class="button button-secondary" href="{{urls.home}}">Back to home</a>
+        </div>
     </div>
 </section>
 
 <script>
-    const subscriptionStatusElement = document.querySelector('.page-content > .page-heading');
-    if (subscriptionStatusElement) subscriptionStatusElement.focus();
+    (function () {
+        var heading = document.querySelector('.pt-done-title');
+        if (heading) heading.focus({ preventScroll: true });
+    })();
 </script>
-
 {{/partial}}
 {{> layout/base}}

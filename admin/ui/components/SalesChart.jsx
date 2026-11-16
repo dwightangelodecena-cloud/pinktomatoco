@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { money } from '../lib/pricing.js';
-import { Empty } from './shared.jsx';
+import { BarChartIcon } from '../Icons.jsx';
+import { EmptyState } from './shared.jsx';
 
 const shortDate = (d) => d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
 
@@ -17,7 +18,7 @@ export default function SalesChart({ days, title }) {
   const orders = days.reduce((n, d) => n + d.orders, 0);
   const total = days.reduce((n, d) => n + d.value, 0);
 
-  if (orders === 0 || total === 0) return <Empty>No orders in this period yet.</Empty>;
+  if (orders === 0 || total === 0) return <EmptyState icon={<BarChartIcon size={28} />} title="No sales in this period yet">The chart fills in day by day as orders come in.</EmptyState>;
 
   const max = niceMax(Math.max(...days.map((d) => d.value)));
   const day = active === null ? null : days[active];

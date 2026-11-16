@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Component, useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { STORE_URL, getCounts } from './lib/adminApi.js';
 import OverviewTab from './components/OverviewTab.jsx';
@@ -12,6 +12,30 @@ import SubscribersTab from './components/SubscribersTab.jsx';
 import { Panel } from './components/shared.jsx';
 import { BarChartIcon, CloseIcon, FileIcon, GridIcon, HeartIcon, LogOutIcon, MenuIcon, PackageIcon, Star, StoreIcon, TruckIcon, UsersIcon } from './Icons.jsx';
 import { endSession } from './api.js';
+import { useSlidePill } from './lib/slidePill.js';
+
+// If one tab hits a problem, only that tab shows a message; the menu and other tabs keep working.
+class TabSafety extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { failed: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  render() {
+    if (!this.state.failed) return this.props.children;
+    return (
+      <div className="admin-empty-state">
+        <h3>{this.props.label} couldn't open</h3>
+        <p>Something went wrong showing this page. Reload to try again, or pick another tab.</p>
+        <button type="button" className="button button-primary button-small" onClick={() => window.location.reload()}>Reload</button>
+      </div>
+    );
+  }
+}
 
 const GROUPS = [
   {
@@ -48,6 +72,8 @@ export default function Admin({ me }) {
   const [counts, setCounts] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const unsaved = useRef(false);
+  const navRef = useRef(null);
+  useSlidePill(navRef, 'a[aria-current="page"]', [tab.id], 'sidebar');
   const setDirty = useCallback((value) => {
     unsaved.current = value;
   }, []);
@@ -98,7 +124,7 @@ export default function Admin({ me }) {
           <button className="icon-button admin-menu-close" aria-label="Close admin menu" onClick={() => setMenuOpen(false)}><CloseIcon /></button>
         </div>
 
-        <nav className="admin-nav" aria-label="Admin sections">
+        <nav className="admin-nav" aria-label="Admin sections" ref={navRef}>
           {GROUPS.map((g) => (
             <div key={g.label}>
               <p>{g.label}</p>
@@ -131,7 +157,9 @@ export default function Admin({ me }) {
       </aside>
 
       <main className="admin-main">
-        <tab.Panel key={tab.id} counts={counts} onChange={refreshCounts} setDirty={setDirty} startCard={startCard} />
+        <TabSafety key={tab.id} label={tab.label}>
+          <tab.Panel counts={counts} onChange={refreshCounts} setDirty={setDirty} startCard={startCard} />
+        </TabSafety>
       </main>
     </div>
   );

@@ -13,7 +13,7 @@
             <span class="pt-sparks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
             <span class="pt-smoke" aria-hidden="true"><i></i><i></i><i></i></span>
         </div>
-        <button type="button" class="pt-wick-btn" aria-label="Light the candle to {{#if signup}}create an account{{else}}sign in{{/if}}" data-pt-candle-light>
+        <button type="button" class="pt-wick-btn" aria-label="Light the candle to {{#if signup}}create an account{{else if reset}}reset your password{{else if newpass}}choose a new password{{else}}sign in{{/if}}" data-pt-candle-light>
             <span class="pt-wick" aria-hidden="true"></span>
             <span class="pt-wick-ring" aria-hidden="true"></span>
         </button>
@@ -30,7 +30,11 @@
     </div>
 
     <div class="pt-candle-copy">
-        {{#if signup}}
+        {{#if reset}}
+            <h2 class="pt-candle-title" data-pt-candle-title data-unlit="Lost your way in? Light the candle." data-lit="We will light the way back.">Lost your way in? Light the candle.</h2>
+        {{else if newpass}}
+            <h2 class="pt-candle-title" data-pt-candle-title data-unlit="Almost home. Light the candle." data-lit="Almost home. Pick a new password.">Almost home. Light the candle.</h2>
+        {{else if signup}}
             <h2 class="pt-candle-title" data-pt-candle-title data-unlit="Light a candle, join the family." data-lit="Welcome to the family.">Light a candle, join the family.</h2>
         {{else}}
             <h2 class="pt-candle-title" data-pt-candle-title data-unlit="Light the candle to come in." data-lit="Welcome home. Make yourself cozy.">Light the candle to come in.</h2>
