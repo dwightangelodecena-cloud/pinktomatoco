@@ -15,11 +15,16 @@ cart: true
     {{#if cart.items.length}}
         <div class="loadingOverlay"></div>
 
-        <div data-cart-content>
-            {{> components/cart/content}}
+        <div class="cart-layout">
+        <div class="cart-items-col">
+            <div data-cart-content>
+                {{> components/cart/content}}
+            </div>
+            <a class="cart-continue" href="/shop-all/">{{> components/pinktomato/icon name="arrow-right" size="15"}} Continue shopping</a>
         </div>
 
-        <div class="cart-totals">
+        <aside class="cart-summary">
+            <h2 class="cart-summary-title">Order summary</h2>
             {{#if cart.multi_coupon_ui_enabled}}
                 <div data-cart-coupons>
                     {{> components/cart/coupons}}
@@ -48,6 +53,12 @@ cart: true
             {{else}}
                 <a class="button button-primary" href="{{urls.auth.login}}">Log in to check out</a>
             {{/or}}
+            <ul class="cart-assure">
+                <li>{{> components/pinktomato/icon name="lock" size="15"}} Secure checkout</li>
+                <li>{{> components/pinktomato/icon name="return" size="15"}} Easy returns</li>
+                <li>{{> components/pinktomato/icon name="map-pin" size="15"}} Hand-poured in ND</li>
+            </ul>
+        </aside>
         </div>
     {{else}}
         <p class="cart-empty">Your cart is empty. <a href="/shop-all/">Continue shopping</a>.</p>

@@ -55,10 +55,47 @@ async function markSoldOut(form, token) {
 
 let storefrontToken = '';
 
+// Sizes as tappable pills. The real dropdown stays (hidden) and gets the change, so BigCommerce's
+// price, stock and add-to-cart logic work exactly as before.
+function initPills(form) {
+    form.querySelectorAll('[data-product-attribute="set-select"]').forEach((field) => {
+        const select = field.querySelector('select');
+        if (!select || field.querySelector('.size-pills')) return;
+        const wrap = document.createElement('div');
+        wrap.className = 'size-pills';
+        wrap.setAttribute('role', 'radiogroup');
+        const draw = () => {
+            wrap.innerHTML = '';
+            Array.from(select.options).filter((o) => o.value).forEach((o) => {
+                const b = document.createElement('button');
+                b.type = 'button';
+                b.className = `size-pill${o.selected ? ' is-on' : ''}${o.disabled ? ' is-off' : ''}`;
+                b.setAttribute('role', 'radio');
+                b.setAttribute('aria-checked', String(o.selected));
+                b.disabled = o.disabled;
+                b.textContent = o.textContent.replace(' (Sold out)', '');
+                if (o.disabled) b.insertAdjacentHTML('beforeend', '<small>Sold out</small>');
+                b.addEventListener('click', () => {
+                    select.value = o.value;
+                    $(select).trigger('change');
+                    draw();
+                });
+                wrap.appendChild(b);
+            });
+        };
+        select.addEventListener('change', draw);
+        new MutationObserver(draw).observe(select, { subtree: true, attributes: true, childList: true, characterData: true });
+        field.classList.add('has-pills');
+        field.appendChild(wrap);
+        draw();
+    });
+}
+
 function initForm(form) {
     if (form.dataset.ptReady) return;
     form.dataset.ptReady = 'true';
     markSoldOut(form, storefrontToken);
+    initPills(form);
 
     let pending = false;
     form.addEventListener('submit', () => {
@@ -154,7 +191,7 @@ function initProductStory() {
         inList = false;
         story.push(line);
     });
-    if (!facts.mood.length && !facts.notes.length && !facts.burn) return;
+    if (!facts.mood.length && !facts.notes.length && !facts.burn && !facts.made.length) return;
 
     const card = [
         '<aside class="glance-card" aria-label="At a glance">',

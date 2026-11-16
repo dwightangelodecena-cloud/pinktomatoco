@@ -433,3 +433,18 @@ $optimizedCheckout-input--error-boxShadow: 0 0 3px transparentize(stencilColor("
         }
     }
 }
+
+// =============================================================================
+// Pink Tomato: compact header and softer, rounded checkout (colours come from config.json settings).
+// =============================================================================
+.pt-checkout-header { padding: 0; }
+.pt-checkout-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; max-width: 1140px; margin: 0 auto; padding: 14px 20px; }
+.pt-checkout-bar .checkoutHeader-heading { margin: 0; line-height: 0; }
+.pt-checkout-logo { max-height: 46px; width: auto; mix-blend-mode: multiply; }
+.pt-checkout-secure { display: inline-flex; align-items: center; gap: 8px; margin: 0; font-size: 14px; font-weight: 600; color: #5c4f53; }
+.pt-checkout-secure svg { color: #c8474f; }
+.optimizedCheckout-form-input, .optimizedCheckout-form-select, .optimizedCheckout-form-textarea { border-radius: 12px; }
+.optimizedCheckout-buttonPrimary, .optimizedCheckout-buttonSecondary { border-radius: 999px; text-transform: none; letter-spacing: 0; }
+.optimizedCheckout-orderSummary { border-radius: 20px; overflow: hidden; }
+.optimizedCheckout-form-checklist { border-radius: 14px; overflow: hidden; }
+.optimizedCheckout-headingPrimary { letter-spacing: 0; }
