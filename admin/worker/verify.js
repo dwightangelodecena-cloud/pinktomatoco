@@ -28,7 +28,9 @@ const ALLOWED_ORIGINS = [
 // The live domain, this store's BigCommerce addresses (theme previews run there) and the local preview.
 const allowedOrigin = (origin) => ALLOWED_ORIGINS.includes(origin)
   || /^https:\/\/store-v7sdscf7vw(-[a-z0-9]+)?\.mybigcommerce\.com$/.test(origin)
-  || /^https:\/\/([a-z0-9-]+\.)?pinktomatoco\.com$/.test(origin);
+  || /^https:\/\/([a-z0-9-]+\.)?pinktomatoco\.com$/.test(origin)
+  // Local theme previews (stencil start) on any port.
+  || /^http:\/\/(localhost|127\.0\.0\.1):\d{2,5}$/.test(origin);
 
 function cors(request) {
   const origin = request.headers.get('Origin') || '';
