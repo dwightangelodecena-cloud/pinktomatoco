@@ -33,17 +33,6 @@
 </div>
 
 <header class="main-header" role="banner" data-pt-header>
-    <div class="header-search" data-pt-search>
-        <form class="search-form" action="{{urls.search}}" method="get" role="search">
-            {{> components/pinktomato/icon name="search" size="20"}}
-            <label class="sr-only" for="header-search">{{lang 'common.search'}}</label>
-            <input id="header-search" class="search-input" type="search" name="search_query" placeholder="Search candles, wax melts, scents…" tabindex="-1">
-            <button type="button" class="icon-button" tabindex="-1" aria-label="Close search" data-pt-search-close>
-                {{> components/pinktomato/icon name="close" size="20"}}
-            </button>
-        </form>
-    </div>
-
     <div class="primary-navigation">
         <button type="button" class="icon-button navigation-toggle" aria-label="Menu" aria-expanded="false" data-pt-menu-toggle>
             <span class="toggle-icon" data-pt-icon-open>{{> components/pinktomato/icon name="menu" size="20"}}</span>
@@ -92,6 +81,16 @@
             {{else}}
                 <a class="tool-link desktop-only" href="{{urls.auth.login}}?from=index.php">{{> components/pinktomato/icon name="user" size="18"}} Log in</a>
             {{/if}}
+            <div class="header-search" data-pt-search>
+                <form class="search-form" action="{{urls.search}}" method="get" role="search">
+                    {{> components/pinktomato/icon name="search" size="18"}}
+                    <label class="sr-only" for="header-search">{{lang 'common.search'}}</label>
+                    <input id="header-search" class="search-input" type="search" name="search_query" placeholder="Search candles, wax melts, scents…" tabindex="-1">
+                    <button type="button" class="icon-button" tabindex="-1" aria-label="Close search" data-pt-search-close>
+                        {{> components/pinktomato/icon name="close" size="20"}}
+                    </button>
+                </form>
+            </div>
             <button type="button" class="icon-button" aria-label="Search" aria-expanded="false" data-pt-search-toggle>
                 {{> components/pinktomato/icon name="search" size="20"}}
             </button>

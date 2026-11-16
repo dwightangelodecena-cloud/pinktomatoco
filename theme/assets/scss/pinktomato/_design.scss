@@ -181,13 +181,24 @@ textarea.form-input { resize: vertical; }
   .main-header { background: rgba(253, 248, 245, .82); backdrop-filter: saturate(160%) blur(14px); -webkit-backdrop-filter: saturate(160%) blur(14px); }
 }
 
-.header-search { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .4s var(--ease); }
-.header-search.is-open { grid-template-rows: 1fr; }
-.header-search > .search-form { overflow: hidden; min-height: 0; }
-.search-form { display: flex; align-items: center; gap: 12px; padding: 0 var(--gutter); color: var(--muted); }
-.header-search.is-open .search-form { padding-top: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
-.search-input { flex: 1; border: 0; padding: 10px 0; font: inherit; font-family: var(--font-display); font-size: 22px; color: var(--ink); background: transparent; }
-.search-input:focus { outline: none; }
+// Search: a pill that slides open beside the search icon (no bar across the top).
+.header-search { display: flex; align-items: center; width: 0; opacity: 0; overflow: hidden; pointer-events: none; transition: width .4s var(--ease), opacity .25s; }
+.header-search.is-open { width: clamp(220px, 24vw, 340px); opacity: 1; pointer-events: auto; }
+.header-search.is-open + [data-pt-search-toggle] { display: none; }
+.search-form { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; height: 44px; margin: 0 4px; padding: 0 4px 0 14px; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--surface); color: var(--muted); transition: border-color .2s, box-shadow .2s; }
+.search-form:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.search-form > svg { flex: none; }
+.search-form .icon-button { flex: none; width: 36px; height: 36px; }
+.search-input { flex: 1; min-width: 0; border: 0; padding: 0; font: inherit; font-size: 16px; color: var(--ink); background: transparent; -webkit-appearance: none; appearance: none; }
+.main-header .search-input:focus, .main-header .search-input:focus-visible { outline: none !important; box-shadow: none !important; }
+.search-input::-webkit-search-cancel-button { display: none; }
+// Phones and tablets: the pill opens across the nav bar, over the logo and menu button.
+@media (max-width: 991px) {
+  .header-search { position: absolute; z-index: 40; top: 0; bottom: 0; right: calc(var(--gutter) - 8px); background: var(--bg); }
+  .header-search.is-open { width: calc(100% - 2 * (var(--gutter) - 8px)); }
+  .search-form { margin: 0; }
+  .is-searching .navigation-toggle, .is-searching .nav-logo, .is-searching .cart-preview-trigger { visibility: hidden; }
+}
 
 .primary-navigation {
   position: relative; display: flex; align-items: center; justify-content: space-between;

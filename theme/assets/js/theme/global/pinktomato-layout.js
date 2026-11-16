@@ -29,6 +29,7 @@ export default function pinkTomatoLayout() {
     };
     const setSearch = (open) => {
         search.classList.toggle('is-open', open);
+        header.classList.toggle('is-searching', open);
         searchToggle.setAttribute('aria-expanded', String(open));
         search.querySelectorAll('input, button').forEach((el) => {
             el.tabIndex = open ? 0 : -1;
@@ -49,6 +50,12 @@ export default function pinkTomatoLayout() {
             window.scrollTo({ top: 0 });
             setSearch(true);
         });
+    });
+    // Tapping anywhere else closes the search pill when nothing has been typed.
+    document.addEventListener('click', (event) => {
+        if (!search.classList.contains('is-open') || searchInput.value.trim()) return;
+        if (search.contains(event.target) || searchToggle.contains(event.target) || event.target.closest('[data-pt-open-search]')) return;
+        setSearch(false);
     });
     document.addEventListener('keydown', (event) => {
         if (event.key !== 'Escape') return;
