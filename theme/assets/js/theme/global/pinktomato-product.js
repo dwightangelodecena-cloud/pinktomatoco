@@ -1,4 +1,20 @@
 import { card } from './pinktomato-home';
+import { LABEL_NOTES } from './pinktomato-cutouts';
+import { artFor, notesFromText } from './pinktomato-notes';
+
+// Under the price: the candle's scent notes with their little ingredient drawings.
+function initScentRow(productId) {
+    const header = document.querySelector('.product-page .product-header');
+    if (!header || header.querySelector('.product-scents')) return;
+    const desc = document.querySelector('[data-pt-description]');
+    const notes = notesFromText(desc ? desc.innerText : '').length ? notesFromText(desc.innerText) : (LABEL_NOTES[Number(productId)] || []);
+    if (!notes.length) return;
+    const art = artFor(notes);
+    const row = document.createElement('div');
+    row.className = 'product-scents';
+    row.innerHTML = `<span class="product-scents-label">Scent notes</span><ul>${notes.slice(0, 4).map((n, i) => `<li><span class="product-scent-art" aria-hidden="true">${art[i % art.length]}</span>${n.replace(/[<>&]/g, '')}</li>`).join('')}</ul>`;
+    header.appendChild(row);
+}
 // Product page and Quick View extras: sold-out sizes, price pop, "Added" state, zoom origin, sticky buy bar.
 
 const VARIANTS_QUERY = `query ProductVariants($id: Int!) {
@@ -206,6 +222,7 @@ function initProductStory() {
     desc.innerHTML = story.map((p) => `<p>${esc(p)}</p>`).join('');
     desc.insertAdjacentHTML('afterend', card);
     section.classList.add('has-glance');
+    if (!story.length) section.classList.add('no-story');
 }
 
 const OTHERS_QUERY = `query Others {
@@ -246,6 +263,7 @@ export default function pinkTomatoProduct(context) {
     initZoom();
     initStickyBar();
     initProductStory();
+    initScentRow(context.productId);
     initAlsoLike(context.productId);
 
     document.addEventListener('onProductOptionsChanged', (event) => {
