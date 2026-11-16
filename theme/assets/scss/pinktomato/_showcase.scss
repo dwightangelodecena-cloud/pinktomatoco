@@ -607,3 +607,6 @@ body { font-synthesis: none; font-optical-sizing: auto; }
 .footer-legal a:hover { opacity: 1; text-decoration: underline; text-underline-offset: 3px; }
 // Phones: text links like "Shop all" and "View all products" get a bigger tap area.
 @media (pointer: coarse) { .text-link { min-height: 44px; padding: 0 2px; } }
+// The round back-to-top button sits in the bottom-right corner: keep the footer's last row clear of it.
+.footer-bottom-row { padding-right: 72px; padding-bottom: 6px; }
+@media (max-width: 600px) { .footer-bottom-row { padding-right: 0; padding-bottom: 64px; } }

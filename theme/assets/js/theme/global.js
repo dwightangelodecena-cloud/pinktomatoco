@@ -21,6 +21,7 @@ import pinkTomatoCandle from './global/pinktomato-candle';
 import pinkTomatoShowcase from './global/pinktomato-showcase';
 import pinkTomatoWishlist from './global/pinktomato-wishlist';
 import pinkTomatoAgree from './global/pinktomato-agree';
+import pinkTomatoVerify from './global/pinktomato-verify';
 
 export default class Global extends PageManager {
     onReady() {
@@ -43,5 +44,6 @@ export default class Global extends PageManager {
         pinkTomatoShowcase(this.context);
         pinkTomatoWishlist();
         pinkTomatoAgree();
+        pinkTomatoVerify();
     }
 }
