@@ -5,6 +5,47 @@ import { descriptionToText, textToDescription } from '../lib/productText.js';
 import { ArrowRight, PencilIcon, PlusIcon, TrashIcon } from '../Icons.jsx';
 import { ImageUpload, Section, Text } from './ContentFields.jsx';
 import ProductPreview from './ProductPreview.jsx';
+// The store's own ingredient drawings and label notes, so the preview here matches the website.
+import { artFor, noteKind, notesFromText } from '../../../theme/assets/js/theme/global/pinktomato-notes.js';
+import { LABEL_NOTES } from '../../../theme/assets/js/theme/global/pinktomato-cutouts.js';
+
+// Scent notes live in the description as a "Scent Notes:" line (the website reads that line for the
+// product page, homepage showcase and mood finder). This field edits just that line.
+const NOTES_LINE = /^\s*scent notes?\s*:.*$/im;
+function withNotes(text, notes) {
+  const line = notes.length ? `Scent Notes: ${notes.join(', ')}` : '';
+  if (NOTES_LINE.test(text)) return text.replace(NOTES_LINE, line).replace(/\n{3,}/g, '\n\n').trim();
+  return line ? `${text.trim()}\n\n${line}` : text;
+}
+
+function ScentNotes({ description, productId, onChange }) {
+  const fromText = notesFromText(description);
+  const label = LABEL_NOTES[productId] || [];
+  const [value, setValue] = useState((fromText.length ? fromText : []).join(', '));
+  const notes = value.split(',').map((n) => n.trim()).filter(Boolean);
+  const unknown = notes.filter((n) => !noteKind(n));
+  const update = (v) => {
+    setValue(v);
+    onChange(withNotes(description, v.split(',').map((n) => n.trim()).filter(Boolean)));
+  };
+  return (
+    <div className="form-field">
+      <span className="form-field-title">Scent notes</span>
+      <input className="form-input" placeholder="e.g. Taro Root, Black Tea, Heavy Milk" value={value} onChange={(e) => update(e.target.value)} />
+      <small className="content-hint">Separate with commas. They show on the product page with little ingredient drawings, and float around the candle in the homepage showcase.</small>
+      {!fromText.length && !value && label.length > 0 && (
+        <button type="button" className="content-tool" onClick={() => update(label.join(', '))}>Use the notes from the label: {label.join(', ')}</button>
+      )}
+      {notes.length > 0 && (
+        <div className="hero-notes-preview">
+          {/* Drawings come from the theme's own library (trusted markup). */}
+          {artFor(notes).map((svg, i) => <span key={i} className="hero-note-art" dangerouslySetInnerHTML={{ __html: svg }} />)}
+          {unknown.length > 0 && <small>No drawing yet for: {unknown.join(', ')}</small>}
+        </div>
+      )}
+    </div>
+  );
+}
 import { Empty, Loading, Problem, useAdminData } from './shared.jsx';
 
 // Product pages live at the top of the site, so these names belong to other pages.
@@ -178,6 +219,7 @@ function ProductEditor({ product, categories, onDone, onCancel, setDirty }) {
           <input className="form-input" type="number" min="0.01" step="0.01" required value={form.weight} onChange={(e) => set('weight')(e.target.value)} />
           <small className="content-hint">Used to work out shipping. Use the heaviest choice.</small>
         </label>
+        <ScentNotes description={form.description} productId={product.id} onChange={set('description')} />
         <Text
           label="Description"
           rows={8}
