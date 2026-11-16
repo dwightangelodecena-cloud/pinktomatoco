@@ -134,7 +134,7 @@ export function PinInput({ label, value, onChange, autoFocus, hint }) {
           onChange={(e) => onChange(e.target.value.replace(/\D/g, '').slice(0, 6))}
         />
         <span className="pin-slots" aria-hidden="true">
-          {[0, 1, 2, 3, 4, 5].map((i) => <i key={i} className={i < value.length ? 'is-filled' : i === value.length ? 'is-next' : ''} />)}
+          {[0, 1, 2, 3, 4, 5].map((i) => <i key={i} className={i < value.length ? 'is-filled' : i === value.length ? 'is-next' : ''}><b /></i>)}
         </span>
       </span>
       {hint && <small className="content-hint">{hint}</small>}

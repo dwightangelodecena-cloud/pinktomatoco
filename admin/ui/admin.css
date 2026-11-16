@@ -722,3 +722,17 @@ a.admin-tile:hover { border-color: var(--accent); transform: translateY(-2px); }
 @keyframes admin-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes admin-pop { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: none; } }
 @media (max-width: 600px) { .admin-modal-actions .button { flex: 1; justify-content: center; } .pin-input { letter-spacing: 26px; } }
+/* Code box: the typed numbers are hidden; each slot draws its own dot above its line, so they always line up. */
+.pin-input { padding: 0 14px; letter-spacing: 0; color: transparent; caret-color: transparent; text-indent: -9999px; }
+.pin-slots { top: 0; bottom: 0; left: 14px; right: 14px; align-items: stretch; }
+.pin-slots i { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: auto; background: none; box-shadow: none; }
+.pin-slots i::after { content: ''; position: absolute; left: 0; right: 0; bottom: 10px; height: 3px; border-radius: 3px; background: var(--line-strong); transition: background-color .25s, box-shadow .25s; }
+.pin-slots i.is-filled::after { background: #f5a65a; box-shadow: 0 0 8px rgba(245, 150, 80, .7); }
+.pin-input:focus + .pin-slots i.is-next::after { background: var(--accent); }
+.pin-slots b { width: 10px; height: 10px; margin-bottom: 6px; border-radius: 50%; background: var(--ink); transform: scale(0); transition: transform .2s var(--spring); }
+.pin-slots i.is-filled b { transform: scale(1); }
+/* A blinking bar shows which slot types next. */
+.pin-input:focus + .pin-slots i.is-next b { width: 2px; height: 22px; border-radius: 2px; background: var(--accent); transform: none; animation: pin-caret 1s steps(1) infinite; }
+@keyframes pin-caret { 0%, 50% { opacity: 1; } 50.01%, 100% { opacity: 0; } }
+@media (max-width: 600px) { .pin-input { letter-spacing: 0; } }
+.pin-slots i.is-filled, .pin-input:focus + .pin-slots i.is-next { background: none; box-shadow: none; }
