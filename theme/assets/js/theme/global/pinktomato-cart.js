@@ -1,7 +1,30 @@
 // Slide-out cart drawer, filled by BigCommerce's own cart.
 import utils from '@bigcommerce/stencil-utils';
 
+// BigCommerce keeps the last cart in the browser after someone logs out, and adds it to the next
+// account that signs in. A cart that belongs to an account other than the one signed in now (or to an
+// account when nobody is signed in) is removed, so one person's cart never shows up for another.
+// Guest carts (customerId 0) are left alone, so items added before signing in still carry over.
+function clearOtherPeoplesCart() {
+    const me = Number(window.ptCustomerId) || 0;
+    fetch('/api/storefront/carts', { credentials: 'same-origin' })
+        .then((r) => (r.ok ? r.json() : []))
+        .then((carts) => Promise.all((carts || [])
+            .filter((cart) => cart.customerId && cart.customerId !== me)
+            .map((cart) => fetch('/api/storefront/carts/' + cart.id, { method: 'DELETE', credentials: 'same-origin' }))))
+        .then((removed) => {
+            if (!removed.length) return;
+            document.querySelectorAll('.cart-quantity').forEach((badge) => {
+                badge.textContent = '0';
+                badge.classList.remove('countPill--positive');
+            });
+            try { localStorage.removeItem('cart-quantity'); } catch (e) { /* private mode */ }
+        })
+        .catch(() => {});
+}
+
 export default function pinkTomatoCart(context) {
+    clearOtherPeoplesCart();
     const drawer = document.querySelector('[data-pt-cart]');
     if (!drawer) return;
     const overlay = document.querySelector('[data-pt-cart-overlay]');

@@ -13,6 +13,8 @@
         <script nonce="{{nonce}}">
             {{!-- Pink Tomato: right after sign-in BigCommerce opens an account page; go home before it is drawn.
                   Store admins (emails in components/pinktomato/admin-check) go to the admin dashboard instead. --}}
+            {{!-- Who is signed in (0 = nobody), so a cart or wishlist hearts left by another account can be cleared. --}}
+            window.ptCustomerId = {{#if customer}}{{customer.id}}{{else}}0{{/if}};
             window.ptIsAdmin = {{#if customer}}{{> components/pinktomato/admin-check}}{{else}}false{{/if}};
             // Opens the admin on Cloudflare: BigCommerce signs a note saying who is signed in, and the admin checks it.
             window.ptOpenAdmin = function () {

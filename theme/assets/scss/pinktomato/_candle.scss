@@ -663,3 +663,16 @@ body:has(.pt-candle-room) .header-logo { display: none; }
     .pt-code-slot, .pt-code-slot .pt-code-digit, .pt-code.is-checking .pt-code-slot, .pt-code.is-wrong .pt-code-row, .pt-step-in, .pt-step-out { animation: none !important; }
 }
 .pt-gone { display: none !important; }
+
+// "I agree to the Terms of Use and Privacy Policy" on the sign-up form.
+.auth-agree { position: relative; display: flex; align-items: flex-start; gap: 12px; margin: 4px 0 0; padding: 14px 16px; border: 1px solid var(--line-strong); border-radius: 16px; background: var(--surface); font-size: 14px; line-height: 1.5; color: var(--text); cursor: pointer; transition: border-color .2s, box-shadow .2s; }
+.auth-agree:hover { border-color: #e8b4b8; }
+.auth-agree input { position: absolute; opacity: 0; width: 22px; height: 22px; margin: 0; }
+.auth-agree-box { flex: none; display: grid; place-items: center; width: 22px; height: 22px; margin-top: 1px; border-radius: 7px; border: 1.5px solid var(--line-strong); background: #fff; color: transparent; transition: background-color .2s, border-color .2s, color .2s, transform .25s var(--spring); }
+.auth-agree-box svg { fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.auth-agree input:checked + .auth-agree-box { color: #fff; background: var(--accent); border-color: var(--accent); transform: scale(1.06); }
+.auth-agree input:focus-visible + .auth-agree-box { box-shadow: 0 0 0 3px var(--accent-soft); }
+.auth-agree:has(input:checked) { border-color: #e8b4b8; box-shadow: 0 6px 18px rgba(200, 71, 79, .08); }
+.auth-agree a { font-weight: 600; color: var(--accent-dark); text-decoration: underline; text-underline-offset: 3px; }
+.auth-agree-error { margin: -4px 0 0; font-size: 13px; color: var(--error); }
+.auth-agree-error[hidden] { display: none; }

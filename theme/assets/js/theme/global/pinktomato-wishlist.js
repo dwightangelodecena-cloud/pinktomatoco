@@ -1,6 +1,16 @@
 // Wishlist hearts: tapping a heart saves the candle to the shopper's wishlist in the background
 // (no page change) and turns the heart red. Saved candles stay red on every page.
 const KEY = 'pt-wishlisted';
+// The saved hearts belong to whoever is signed in; when that changes, start fresh.
+(function resetForNewAccount() {
+    try {
+        const me = String(Number(window.ptCustomerId) || 0);
+        if (localStorage.getItem('pt-wishlisted-owner') !== me) {
+            localStorage.removeItem(KEY);
+            localStorage.setItem('pt-wishlisted-owner', me);
+        }
+    } catch (e) { /* private mode */ }
+}());
 const read = () => { try { return new Set(JSON.parse(localStorage.getItem(KEY) || '[]')); } catch (e) { return new Set(); } };
 const write = (set) => { try { localStorage.setItem(KEY, JSON.stringify(Array.from(set))); } catch (e) { /* private mode */ } };
 const idOf = (form) => { const m = (form.getAttribute('action') || '').match(/product_id=(\d+)/); return m ? m[1] : null; };
