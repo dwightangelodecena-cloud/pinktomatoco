@@ -34,7 +34,7 @@
     bottom: 0;
     height: 180px;
     z-index: 3;
-    background: linear-gradient(180deg, rgba(253, 248, 245, 0) 0%, rgba(253, 248, 245, .55) 55%, var(--bg) 100%);
+    background: linear-gradient(180deg, rgba(245, 236, 230, 0) 0%, rgba(245, 236, 230, .55) 60%, var(--bg) 100%);
     pointer-events: none;
 }
 .showcase-inner {
@@ -404,3 +404,35 @@ body { font-synthesis: none; font-optical-sizing: auto; }
 // The count bubble sits outside the top-right corner so the heart inside the cart stays visible.
 .cart-preview-trigger .cart-preview-quantity { top: -4px; right: -9px; min-width: 18px; height: 18px; line-height: 18px; font-size: 10px; }
 @media (max-width: 767px) { .cart-preview-trigger .cart-preview-quantity { right: -4px; top: -6px; } }
+
+// ======================================================================
+// Shopping images: one consistent, polished look everywhere.
+// ======================================================================
+// Product cards: square photos on a warm frame, with a soft inner border so light photos don't melt into the page.
+.product-item-thumbnail { aspect-ratio: 1 / 1; background: #ead9cf; box-shadow: inset 0 0 0 1px rgba(43, 32, 36, .06); }
+.product-item-image img { object-fit: cover; object-position: center; }
+.product-item-thumbnail::after { content: ''; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px rgba(43, 32, 36, .07); pointer-events: none; }
+.product-item-summary { display: none; } // the standard description text repeated on every card looked noisy
+
+// Product page: the photo is a framed square that never towers over the page, with neat thumbnails.
+.product-images { position: relative; }
+@media (min-width: 768px) { .product-images { position: sticky; top: 96px; align-self: start; } .product-top { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.product-image { display: block; overflow: hidden; aspect-ratio: 1 / 1; border-radius: 28px; background: #ead9cf; box-shadow: 0 24px 60px rgba(43, 32, 36, .12), inset 0 0 0 1px rgba(43, 32, 36, .06); }
+.product-image img { width: 100%; height: 100%; object-fit: cover; }
+.product-thumbs button { width: 74px; height: 74px; border-radius: 14px; background: #ead9cf; opacity: .75; transition: opacity .2s, border-color .2s; }
+.product-thumbs button[aria-pressed='true'], .product-thumbs button:hover { opacity: 1; }
+.product-thumbs img { width: 100%; height: 100%; object-fit: cover; }
+
+// Quick View: rounded and warm like the rest of the site (it was a plain white box).
+#modal.modal { border-radius: 28px; background: var(--bg); overflow: hidden; box-shadow: 0 40px 100px rgba(20, 12, 8, .35); }
+#modal .modal-close { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; box-shadow: 0 2px 10px rgba(43, 32, 36, .12); }
+#modal .quick-view-image img, #modal .product-image { border-radius: 22px; }
+#modal .product-image { box-shadow: inset 0 0 0 1px rgba(43, 32, 36, .06); }
+.reveal-overlay { background: rgba(30, 20, 18, .55); backdrop-filter: blur(4px); }
+
+// Hero: fade into the page colour itself (no pale band), and a shorter fade.
+.showcase-stage::after { height: 120px; background: linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--bg) 55%, transparent) 60%, var(--bg) 100%); }
+// Hero bottom: a short, warm blend (dark brown → caramel → page) instead of a tall pale band.
+.showcase-stage { padding-bottom: 96px; }
+.showcase-stage::after { height: 72px; background: linear-gradient(180deg, rgba(60, 38, 30, 0) 0%, rgba(150, 110, 92, .6) 45%, var(--bg) 100%); }
+@media (max-width: 767px) { .showcase-stage::after { height: 56px; } }

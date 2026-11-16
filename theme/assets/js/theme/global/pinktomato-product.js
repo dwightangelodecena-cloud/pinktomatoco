@@ -183,7 +183,8 @@ const OTHERS_QUERY = `query Others {
 async function initAlsoLike(productId) {
     const section = document.querySelector('[data-pt-also-like]');
     const grid = section && section.querySelector('[data-pt-also-like-grid]');
-    if (!grid || grid.children.length || !storefrontToken) return;
+    const have = grid ? grid.children.length : 0;
+    if (!grid || have >= 4 || !storefrontToken) return;
     try {
         const response = await fetch('/graphql', {
             method: 'POST',
@@ -192,9 +193,10 @@ async function initAlsoLike(productId) {
             body: JSON.stringify({ query: OTHERS_QUERY }),
         });
         const { data } = await response.json();
-        const others = data.site.products.edges.map((e) => e.node).filter((p) => p.entityId !== Number(productId)).slice(0, 4);
+        const shown = new Set(Array.from(grid.querySelectorAll('[data-product-id]')).map((el) => Number(el.dataset.productId)));
+        const others = data.site.products.edges.map((e) => e.node).filter((p) => p.entityId !== Number(productId) && !shown.has(p.entityId)).slice(0, 4 - have);
         if (!others.length) return;
-        grid.innerHTML = others.map((p, i) => card(p, i, { badge: false })).join('');
+        grid.insertAdjacentHTML('beforeend', others.map((p, i) => card(p, have + i, { badge: false })).join(''));
         section.hidden = false;
     } catch (err) {
         // Leave the row out if it can't load.
