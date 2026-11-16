@@ -593,15 +593,6 @@ body:has(.pt-candle-room) .header-logo { display: none; }
 .auth-agree-error { margin: -4px 0 0; font-size: 13px; color: var(--error); }
 .auth-agree-error[hidden] { display: none; }
 
-// The box stays locked until both documents have been opened.
-.auth-agree.is-locked { cursor: default; background: #fbf6f3; }
-.auth-agree.is-locked .auth-agree-box { background: #f3ebe7; border-style: dashed; }
-.auth-agree.is-unlocked .auth-agree-box { animation: pt-code-pop .45s var(--spring); }
-.auth-agree a[data-pt-doc] { position: relative; }
-.auth-agree a[data-pt-doc].is-read::after { content: ''; display: inline-block; width: 14px; height: 14px; margin-left: 4px; vertical-align: -2px; border-radius: 50%; background: var(--sage) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m4 8.5 2.5 2.5L12 5.5' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 11px no-repeat; }
-.auth-agree-hint { margin: -6px 0 0; font-size: 13px; color: var(--muted); }
-.auth-agree-hint:empty { display: none; }
-.auth-agree-hint.is-ready { color: var(--sage); }
 @keyframes pt-code-pop { 0% { transform: scale(.9); } 60% { transform: scale(1.12); } 100% { transform: none; } }
 
 // Terms of Use / Privacy Policy pop-up on the sign-up page.
@@ -623,7 +614,23 @@ html.pt-doc-open { overflow: hidden; }
 .pt-doc-foot .button { min-height: 46px; padding: 0 26px; }
 @media (max-width: 600px) { .pt-doc-head, .pt-doc-body, .pt-doc-foot { padding-left: 18px; padding-right: 18px; } .pt-doc-foot .button { width: 100%; justify-content: center; } }
 @keyframes pt-doc-in { from { opacity: 0; transform: translateY(16px) scale(.98); } to { opacity: 1; transform: none; } }
-.auth-agree.is-locked input { pointer-events: none; }
 .pt-doc-body:focus { outline: none; }
 .pt-doc-close:focus { outline: none; }
 .pt-doc-close:focus-visible, .pt-doc-done:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+// One pop-up for both documents: tabs to jump between them, "I agree" ticks the box.
+.pt-doc-eyebrow { margin: 0 0 2px; font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-dark); }
+.pt-doc-tabs { display: flex; gap: 4px; margin: 0 24px; padding: 4px; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--surface); align-self: flex-start; margin-top: 12px; }
+.pt-doc-tabs button { padding: 7px 16px; border: 0; border-radius: 999px; background: transparent; font: inherit; font-size: 13px; font-weight: 600; color: var(--text); cursor: pointer; transition: background-color .25s, color .25s; }
+.pt-doc-tabs button[aria-pressed="true"] { color: #fff; background: var(--ink); }
+.pt-doc-section + .pt-doc-section { margin-top: 26px; padding-top: 22px; border-top: 1px dashed var(--line-strong); }
+.pt-doc-section h3 { margin: 0 0 10px; font-family: var(--font-display); font-size: 22px; font-weight: 500; color: var(--ink); }
+.pt-doc-foot { gap: 10px; }
+.auth-agree.is-just-agreed .auth-agree-box { animation: pt-code-pop .45s var(--spring); }
+@media (max-width: 600px) { .pt-doc-tabs { margin-left: 18px; margin-right: 18px; } .pt-doc-foot .button { flex: 1; width: auto; } }
+// How far through the documents the reader is; "I agree" wakes up at the end.
+.pt-doc-progress { height: 3px; background: var(--line); }
+.pt-doc-progress span { display: block; width: 0; height: 100%; background: linear-gradient(90deg, #f5a65a, var(--accent)); transition: width .15s linear; }
+.pt-doc-agree:disabled { opacity: 1; color: var(--muted); background: #efe3de; border-color: #efe3de; box-shadow: none; cursor: not-allowed; }
+.pt-doc-agree.is-ready { animation: pt-code-pop .45s var(--spring); }
+.pt-doc-body:focus, .pt-doc-body:focus-visible { outline: none !important; box-shadow: none !important; }

@@ -41,8 +41,7 @@
                         <span class="auth-agree-box" aria-hidden="true">{{> components/pinktomato/icon name="check" size="14"}}</span>
                         <span>I agree to the <a href="/terms-of-use/" target="_blank" rel="noopener" data-pt-doc="terms">Terms of Use</a> and <a href="/privacy-policy/" target="_blank" rel="noopener" data-pt-doc="privacy">Privacy Policy</a>.</span>
                     </label>
-                    <p class="auth-agree-hint" aria-live="polite" data-pt-agree-hint></p>
-                    <p class="auth-agree-error" role="alert" hidden data-pt-agree-error>Please tick the box to agree to the Terms of Use and Privacy Policy.</p>
+                    <p class="auth-agree-error" role="alert" hidden data-pt-agree-error>Please tick the box and agree to the Terms of Use and Privacy Policy to create your account.</p>
                     {{{forms.create_account.recaptcha.markup}}}
                     <input type="submit" class="button button-primary auth-submit" value="Create account">
                     <p class="auth-switch">Already have an account? <a href="{{urls.auth.login}}?from=index.php">Sign in</a></p>

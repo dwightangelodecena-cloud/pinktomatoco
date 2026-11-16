@@ -1,43 +1,14 @@
 // Sign up: "I agree to the Terms of Use and Privacy Policy".
-// The two links open the documents in a pop-up on the same page (loaded from the store's own pages, so
-// edits to those pages show here too). The box can only be ticked once both have been opened, and the
-// account is only sent once it is ticked. Opened documents are remembered for this tab, so a reload after
-// a BigCommerce error doesn't make the shopper open them again.
-const READ_KEY = 'pt-agree-read';
-const DOCS = { terms: 'Terms of Use', privacy: 'Privacy Policy' };
+// Ticking the box, or clicking either link, opens one pop-up with both documents (loaded from the
+// store's own pages, so edits to those pages show here too). The box is ticked from the pop-up's
+// "I agree" button, and the account is only sent once it is ticked.
+const DOCS = [
+    { id: 'terms', title: 'Terms of Use', url: '/terms-of-use/' },
+    { id: 'privacy', title: 'Privacy Policy', url: '/privacy-policy/' },
+];
 
-const readSet = () => {
-    try { return new Set(JSON.parse(sessionStorage.getItem(READ_KEY) || '[]')); } catch (e) { return new Set(); }
-};
-const saveRead = (set) => {
-    try { sessionStorage.setItem(READ_KEY, JSON.stringify(Array.from(set))); } catch (e) { /* private mode */ }
-};
-
-let dialog = null;
-function getDialog() {
-    if (dialog) return dialog;
-    dialog = document.createElement('dialog');
-    dialog.className = 'pt-doc-dialog';
-    dialog.innerHTML = `
-        <div class="pt-doc-card">
-            <header class="pt-doc-head">
-                <h2 class="pt-doc-title"></h2>
-                <button type="button" class="pt-doc-close" aria-label="Close">&times;</button>
-            </header>
-            <div class="pt-doc-body" tabindex="0" autofocus></div>
-            <footer class="pt-doc-foot">
-                <button type="button" class="button button-primary pt-doc-done">I've read it</button>
-            </footer>
-        </div>`;
-    document.body.appendChild(dialog);
-    const close = () => dialog.close();
-    dialog.querySelector('.pt-doc-close').addEventListener('click', close);
-    dialog.querySelector('.pt-doc-done').addEventListener('click', close);
-    // Clicking the dark area outside the card closes it too.
-    dialog.addEventListener('click', (event) => { if (event.target === dialog) close(); });
-    dialog.addEventListener('close', () => document.documentElement.classList.remove('pt-doc-open'));
-    return dialog;
-}
+// "I agree" needs both: scrolled to the end, and the pop-up open long enough to read (in total).
+const MIN_READ_MS = 30000;
 
 const cache = {};
 function loadDoc(url) {
@@ -58,88 +29,170 @@ function loadDoc(url) {
     return cache[url];
 }
 
-function openDoc(link, onOpened) {
-    const box = getDialog();
-    if (typeof box.showModal !== 'function') {
-        // Very old browsers: open the page in a new tab instead.
-        window.open(link.href, '_blank', 'noopener');
-        onOpened();
-        return;
-    }
-    box.querySelector('.pt-doc-title').textContent = DOCS[link.dataset.ptDoc] || link.textContent;
-    const body = box.querySelector('.pt-doc-body');
-    body.innerHTML = '<p class="pt-doc-loading">Loading…</p>';
-    body.scrollTop = 0;
-    box.showModal();
-    document.documentElement.classList.add('pt-doc-open');
-    loadDoc(link.href).then((html) => {
-        body.innerHTML = html;
-        body.scrollTop = 0;
-        onOpened();
-    }).catch(() => {
-        body.innerHTML = `<p>This page couldn't load. <a href="${link.href}" target="_blank" rel="noopener">Open it in a new tab</a>.</p>`;
-        body.querySelector('a').addEventListener('click', onOpened);
+function buildDialog(onAgree) {
+    const dialog = document.createElement('dialog');
+    dialog.className = 'pt-doc-dialog';
+    dialog.innerHTML = `
+        <div class="pt-doc-card">
+            <header class="pt-doc-head">
+                <div>
+                    <p class="pt-doc-eyebrow">Before you join</p>
+                    <h2 class="pt-doc-title">Terms of Use &amp; Privacy Policy</h2>
+                </div>
+                <button type="button" class="pt-doc-close" aria-label="Close">&times;</button>
+            </header>
+            <nav class="pt-doc-tabs" aria-label="Jump to">
+                ${DOCS.map((d) => `<button type="button" data-pt-jump="${d.id}">${d.title}</button>`).join('')}
+            </nav>
+            <div class="pt-doc-body" tabindex="0" autofocus>
+                ${DOCS.map((d) => `<section class="pt-doc-section" id="pt-doc-${d.id}"><h3>${d.title}</h3><div data-pt-doc-text="${d.id}"><p class="pt-doc-loading">Loading…</p></div></section>`).join('')}
+            </div>
+            <div class="pt-doc-progress" aria-hidden="true"><span></span></div>
+            <footer class="pt-doc-foot">
+                <button type="button" class="button button-secondary pt-doc-cancel">Not now</button>
+                <button type="button" class="button button-primary pt-doc-agree" disabled>Read to the end</button>
+            </footer>
+        </div>`;
+    document.body.appendChild(dialog);
+
+    const body = dialog.querySelector('.pt-doc-body');
+    const tabs = Array.prototype.slice.call(dialog.querySelectorAll('[data-pt-jump]'));
+    const close = () => dialog.close();
+    dialog.querySelector('.pt-doc-close').addEventListener('click', close);
+    dialog.querySelector('.pt-doc-cancel').addEventListener('click', close);
+    dialog.querySelector('.pt-doc-agree').addEventListener('click', () => { onAgree(); close(); });
+    dialog.addEventListener('click', (event) => { if (event.target === dialog) close(); });
+    dialog.addEventListener('close', () => {
+        document.documentElement.classList.remove('pt-doc-open');
+        if (openedAt) { readMs += Date.now() - openedAt; openedAt = 0; }
+        clearInterval(ticker);
     });
+
+    // The tab for whichever document is in view is highlighted; tapping a tab jumps to it.
+    const markTab = () => {
+        const second = dialog.querySelector('#pt-doc-privacy');
+        const inSecond = second && second.offsetTop - body.offsetTop <= body.scrollTop + 40;
+        tabs.forEach((t) => t.setAttribute('aria-pressed', String(t.dataset.ptJump === (inSecond ? 'privacy' : 'terms'))));
+    };
+    tabs.forEach((tab) => tab.addEventListener('click', () => {
+        const section = dialog.querySelector(`#pt-doc-${tab.dataset.ptJump}`);
+        body.scrollTo({ top: section.offsetTop - body.offsetTop, behavior: 'smooth' });
+    }));
+    // "I agree" only works once the reader has scrolled to the end of both documents.
+    const agreeButton = dialog.querySelector('.pt-doc-agree');
+    const bar = dialog.querySelector('.pt-doc-progress span');
+    let loaded = 0;
+    let atEnd = false;
+    let ready = false;
+    let readMs = 0;
+    let openedAt = 0;
+    let ticker = null;
+    const timeRead = () => readMs + (openedAt ? Date.now() - openedAt : 0);
+    const checkEnd = () => {
+        if (ready) return;
+        const room = body.scrollHeight - body.clientHeight;
+        const done = room <= 0 ? 1 : Math.min(1, body.scrollTop / room);
+        bar.style.width = (done * 100) + '%';
+        if (loaded === DOCS.length && (room <= 0 || body.scrollTop >= room - 24)) atEnd = true;
+        const left = Math.ceil((MIN_READ_MS - timeRead()) / 1000);
+        if (atEnd && left <= 0) {
+            ready = true;
+            clearInterval(ticker);
+            bar.style.width = '100%';
+            agreeButton.disabled = false;
+            agreeButton.textContent = 'I agree';
+            agreeButton.classList.add('is-ready');
+        } else if (atEnd) {
+            agreeButton.textContent = `Keep reading · 0:${String(left).padStart(2, '0')}`;
+        } else {
+            agreeButton.textContent = 'Read to the end';
+        }
+    };
+    body.addEventListener('scroll', () => { markTab(); checkEnd(); }, { passive: true });
+
+    DOCS.forEach((d) => {
+        const holder = dialog.querySelector(`[data-pt-doc-text="${d.id}"]`);
+        loadDoc(d.url).then((html) => { holder.innerHTML = html; }).catch(() => {
+            holder.innerHTML = `<p>This couldn't load. <a href="${d.url}" target="_blank" rel="noopener">Open the ${d.title} in a new tab</a>.</p>`;
+        }).then(() => { loaded += 1; checkEnd(); });
+    });
+
+    return {
+        open(jumpTo) {
+            if (typeof dialog.showModal !== 'function') {
+                window.open(DOCS[0].url, '_blank', 'noopener');
+                return;
+            }
+            dialog.showModal();
+            document.documentElement.classList.add('pt-doc-open');
+            openedAt = Date.now();
+            clearInterval(ticker);
+            if (!ready) ticker = setInterval(checkEnd, 1000);
+            const section = jumpTo && dialog.querySelector(`#pt-doc-${jumpTo}`);
+            body.scrollTop = section ? section.offsetTop - body.offsetTop : 0;
+            markTab();
+            checkEnd();
+        },
+    };
 }
 
 function initAgree(form) {
     const label = form.querySelector('[data-pt-agree]');
     const box = label && label.querySelector('input');
     const error = form.querySelector('[data-pt-agree-error]');
-    const hint = form.querySelector('[data-pt-agree-hint]');
     if (!box) return;
-    const links = Array.prototype.slice.call(label.querySelectorAll('[data-pt-doc]'));
-    const read = readSet();
 
-    const say = (text) => {
-        if (!error) return;
-        error.textContent = text;
-        error.hidden = false;
-        error.classList.remove('shake');
-        error.getBoundingClientRect();
-        error.classList.add('shake');
+    const agree = () => {
+        box.checked = true;
+        box.dispatchEvent(new Event('change', { bubbles: true }));
+        label.classList.remove('is-just-agreed');
+        label.getBoundingClientRect();
+        label.classList.add('is-just-agreed');
     };
-    const refresh = () => {
-        links.forEach((a) => a.classList.toggle('is-read', read.has(a.dataset.ptDoc)));
-        const ready = links.every((a) => read.has(a.dataset.ptDoc));
-        const wasLocked = label.classList.contains('is-locked');
-        label.classList.toggle('is-locked', !ready);
-        box.disabled = !ready;
-        if (hint) {
-            const left = links.filter((a) => !read.has(a.dataset.ptDoc)).map((a) => DOCS[a.dataset.ptDoc]);
-            hint.textContent = ready ? 'Thanks for reading. You can tick the box now.' : `Open the ${left.join(' and the ')} to tick the box.`;
-            hint.classList.toggle('is-ready', ready);
-        }
-        if (ready && wasLocked) {
-            label.classList.add('is-unlocked');
-            if (error) error.hidden = true;
-        }
+    let popup = null;
+    const openPopup = (jumpTo) => {
+        if (!popup) popup = buildDialog(agree);
+        popup.open(jumpTo);
     };
 
-    links.forEach((link) => {
+    // Clicking either link opens the pop-up at that document.
+    label.querySelectorAll('[data-pt-doc]').forEach((link) => {
         link.addEventListener('click', (event) => {
             event.preventDefault();
             event.stopPropagation();
-            openDoc(link, () => {
-                read.add(link.dataset.ptDoc);
-                saveRead(read);
-                refresh();
-            });
+            openPopup(link.dataset.ptDoc);
         });
     });
-
-    // Trying to tick the box before opening both documents.
+    // Ticking the box opens the pop-up; it gets ticked from "I agree". Unticking works as usual.
     label.addEventListener('click', (event) => {
-        if (!box.disabled || event.target.closest('[data-pt-doc]')) return;
+        if (event.target.closest('[data-pt-doc]')) return;
+        if (event.target === box) {
+            // The browser has already flipped the box: a click that ticks it is undone and opens the pop-up.
+            if (!box.checked) return; // unticking works as usual
+            event.preventDefault();
+            openPopup('terms');
+            return;
+        }
+        if (box.checked) return; // clicking the words of a ticked row lets it untick as usual
         event.preventDefault();
-        say('Please open the Terms of Use and Privacy Policy first, then tick the box.');
+        openPopup('terms');
+    });
+    box.addEventListener('keydown', (event) => {
+        if ((event.key === ' ' || event.key === 'Enter') && !box.checked) {
+            event.preventDefault();
+            openPopup('terms');
+        }
     });
     box.addEventListener('change', () => { if (box.checked && error) error.hidden = true; });
 
     const remind = () => {
-        say(box.disabled ? 'Please open the Terms of Use and Privacy Policy first, then tick the box.' : 'Please tick the box to agree to the Terms of Use and Privacy Policy.');
+        if (error) {
+            error.hidden = false;
+            error.classList.remove('shake');
+            error.getBoundingClientRect();
+            error.classList.add('shake');
+        }
         label.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        if (!box.disabled) box.focus({ preventScroll: true });
     };
     // The browser's own "tick this box" bubble is replaced by the message under the box.
     box.addEventListener('invalid', (event) => {
@@ -152,8 +205,6 @@ function initAgree(form) {
         event.stopImmediatePropagation();
         remind();
     }, true);
-
-    refresh();
 }
 
 export default function pinkTomatoAgree() {
