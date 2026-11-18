@@ -68,6 +68,8 @@
         {{!-- SKU removed from the page (still used by BigCommerce for orders and stock). --}}
 
         {{> components/pinktomato/product-form form_id="product-options-form"}}
+        {{!-- Offers from Content > Promotions (filled in by pinktomato-promos.js). --}}
+        <div class="promo-strip" data-pt-promos-product hidden></div>
 
         <div class="product-share">
             <h2 class="share-heading">Share This</h2>

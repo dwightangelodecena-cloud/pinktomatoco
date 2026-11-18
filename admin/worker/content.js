@@ -63,6 +63,11 @@ const SLOTS = {
     template: `{{#if show}}<section class="home-faq container"><div class="reveal faq-head" data-pt-reveal="0"><p class="eyebrow">{{eyebrow}}</p><h2 class="section-title">{{title}}</h2><p class="faq-intro">{{intro}}</p><a href="/contact-us/" class="button button-primary">Contact us ${svg('arrow-right', 16)}</a></div><div class="faq-list">{{#each items}}<details class="reveal faq-item" data-pt-reveal="{{delay}}"><summary>{{q}}<span class="faq-toggle" aria-hidden="true"></span></summary><div class="faq-answer"><p>{{a}}</p></div></details>{{/each}}</div></section>{{else}}${HIDDEN}{{/if}}`,
   },
   // Scent-note photos (Content → Products → Scent notes), by note name, for every page (templates/components/common/footer.html).
+  // Promotions (Content > Promotions), for the homepage section and the product-page strip.
+  promos: {
+    region: 'pt_promos--global',
+    template: '<span data-pt-promos="{{data}}" hidden></span>',
+  },
   notePhotos: {
     region: 'pt_note_photos--global',
     template: '<span data-pt-note-photos="{{photos}}" hidden></span>',
@@ -133,6 +138,28 @@ function widgetSettings(key, value, origin, featuredIds) {
       faq: { show: v.showFaq !== false, eyebrow: text(v.faqEyebrow, 80), title: text(v.faqTitle, 120), intro: text(v.faqIntro, 200), items: (v.faqItems || []).filter((f) => text(f.q)).slice(0, 10).map((f, i) => ({ q: text(f.q, 160), a: text(f.a, 600), delay: i * 60 })) },
       journal: { show: v.showJournal !== false, eyebrow: text(v.journalEyebrow, 80), title: text(v.journalTitle, 120), text: text(v.journalText, 400), button: text(v.journalButton, 40) },
     };
+  }
+  if (key === 'promos') {
+    const v = value || {};
+    const link = (l) => (/^\/[^\s"'<>]*$/.test(String(l || '')) ? String(l) : '/shop-all/');
+    const img = (src) => (src ? imageUrl(src, origin) : '');
+    const data = {
+      show: v.show !== false,
+      showOnProducts: v.showOnProducts !== false,
+      eyebrow: text(v.eyebrow, 60),
+      title: text(v.title, 120),
+      items: (v.items || []).slice(0, 4).map((it) => ({
+        on: Boolean(it.on), badge: text(it.badge, 30), title: text(it.title, 80), text: text(it.text, 260),
+        code: text(it.code, 30).toUpperCase().replace(/[^A-Z0-9_-]/g, ''), image: img(it.image),
+        button: text(it.button, 40), link: link(it.link),
+      })),
+      bundle: v.bundle ? {
+        on: Boolean(v.bundle.on), title: text(v.bundle.title, 80), text: text(v.bundle.text, 400),
+        tiers: (v.bundle.tiers || []).slice(0, 8).map((t) => ({ qty: text(t.qty, 40), off: text(t.off, 60) })),
+        note: text(v.bundle.note, 300), image: img(v.bundle.image),
+      } : null,
+    };
+    return { promos: { data: JSON.stringify(data) } };
   }
   if (key === 'notePhotos') {
     const photos = {};
@@ -208,7 +235,7 @@ async function savePage(bc, type, change) {
 
 // Saved editor copies, keyed like the React site's site_content rows.
 export async function getContent(env) {
-  const keys = ['announcement', 'home', 'shipping', 'contact', 'blog', 'footer', 'featured', 'notePhotos'];
+  const keys = ['announcement', 'home', 'shipping', 'contact', 'blog', 'footer', 'featured', 'notePhotos', 'promos'];
   const values = await Promise.all(keys.map((k) => env.STORE.get(`content:${k}`, 'json')));
   return Object.fromEntries(keys.map((k, i) => [k, values[i]]).filter(([, v]) => v));
 }
@@ -230,7 +257,7 @@ export async function saveContent(bc, env, origin, pages) {
       // The featured list lives in the homepage's products slot, so that slot is saved again.
       const home = next.home || { productsEyebrow: 'Just poured', productsTitle: 'New Products' };
       await saveSlot(bc, env, 'products', widgetSettings('home', home, origin, featuredIds).products);
-    } else if (['announcement', 'home', 'footer', 'notePhotos'].includes(key)) {
+    } else if (['announcement', 'home', 'footer', 'notePhotos', 'promos'].includes(key)) {
       const settings = widgetSettings(key, value, origin, featuredIds);
       for (const [slot, s] of Object.entries(settings)) await saveSlot(bc, env, slot, s);
     } else {

@@ -736,3 +736,24 @@ a.admin-tile:hover { border-color: var(--accent); transform: translateY(-2px); }
 @keyframes pin-caret { 0%, 50% { opacity: 1; } 50.01%, 100% { opacity: 0; } }
 @media (max-width: 600px) { .pin-input { letter-spacing: 0; } }
 .pin-slots i.is-filled, .pin-input:focus + .pin-slots i.is-next { background: none; box-shadow: none; }
+
+/* ---------- Content > Promotions ---------- */
+.promo-note { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 14px; font-size: 13px; line-height: 1.5; color: #7a5200; background: #fff8e8; border: 1px solid #f0dcc9; }
+.promo-note svg { flex: none; margin-top: 1px; }
+.promo-switch { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; color: var(--ink); cursor: pointer; }
+.promo-item { display: grid; gap: 12px; margin: 0 0 14px; padding: 16px; border: 1px solid var(--line); border-radius: 16px; background: #fff; transition: opacity .2s; }
+.promo-item legend { padding: 0 6px; font-weight: 700; color: var(--ink); }
+.promo-item.is-off { opacity: .7; background: #fbf7f5; }
+.promo-item-top { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.promo-item-top .promo-switch { flex: 1; min-width: 180px; }
+.promo-grid { display: grid; gap: 12px; }
+@media (min-width: 700px) { .promo-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.promo-photo { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.promo-photo img { width: 160px; height: 96px; object-fit: cover; border-radius: 12px; border: 1px solid var(--line); }
+.promo-photo-empty { display: grid; place-items: center; width: 160px; height: 96px; border-radius: 12px; border: 1px dashed var(--line-strong); font-size: 12px; color: var(--muted); }
+.promo-photo-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.promo-tier-editor { display: grid; gap: 8px; }
+.promo-tier { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: 8px; align-items: center; }
+.promo-tier.is-head { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.promo-tier .form-input { margin: 0; }
+.promo-preview-empty { margin: 16px auto; padding: 18px; border: 1px dashed var(--line-strong); border-radius: 16px; text-align: center; font-size: 13px; color: var(--muted); }

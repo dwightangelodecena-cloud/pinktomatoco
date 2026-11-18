@@ -23,6 +23,7 @@ import pinkTomatoWishlist from './global/pinktomato-wishlist';
 import pinkTomatoAgree from './global/pinktomato-agree';
 import pinkTomatoVerify from './global/pinktomato-verify';
 import pinkTomatoSuccess from './global/pinktomato-success';
+import pinkTomatoPromos from './global/pinktomato-promos';
 
 export default class Global extends PageManager {
     onReady() {
@@ -47,5 +48,6 @@ export default class Global extends PageManager {
         pinkTomatoAgree();
         pinkTomatoVerify();
         pinkTomatoSuccess();
+        pinkTomatoPromos();
     }
 }

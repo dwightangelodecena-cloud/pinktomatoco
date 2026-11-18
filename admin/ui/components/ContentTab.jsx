@@ -9,10 +9,12 @@ import HomepageProducts from './HomepageProducts.jsx';
 import HeroCandles from './HeroCandles.jsx';
 import ProductManager from './ProductManager.jsx';
 import CategoryManager from './CategoryManager.jsx';
+import PromosEditor from './PromosEditor.jsx';
 import { Filter, Loading, Problem } from './shared.jsx';
 
 const CARDS = [
   { id: 'banners', label: 'Top of homepage', text: 'The message strip and the candle showcase (photos, scents, ingredients)', Icon: MegaphoneIcon },
+  { id: 'promos', label: 'Promotions', text: 'Offers and discounts, shown on the homepage and on every product page', Icon: TagIcon },
   { id: 'homepage', label: 'Homepage sections', text: 'Everything below the showcase: products, story, wick guide, care tips, questions', Icon: GridIcon },
   { id: 'pages', label: 'Other pages', text: 'Shipping & Returns, Contact Us, Blog and the bottom of every page', Icon: FileIcon },
   { id: 'categories', label: 'Categories', text: 'The groups in the Shop menu, like Candles or Wax Melts', Icon: LayersIcon },
@@ -259,6 +261,7 @@ function ContentEditor({ content, onSaved, setDirty, products, featuredIds, onFe
     setStatus(null);
     setDraft((d) => {
       if (card === 'pages') return { ...d, [page]: DEFAULT_CONTENT[page] };
+      if (card === 'promos') return { ...d, promos: DEFAULT_CONTENT.promos };
       if (card === 'homepage') return { ...d, home: { ...DEFAULT_CONTENT.home, ...pick(d.home, HERO_FIELDS) } };
       return { ...d, announcement: DEFAULT_CONTENT.announcement, home: { ...d.home, ...pick(DEFAULT_CONTENT.home, HERO_FIELDS) } };
     });
@@ -340,6 +343,7 @@ function ContentEditor({ content, onSaved, setDirty, products, featuredIds, onFe
           {card === 'pages' && <Filter label="Choose a page" options={PAGES} value={page} onChange={setPage} />}
           {card === 'banners' && <HeroBanners draft={draft} edit={edit} />}
           {card === 'homepage' && <Homepage draft={draft} edit={edit} onProductsSaved={onFeaturedSaved} />}
+          {card === 'promos' && <PromosEditor draft={draft} edit={edit} />}
           {card === 'pages' && <PageEditor page={page} draft={draft} edit={edit} />}
           <button type="button" className="link-button content-restore" onClick={restoreOriginal}>Restore original wording</button>
         </div>

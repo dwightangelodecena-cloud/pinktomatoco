@@ -110,4 +110,38 @@ Please also note that the shipping rates for many items we sell are weight-based
     address: 'Watford City, ND, United States, 5884',
     copyright: 'Pink Tomato Enterprises',
   },
+  // Promotions: a section on the homepage and a strip on every product page. Each offer can be switched
+  // on or off. Showing an offer here doesn't create the discount: that is set up in BigCommerce
+  // (Marketing > Promotions), so the price actually drops at checkout.
+  promos: {
+    show: true,
+    showOnProducts: true,
+    eyebrow: 'Offers',
+    title: 'A little something for you',
+    items: [
+      {
+        on: true,
+        badge: '10% OFF',
+        title: 'Your first order',
+        text: 'New to Pink Tomato? Enjoy 10% off your very first order of hand-poured candles.',
+        code: '',
+        image: '',
+        button: 'Shop candles',
+        link: '/shop-all/',
+      },
+    ],
+    bundle: {
+      on: false,
+      title: 'Bundle promotions',
+      text: 'Buy any candle size and any scent. Discounts are based on the total number of candles purchased and are calculated from the regular retail price.',
+      tiers: [
+        { qty: '1–5 candles', off: '20% off' },
+        { qty: '6–15 candles', off: '30% off' },
+        { qty: '16–25 candles', off: '40% off' },
+        { qty: '26 candles and above', off: '50% off (wholesale pricing)' },
+      ],
+      note: 'Prices are calculated before taxes and shipping. Taxes and shipping fees are added at checkout.',
+      image: '',
+    },
+  },
 };

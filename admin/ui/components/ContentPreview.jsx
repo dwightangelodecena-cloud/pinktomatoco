@@ -7,6 +7,9 @@ import {
 import { priceRange } from '../lib/pricing.js';
 import { scentProfile } from '../lib/productText.js';
 import HeroPreview from './HeroPreview.jsx';
+// The store's own promo builder, so the preview matches the website exactly.
+import { promoSectionHtml } from '../../../theme/assets/js/theme/global/pinktomato-promos.js';
+import '../promos.css';
 
 const WIDTHS = { computer: 1280, phone: 390 };
 const ANNOUNCEMENT_ICONS = [MapPinIcon, LeafIcon, ShieldCheckIcon];
@@ -194,6 +197,14 @@ function Home({ draft, products, featuredIds }) {
           </ul>
         </section>
       )}
+
+      {/* Offers (Content > Promotions); an empty, highlighted box while every offer is switched off. */}
+      {(() => {
+        const html = promoSectionHtml(draft.promos);
+        return html
+          ? <section className="promo-section container is-preview" data-preview="promos" dangerouslySetInnerHTML={{ __html: html.replace(/class="([^"]*reveal[^"]*)"/g, 'class="$1 is-visible"') }} />
+          : <section className="promo-section container promo-preview-empty" data-preview="promos"><p>All offers are switched off, so this section is hidden on the website.</p></section>;
+      })()}
 
       <section className="products-home container" data-preview="products">
         <div className="reveal is-visible section-head">
