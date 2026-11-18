@@ -240,7 +240,9 @@ body:has(.account-shell) .breadcrumbs { display: none; }
 // Content slots: each shows its built-in wording until the admin's Content tab saves a version,
 // which BigCommerce renders inside the slot's region. Then the built-in version hides.
 .pt-slot > [data-content-region]:empty { display: none; }
-.pt-slot:has(> [data-content-region] > *) > .pt-default { display: none; }
+// Built-in wording hides only when a real saved widget is in the slot. Page Builder puts its own
+// empty editing boxes in every region, which must not count (they hid the defaults in its preview).
+.pt-slot:has(> [data-content-region] [data-widget-id]) > .pt-default { display: none; }
 .footer-copyright.pt-slot { display: inline; }
 
 // Admin link stays hidden unless the shopper is a store admin (pinktomato-layout.js shows it).
