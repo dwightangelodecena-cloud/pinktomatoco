@@ -757,3 +757,7 @@ a.admin-tile:hover { border-color: var(--accent); transform: translateY(-2px); }
 .promo-tier.is-head { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
 .promo-tier .form-input { margin: 0; }
 .promo-preview-empty { margin: 16px auto; padding: 18px; border: 1px dashed var(--line-strong); border-radius: 16px; text-align: center; font-size: 13px; color: var(--muted); }
+/* Side-by-side fields line up at the top, whether or not one has a hint under it. */
+.promo-grid { align-items: start; }
+.promo-grid .form-field, .promo-item .form-field, .promo-tier-editor + .form-field { display: grid; align-content: start; gap: 6px; margin: 0; }
+.promo-item input.form-input, .promo-tier input.form-input { height: 46px; margin: 0; }
