@@ -295,3 +295,5 @@ $pt-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' wid
 .contact-aside.pt-night .pt-floater { width: 40px; height: 40px; }
 .cart-head.pt-night { margin-bottom: 22px; }
 @media (min-width: 992px) { .contact-aside.pt-night { position: sticky; top: 96px; } }
+// (The big word is the first child of the decoration layer, so floaters start at nth-child(2).)
+.pt-page-head.pt-night .pt-night-deco > .pt-floater:nth-child(2) { left: 66%; top: auto; bottom: 8%; }

@@ -26,6 +26,7 @@ import pinkTomatoSuccess from './global/pinktomato-success';
 import pinkTomatoPromos from './global/pinktomato-promos';
 import pinkTomatoFx from './global/pinktomato-fx';
 import pinkTomatoCinema from './global/pinktomato-cinema';
+import pinkTomatoAtmos from './global/pinktomato-atmos';
 import pinkTomatoLight from './global/pinktomato-light';
 
 export default class Global extends PageManager {
@@ -54,6 +55,7 @@ export default class Global extends PageManager {
         pinkTomatoPromos();
         pinkTomatoFx();
         pinkTomatoCinema();
+        pinkTomatoAtmos();
         pinkTomatoLight(); // after the scripts that build sections, so they light up too
     }
 }

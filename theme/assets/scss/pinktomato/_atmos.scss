@@ -1,0 +1,96 @@
+// ======================================================================
+// Atmosphere (pinktomato-atmos.js): grainy aurora, stars, ember streams, ember cursor.
+// ======================================================================
+
+// Dark bands hold their own layers.
+.has-aurora { position: relative; isolation: isolate; overflow: hidden; }
+.has-aurora > *:not(.pt-aurora):not(.pt-streams):not(.pt-night-deco) { position: relative; z-index: 2; }
+
+// ---------- Grainy aurora: drifting blobs of candle light (grainient-style) ----------
+.pt-aurora { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+.pt-blob {
+    position: absolute;
+    display: block;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: .75;
+    mix-blend-mode: screen;
+    will-change: transform;
+}
+.pt-blob-1 { width: 55%; height: 120%; left: -10%; top: -30%; background: radial-gradient(closest-side, rgba(245, 150, 80, .55), transparent); animation: pt-blob-a 22s ease-in-out infinite alternate; }
+.pt-blob-2 { width: 50%; height: 110%; right: -12%; top: -10%; background: radial-gradient(closest-side, rgba(200, 71, 79, .55), transparent); animation: pt-blob-b 26s ease-in-out infinite alternate; }
+.pt-blob-3 { width: 40%; height: 90%; left: 35%; bottom: -45%; background: radial-gradient(closest-side, rgba(255, 210, 150, .35), transparent); animation: pt-blob-c 19s ease-in-out infinite alternate; }
+@keyframes pt-blob-a { from { transform: translate(0, 0) scale(1); } to { transform: translate(18%, 12%) scale(1.2); } }
+@keyframes pt-blob-b { from { transform: translate(0, 0) scale(1.1); } to { transform: translate(-20%, 16%) scale(.9); } }
+@keyframes pt-blob-c { from { transform: translate(0, 0) scale(.9); } to { transform: translate(-14%, -30%) scale(1.25); } }
+
+// Film grain over the light (animated a little, like real film).
+.pt-grain {
+    position: absolute;
+    inset: -50%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .92 0 0 0 0 .85 0 0 0 .6 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
+    opacity: .16;
+    mix-blend-mode: overlay;
+    animation: pt-grain-shift .9s steps(3) infinite;
+}
+@keyframes pt-grain-shift { 0% { transform: translate(0, 0); } 33% { transform: translate(-4%, 3%); } 66% { transform: translate(3%, -2%); } 100% { transform: translate(0, 0); } }
+
+// Twinkling stars (four-point sparkles).
+.pt-stars i {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    transform: scale(var(--ts, 1));
+    opacity: 0;
+    animation: pt-twinkle var(--tw, 3s) ease-in-out var(--td, 0s) infinite;
+}
+.pt-stars i::before, .pt-stars i::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    background: linear-gradient(90deg, transparent, #fff1dc, transparent);
+    transform: translate(-50%, -50%);
+}
+.pt-stars i::before { width: 10px; height: 1px; }
+.pt-stars i::after { width: 1px; height: 10px; background: linear-gradient(180deg, transparent, #fff1dc, transparent); }
+@keyframes pt-twinkle { 0%, 100% { opacity: 0; } 50% { opacity: .85; } }
+
+// Ember streams canvas.
+.pt-streams { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; pointer-events: none; mix-blend-mode: screen; }
+
+// The night header's own flat gradient becomes the deep base under the aurora.
+.pt-night.has-aurora { background: linear-gradient(150deg, #160e0c 0%, #241517 50%, #3a1c21 100%) !important; }
+.pt-night.has-aurora::after { display: none; } // the aurora brings its own grain
+.pt-night.has-aurora > .pt-night-deco { z-index: 1; }
+
+// ---------- Ember cursor (desktop) ----------
+.pt-cursor {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 2147482000;
+    width: 14px;
+    height: 14px;
+    margin: -7px 0 0 -7px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff3dc 0%, #ffc07a 45%, rgba(245, 150, 80, 0) 72%);
+    box-shadow: 0 0 18px 6px rgba(245, 150, 80, .35);
+    opacity: 0;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+    transition: width .3s, height .3s, margin .3s, opacity .3s, box-shadow .3s;
+}
+.pt-cursor.is-on { opacity: .9; }
+.pt-cursor.is-dark { mix-blend-mode: screen; }
+.pt-cursor.is-hot { width: 46px; height: 46px; margin: -23px 0 0 -23px; opacity: .55; box-shadow: 0 0 30px 12px rgba(245, 150, 80, .28); }
+.pt-cursor.is-press { width: 26px; height: 26px; margin: -13px 0 0 -13px; }
+
+@media (prefers-reduced-motion: reduce) {
+    .pt-blob, .pt-grain, .pt-stars i { animation: none !important; }
+    .pt-streams, .pt-cursor { display: none; }
+}
+
+// The light layers always sit behind the content and never take up space in the band.
+.has-aurora > .pt-aurora, .pt-night > .pt-aurora { position: absolute !important; inset: 0; z-index: 0 !important; }
+.has-aurora > .pt-streams, .pt-night > .pt-streams { position: absolute !important; inset: 0; z-index: 1 !important; width: 100% !important; height: 100% !important; }

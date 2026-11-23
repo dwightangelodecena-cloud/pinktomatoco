@@ -950,3 +950,6 @@
     .pt-404-smoke i, .pt-404-wick::after { animation: none; }
     .pt-404-smoke i { opacity: .5; }
 }
+// Plain pages: the reading column starts on the same line as the title inside the dark band.
+.pt-page-body, .pt-page-foot { margin-left: clamp(22px, 5vw, 64px); margin-right: clamp(22px, 5vw, 64px); }
+@media (max-width: 699px) { .pt-page-body, .pt-page-foot { margin-left: 4px; margin-right: 4px; } }
