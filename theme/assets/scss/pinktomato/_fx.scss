@@ -1,0 +1,297 @@
+// ======================================================================
+// Decoration and motion for the inner pages (pinktomato-fx.js):
+// night header bands, floating ingredient drawings, rising embers, a fine grain texture,
+// cards that tilt toward the pointer, the product stage, category tiles and the nav bar.
+// ======================================================================
+
+// A fine film grain (inline SVG noise), laid over dark bands so they feel printed, not flat.
+$pt-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .9 0 0 0 0 .8 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+
+// ---------- Night header bands (shop, search, cart, contact, plain pages) ----------
+.pt-night {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    margin-top: 18px;
+    padding: clamp(44px, 6vw, 84px) clamp(22px, 5vw, 64px) clamp(40px, 5vw, 64px) !important;
+    border: 0 !important;
+    border-radius: 28px;
+    color: #f6e7df;
+    background:
+        radial-gradient(60% 90% at var(--lx, 70%) var(--ly, 20%), rgba(245, 166, 90, .28), transparent 70%),
+        radial-gradient(80% 120% at 10% 110%, rgba(200, 71, 79, .35), transparent 60%),
+        linear-gradient(150deg, #1d1412 0%, #2b1a1c 45%, #4a2329 100%);
+    box-shadow: 0 30px 70px rgba(43, 20, 18, .22);
+    transition: background-position .6s;
+}
+.pt-night::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: $pt-grain;
+    opacity: .14;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+}
+.pt-night > *:not(.pt-night-deco) { position: relative; z-index: 2; }
+.pt-night .page-heading, .pt-night h1 { color: #fff7f1 !important; text-shadow: 0 2px 30px rgba(245, 150, 80, .25); }
+.pt-night .page-heading em, .pt-night h1 em { color: #ffc89a !important; }
+.pt-night .eyebrow { color: #ffc89a !important; }
+.pt-night .eyebrow::before { background: #f5a65a !important; box-shadow: 0 0 10px #f5a65a !important; }
+.pt-night p, .pt-night .catalog-lead, .pt-night .pt-page-lead, .pt-night .cart-count { color: #e9d3c9 !important; }
+.pt-night .breadcrumbs, .pt-night .breadcrumbs a, .pt-night .breadcrumbs li { color: #d9bdb2 !important; }
+.pt-night > .pt-halo { display: none; }
+
+.pt-night-deco { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+// The giant word behind the heading, like the homepage showcase.
+.pt-bigword {
+    position: absolute;
+    right: -2%;
+    bottom: -18%;
+    font-family: var(--font-display);
+    font-size: clamp(120px, 22vw, 320px);
+    font-style: italic;
+    line-height: 1;
+    letter-spacing: -.04em;
+    white-space: nowrap;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 200, 154, .16);
+    transform: translate(calc(var(--px, 0) * -24px), calc(var(--py, 0) * -14px));
+    transition: transform .6s var(--ease-out, ease);
+    animation: pt-bigword-in 1.6s var(--ease-out, ease) .1s both;
+}
+
+// Drawn ingredients that float, and lean away from the mouse (depth = --d).
+.pt-floater {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: calc(64px * var(--s, 1));
+    height: calc(64px * var(--s, 1));
+    transform: translate(calc(var(--px, 0) * var(--d, 20) * -1px), calc(var(--py, 0) * var(--d, 20) * -1px));
+    transition: transform .7s var(--ease-out, ease);
+    animation: pt-floater-in 1.2s var(--ease-out, ease) calc(.3s + var(--i, 0) * .14s) both;
+}
+.pt-floater-inner { display: block; width: 100%; height: 100%; filter: drop-shadow(0 10px 18px rgba(0, 0, 0, .35)); animation: pt-floater-bob calc(5s + var(--i, 0) * .7s) ease-in-out calc(var(--i, 0) * -.9s) infinite; }
+.pt-floater-inner svg { width: 100%; height: 100%; }
+
+// Embers rising through the band.
+.pt-sparks-rise { position: absolute; inset: 0; overflow: hidden; }
+.pt-sparks-rise i {
+    position: absolute;
+    left: var(--l);
+    bottom: -10px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #ffcf8f;
+    box-shadow: 0 0 8px #f5a65a, 0 0 16px rgba(245, 150, 80, .6);
+    opacity: 0;
+    animation: pt-spark-rise calc(5s * var(--k, 1)) linear var(--t, 0s) infinite;
+}
+
+@keyframes pt-bigword-in { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; } }
+@keyframes pt-floater-in { from { opacity: 0; scale: .4; } to { opacity: 1; scale: 1; } }
+@keyframes pt-floater-bob { 0%, 100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-14px) rotate(5deg); } }
+@keyframes pt-spark-rise {
+    0% { opacity: 0; transform: translate(0, 0) scale(1); }
+    12% { opacity: 1; }
+    70% { opacity: .8; }
+    100% { opacity: 0; transform: translate(18px, -260px) scale(.3); }
+}
+
+// ---------- Cards that tilt toward the pointer, with a glow under it ----------
+.pt-tilt {
+    position: relative;
+    transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transform-style: preserve-3d;
+    transition: transform .5s var(--ease-out, ease), box-shadow .4s;
+    will-change: transform;
+}
+.pt-tilt.is-tilting { transition: transform .12s linear, box-shadow .4s; }
+.pt-tilt::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    border-radius: inherit;
+    background: radial-gradient(220px circle at var(--gx, 50%) var(--gy, 50%), rgba(255, 200, 140, .22), transparent 70%);
+    opacity: 0;
+    transition: opacity .35s;
+    pointer-events: none;
+}
+.pt-tilt.is-tilting::after { opacity: 1; }
+
+// Product cards as real cards again: warm surface, lifted on hover, the photo framed inside.
+.product-grid .product-item {
+    padding: 10px 10px 16px;
+    border-radius: 20px;
+    background: linear-gradient(180deg, #fffaf6 0%, #fbefe9 100%);
+    border: 1px solid rgba(226, 210, 204, .7);
+    box-shadow: 0 10px 28px rgba(43, 32, 36, .06);
+}
+.product-grid .product-item:hover { box-shadow: 0 26px 50px rgba(74, 35, 41, .16), 0 0 0 1px rgba(245, 166, 90, .35); }
+.product-grid .product-item .product-item-thumbnail { border-radius: 14px; overflow: hidden; }
+.product-grid .product-item .product-item-details { padding-left: 6px; padding-right: 6px; }
+.product-grid .product-item .product-item-image img { transition: transform 1.2s var(--ease-out, ease), filter .6s; }
+.product-grid .product-item:hover .product-item-image img { transform: scale(1.07); filter: saturate(1.1) brightness(1.04); }
+
+// Contact facts and cart summary: cards with the warm pointer glow.
+.contact-facts li { transition: transform .5s var(--ease-out, ease), box-shadow .4s, border-color .3s; }
+.contact-facts li:hover { border-color: rgba(245, 166, 90, .5); box-shadow: 0 14px 30px rgba(74, 35, 41, .1); }
+
+// ---------- Category tiles: glass label card, a light sweep, ingredients drifting over the photo ----------
+.category-tile { overflow: hidden; }
+.category-tile .category-tile-text {
+    position: relative;
+    z-index: 4;
+    padding: 14px 18px;
+    border-radius: 16px;
+    background: rgba(29, 20, 18, .38);
+    backdrop-filter: blur(10px) saturate(1.2);
+    -webkit-backdrop-filter: blur(10px) saturate(1.2);
+    border: 1px solid rgba(255, 220, 190, .18);
+    transition: background-color .4s, transform .5s var(--ease-out, ease);
+}
+.category-tile:hover .category-tile-text { background: rgba(74, 35, 41, .55); transform: translateY(-4px); }
+.category-tile::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -60%;
+    z-index: 3;
+    width: 40%;
+    background: linear-gradient(100deg, transparent, rgba(255, 230, 200, .28), transparent);
+    transform: skewX(-18deg);
+    transition: left 1s var(--ease-out, ease);
+    pointer-events: none;
+}
+.category-tile:hover::before { left: 120%; }
+.pt-tile-float { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+.pt-tile-note {
+    position: absolute;
+    width: 54px;
+    height: 54px;
+    filter: drop-shadow(0 8px 14px rgba(0, 0, 0, .35));
+    opacity: .9;
+    transition: transform .8s var(--ease-out, ease), opacity .4s;
+    animation: pt-floater-bob calc(5.5s + var(--i, 0) * 1.2s) ease-in-out calc(var(--i, 0) * -1.6s) infinite;
+}
+.pt-tile-note:first-child { top: 14%; right: 8%; }
+.pt-tile-note:nth-child(2) { top: 44%; right: 22%; width: 40px; height: 40px; }
+.pt-tile-note svg { width: 100%; height: 100%; }
+.category-tile:hover .pt-tile-note:first-child { transform: translate(-10px, -8px) scale(1.15) rotate(-8deg); }
+.category-tile:hover .pt-tile-note:nth-child(2) { transform: translate(8px, -12px) scale(1.2) rotate(10deg); }
+
+// ---------- Product page: the candle's ingredients float around its photo, warm tint behind ----------
+.pt-product-lit .product-view {
+    position: relative;
+    isolation: isolate;
+}
+.pt-product-lit .product-view::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: -40px -6% auto;
+    height: 760px;
+    border-radius: 40px;
+    background:
+        radial-gradient(50% 60% at var(--lx, 25%) var(--ly, 35%), rgba(245, 166, 90, .22), transparent 70%),
+        radial-gradient(60% 70% at 85% 10%, rgba(200, 71, 79, .12), transparent 70%);
+    pointer-events: none;
+    transition: background .6s;
+}
+.pt-stage-float { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+.pt-stage-float .pt-floater { width: calc(70px * var(--s, 1)); height: calc(70px * var(--s, 1)); }
+.pt-stage-float .pt-floater:nth-child(1) { left: -3%; top: 8%; }
+.pt-stage-float .pt-floater:nth-child(2) { left: 88%; top: 4%; }
+.pt-stage-float .pt-floater:nth-child(3) { left: 90%; top: 62%; }
+.pt-stage-float .pt-floater:nth-child(4) { left: -2%; top: 70%; }
+.pt-stage-float .pt-floater:nth-child(5) { left: 46%; top: 92%; }
+.product-page .product-image-frame { position: relative; overflow: visible; }
+.product-page .product-image-frame > img, .product-page .product-image-frame > a { border-radius: inherit; }
+
+// ---------- Nav bar: warm glass with grain, a glowing ember line, an ember underline on links ----------
+.main-header {
+    background:
+        linear-gradient(180deg, rgba(253, 246, 241, .9), rgba(247, 234, 227, .86)) !important;
+}
+.main-header::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, rgba(245, 166, 90, .0) 10%, rgba(245, 166, 90, .85) 50%, rgba(200, 71, 79, .0) 90%, transparent 100%);
+    background-size: 200% 100%;
+    animation: pt-nav-glow 8s linear infinite;
+    opacity: .7;
+    pointer-events: none;
+}
+@keyframes pt-nav-glow { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+@media (min-width: 992px) {
+    .main-menu-link { position: relative; overflow: visible; }
+    .main-menu-link::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        bottom: 4px;
+        width: 0;
+        height: 2px;
+        border-radius: 2px;
+        background: linear-gradient(90deg, #f5a65a, var(--accent));
+        box-shadow: 0 0 8px rgba(245, 150, 80, .8);
+        transform: translateX(-50%);
+        transition: width .45s var(--ease-out, ease);
+    }
+    .main-menu-link:hover::after { width: 46%; }
+    .main-menu-link.active { box-shadow: 0 6px 18px rgba(43, 32, 36, .18), 0 0 0 3px rgba(245, 166, 90, .18); }
+    .main-menu-link.active::after { display: none; }
+    // The logo catches a little light on hover.
+    .nav-logo img { transition: filter .5s, transform .5s var(--ease-out, ease); }
+    .nav-logo:hover img { filter: drop-shadow(0 0 10px rgba(245, 166, 90, .55)); transform: scale(1.04); }
+}
+.cart-preview-trigger svg { transition: transform .4s var(--spring, ease); }
+.cart-preview-trigger:hover svg { transform: rotate(-8deg) scale(1.1); }
+
+// ---------- Phones ----------
+@media (max-width: 699px) {
+    .pt-night { border-radius: 22px; }
+    .pt-bigword { bottom: -8%; font-size: 120px; }
+    .pt-floater { width: calc(46px * var(--s, 1)); height: calc(46px * var(--s, 1)); }
+    .pt-stage-float .pt-floater { width: calc(48px * var(--s, 1)); height: calc(48px * var(--s, 1)); }
+    .pt-tile-note { width: 42px; height: 42px; }
+}
+
+// ---------- Reduced motion: keep the decoration, stop the movement ----------
+@media (prefers-reduced-motion: reduce) {
+    .pt-bigword, .pt-floater, .pt-floater-inner, .pt-sparks-rise i, .pt-tile-note, .main-header::after { animation: none !important; }
+    .pt-sparks-rise { display: none; }
+    .pt-tilt, .category-tile::before { transition: none; transform: none; }
+}
+
+// Plain pages: drawings stay out of the heading's way (top-left corner kept clear).
+.pt-page-head.pt-night .pt-floater:nth-child(2) { left: 4%; top: auto; bottom: 8%; }
+.pt-page-head.pt-night .pt-floater:nth-child(6) { left: 62%; }
+
+// Contact: the side panel is the candle-lit night card.
+.contact-aside.pt-night { margin-top: 0; padding: clamp(22px, 2.5vw, 32px) !important; }
+.contact-aside.pt-night .contact-title { color: #fff7f1; }
+.contact-aside.pt-night .contact-lead { color: #e9d3c9 !important; }
+.contact-aside.pt-night .contact-facts li { background: rgba(255, 255, 255, .06); border-color: rgba(255, 220, 190, .16); color: #f6e7df; }
+.contact-aside.pt-night .contact-facts strong, .contact-aside.pt-night .contact-facts b { color: #fff7f1; }
+.contact-aside.pt-night .contact-facts span, .contact-aside.pt-night .contact-facts small { color: #e0c8be !important; }
+.contact-aside.pt-night .button-secondary, .contact-aside.pt-night .button { color: #fff7f1; border-color: rgba(255, 220, 190, .45); background: rgba(255, 255, 255, .04); }
+.contact-aside.pt-night .button:hover { background: #fff7f1; color: var(--ink); }
+.contact-aside.pt-night .pt-bigword { font-size: 160px; bottom: -4%; }
+.contact-aside.pt-night .pt-floater:nth-child(2), .contact-aside.pt-night .pt-floater:nth-child(3) { display: none; }
+// Contact panel: sits at the top like before; only small drawings in the empty corners.
+.contact-aside.pt-night { align-self: start; margin-top: 0 !important; transform: none; }
+.contact-aside.pt-night .pt-floater:nth-child(n+4) { display: none; }
+.contact-aside.pt-night .pt-floater:nth-child(1) { left: 84%; top: 3%; }
+.contact-aside.pt-night .pt-floater { width: 40px; height: 40px; }
+.cart-head.pt-night { margin-bottom: 22px; }
+@media (min-width: 992px) { .contact-aside.pt-night { position: sticky; top: 96px; } }

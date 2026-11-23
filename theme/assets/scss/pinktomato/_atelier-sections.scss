@@ -945,10 +945,6 @@
 }
 @keyframes pt-404-ember { 0%, 100% { opacity: 1; } 50% { opacity: .35; box-shadow: 0 0 3px #f5a65a; } }
 
-// Contact: the left column reads as part of the page, not another card.
-.contact-aside { background: none; border: 0; box-shadow: none; padding-left: 0; padding-right: 0; }
-.contact-facts li { background: none; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; padding-left: 0; padding-right: 0; box-shadow: none; }
-.contact-facts li:last-child { border-bottom: 0; }
 
 @media (prefers-reduced-motion: reduce) {
     .pt-404-smoke i, .pt-404-wick::after { animation: none; }
