@@ -297,3 +297,22 @@ $pt-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' wid
 @media (min-width: 992px) { .contact-aside.pt-night { position: sticky; top: 96px; } }
 // (The big word is the first child of the decoration layer, so floaters start at nth-child(2).)
 .pt-page-head.pt-night .pt-night-deco > .pt-floater:nth-child(2) { left: 66%; top: auto; bottom: 8%; }
+
+// ---------- Performance ----------
+// Frosted glass on the category labels is expensive while scrolling: use a plain tinted panel instead.
+.category-tile .category-tile-text { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(29, 20, 18, .55); }
+// Floating drawings: no live drop-shadow filter while they bob.
+.pt-floater-inner, .pt-tile-note { filter: none; }
+.pt-floater-inner svg, .pt-tile-note svg { filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .28)); }
+// The dark band's film grain is static and does not blend.
+.pt-night::after { mix-blend-mode: normal; opacity: .08; }
+// Product cards: only lift on hover, no constant will-change.
+.pt-tilt { will-change: auto; }
+.pt-tilt.is-tilting { will-change: transform; }
+
+// Product cards: no motion at all (no tilt, no reveal, no light sweep, no hover zoom).
+.product-grid .product-item, .product-grid .product-item.reveal { opacity: 1 !important; transform: none !important; transition: box-shadow .3s !important; animation: none !important; filter: none !important; }
+.product-grid .product-item::after { display: none !important; }
+.product-grid .product-item .product-item-image img, .product-grid .product-item:hover .product-item-image img { transform: none !important; filter: none !important; transition: none !important; clip-path: none !important; }
+.product-grid .product-item-thumbnail::after { display: none !important; animation: none !important; }
+.product-grid .product-item:hover { box-shadow: 0 10px 28px rgba(43, 32, 36, .06); }

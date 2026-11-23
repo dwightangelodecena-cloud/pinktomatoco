@@ -17,7 +17,7 @@ function aurora(band) {
     el.className = 'pt-aurora';
     el.setAttribute('aria-hidden', 'true');
     let stars = '';
-    const count = window.innerWidth < 700 ? 10 : 22;
+    const count = window.innerWidth < 700 ? 6 : 12;
     for (let i = 0; i < count; i++) {
         stars += `<i style="left:${(i * 47 + 13) % 100}%;top:${(i * 29 + 7) % 100}%;--tw:${2.4 + ((i * 7) % 5) * 0.6}s;--td:${(i * 0.37) % 3}s;--ts:${0.6 + ((i * 3) % 4) * 0.25}"></i>`;
     }
@@ -35,13 +35,13 @@ function streams(band) {
     band.insertBefore(canvas, band.firstChild);
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = 1; // soft lines do not need retina resolution
     let w = 0;
     let h = 0;
     let running = false;
     let frame = 0;
     let t = Math.random() * 1000;
-    const LINES = window.innerWidth < 700 ? 16 : 34;
+    const LINES = window.innerWidth < 700 ? 10 : 20;
 
     const size = () => {
         const r = band.getBoundingClientRect();
@@ -66,7 +66,7 @@ function streams(band) {
             grad.addColorStop(1, `rgba(200,71,79,${alpha * 0.6})`);
             ctx.strokeStyle = grad;
             ctx.beginPath();
-            for (let x = 0; x <= w; x += 14) {
+            for (let x = 0; x <= w + 24; x += 24) {
                 const u = x / w;
                 const y = base
                     + Math.sin(u * 3.2 + t * 0.35 + k * 4) * amp
@@ -77,11 +77,14 @@ function streams(band) {
             ctx.stroke();
         }
     };
-    const loop = () => {
+    let last = 0;
+    const loop = (now) => {
         if (!running) return;
-        t += 0.016;
-        draw();
         frame = requestAnimationFrame(loop);
+        if (now - last < 33) return; // about 30 frames a second is plenty for slow lines
+        last = now;
+        t += 0.033;
+        draw();
     };
     size();
     draw();
@@ -90,7 +93,7 @@ function streams(band) {
         new IntersectionObserver((entries) => entries.forEach((e) => {
             running = e.isIntersecting;
             cancelAnimationFrame(frame);
-            if (running) loop();
+            if (running) frame = requestAnimationFrame(loop);
         })).observe(band);
     }
 }
@@ -160,7 +163,7 @@ function emberCursor() {
 function decorate() {
     Array.prototype.slice.call(document.querySelectorAll(DARK_BANDS)).forEach((band) => {
         aurora(band);
-        if (!band.classList.contains('main-footer')) streams(band);
+        if (!band.classList.contains('main-footer') && window.innerWidth >= 900) streams(band);
     });
     Array.prototype.slice.call(document.querySelectorAll('.eyebrow, .product-scents-label, .dash-section')).forEach(scramble);
 }

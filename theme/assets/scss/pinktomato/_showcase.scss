@@ -610,3 +610,18 @@ body { font-synthesis: none; font-optical-sizing: auto; }
 // The round back-to-top button sits in the bottom-right corner: keep the footer's last row clear of it.
 .footer-bottom-row { padding-right: 72px; padding-bottom: 6px; }
 @media (max-width: 600px) { .footer-bottom-row { padding-right: 0; padding-bottom: 64px; } }
+
+// ---------- Performance: the showcase keeps its motion, but shadows/blur are drawn once ----------
+// Shadows sit on the still picture inside each floating note, not on the moving note itself.
+.showcase-note, .showcase-note:nth-child(n + 7) { filter: none; will-change: transform; }
+.showcase-note svg, .showcase-note img { filter: drop-shadow(0 10px 14px rgba(0, 0, 0, .4)); }
+.showcase-note:nth-child(n + 7) svg, .showcase-note:nth-child(n + 7) img { filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .35)); }
+// Six embers instead of twelve.
+.showcase-embers i:nth-child(n + 7) { display: none; }
+// The candle bobs as a whole figure; its shadowed photo is drawn once and carried along.
+.showcase-figure.is-cutout .showcase-img { animation: none; }
+.showcase-figure.is-cutout .showcase-img.is-current { will-change: auto; }
+.showcase-figure.is-cutout { animation: showcase-bob 6s ease-in-out infinite alternate; will-change: transform; }
+// Eight ingredients around the candle (was fourteen); the far ones rest still.
+.showcase-note:nth-child(n + 9) { display: none; }
+.showcase-note:nth-child(n + 7) { animation-name: showcase-note-in; animation-iteration-count: 1; }

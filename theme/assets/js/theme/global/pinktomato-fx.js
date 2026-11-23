@@ -94,7 +94,7 @@ function tilt(card) {
     });
 }
 
-const TILT_CARDS = '.category-tile, .product-item, .contact-facts li, .promo-card, .cart-page .cart-item, .cart-summary';
+const TILT_CARDS = '.category-tile, .contact-facts li, .promo-card, .cart-page .cart-item, .cart-summary';
 function tiltAll(root) {
     Array.prototype.slice.call((root || document).querySelectorAll(TILT_CARDS)).forEach(tilt);
 }

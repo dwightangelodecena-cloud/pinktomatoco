@@ -94,3 +94,43 @@
 // The light layers always sit behind the content and never take up space in the band.
 .has-aurora > .pt-aurora, .pt-night > .pt-aurora { position: absolute !important; inset: 0; z-index: 0 !important; }
 .has-aurora > .pt-streams, .pt-night > .pt-streams { position: absolute !important; inset: 0; z-index: 1 !important; width: 100% !important; height: 100% !important; }
+
+// ---------- Performance: same look, far less work for the browser ----------
+// The blobs are soft radial gradients already, so no live blur or blending is needed.
+.pt-blob { filter: none; mix-blend-mode: normal; opacity: .6; }
+// Grain is still, not animated (animated grain repaints the whole band many times a second).
+.pt-grain { animation: none; inset: 0; }
+// Stars only twinkle on screens that can afford it.
+@media (max-width: 699px) { .pt-stars i:nth-child(n+7) { display: none; } .pt-blob-3 { display: none; } }
+
+// ---------- Only animate what is on screen (pinktomato-perf.js) ----------
+.pt-paused, .pt-paused *, .pt-paused *::before, .pt-paused *::after,
+.pt-tab-hidden *, .pt-tab-hidden *::before, .pt-tab-hidden *::after { animation-play-state: paused !important; }
+// The heading glow stays lit but no longer breathes forever (a large blurred shape repainting constantly).
+.pt-light.is-lit > .pt-halo { animation: none !important; }
+// The ember line under the nav bar is still (it sits on the fixed header, which repaints while scrolling).
+.main-header::after { animation: none !important; background-position: 50% 0 !important; }
+// While scrolling: decorative loops hold still (entrance reveals still play).
+.pt-scrolling .pt-aurora *, .pt-scrolling .pt-night-deco *, .pt-scrolling .pt-stage-float *, .pt-scrolling .pt-tile-float *,
+.pt-scrolling .announcement-bar *, .pt-scrolling .showcase *, .pt-scrolling .pt-halo, .pt-scrolling .pt-halo *,
+.pt-scrolling .pt-404 *, .pt-scrolling .product-image-frame img { animation-play-state: paused !important; }
+// (Complete version: every animation on the page holds still while scrolling; transitions are unaffected.)
+.pt-scrolling *, .pt-scrolling *::before, .pt-scrolling *::after { animation-play-state: paused !important; }
+
+// ---------- Fewer looping animations (each one is extra work for the browser) ----------
+.pt-stars i:nth-child(n+6) { animation: none; opacity: .4; }
+.marquee-sep, .marquee-sep * { animation: none !important; }
+.pt-tile-note { animation: none; }
+.category-tile:hover .pt-tile-note { animation: pt-floater-bob 4s ease-in-out infinite; }
+.pt-sparks-rise i:nth-child(n+7) { display: none; }
+
+// ---------- Light mode (slow devices, see pinktomato-perf.js): decoration stays, loops hold still ----------
+.pt-lite .pt-aurora *, .pt-lite .pt-night-deco *, .pt-lite .pt-stage-float *, .pt-lite .pt-tile-float *,
+.pt-lite .showcase-note, .pt-lite .showcase-embers i, .pt-lite .showcase-figure, .pt-lite .showcase-img,
+.pt-lite .showcase-glow, .pt-lite .pt-halo, .pt-lite .product-image-frame img, .pt-lite .story-band *, .pt-lite .mood-finder *,
+.pt-lite .wick-guide *, .pt-lite .pt-404 *, .pt-lite .announcement-bar::after { animation: none !important; }
+.pt-lite .showcase-note { opacity: 1; }
+.pt-lite .pt-streams, .pt-lite .pt-cursor, .pt-lite .pt-sparks-rise, .pt-lite .showcase-embers { display: none !important; }
+.pt-lite .pt-tilt { transform: none !important; }
+// The message bar's glow animated its background every frame (a full repaint); it is now a still glow.
+.announcement-bar { animation: none !important; background-position: 50% 50% !important; }

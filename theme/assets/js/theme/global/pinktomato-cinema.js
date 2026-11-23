@@ -63,7 +63,7 @@ function splitWords(heading) {
 const FILM_TITLES = '.pt-night .page-heading, .pt-night h1, .product-page .productView-title, .product-page h1.page-heading, .pt-404 .page-heading, .section-title';
 
 // ---------- 3. Curtain reveals, camera drift, scroll depth ----------
-const CURTAIN = '.product-page .product-image-frame, .category-tile, .product-grid .product-item-thumbnail, .promo-card-photo, .story-band img';
+const CURTAIN = '.product-page .product-image-frame, .category-tile, .promo-card-photo, .story-band img';
 
 function watch() {
     const titles = Array.prototype.slice.call(document.querySelectorAll(FILM_TITLES));
