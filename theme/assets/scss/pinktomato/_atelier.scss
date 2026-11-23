@@ -1,0 +1,98 @@
+// ======================================================================
+// Candlelit atelier — the shared "light up on enter" system.
+// pinktomato-light.js adds .pt-light to each section it watches (and a .pt-halo with three embers),
+// then .is-lit when the section scrolls into view. Without JavaScript nothing is hidden.
+// Tokens live in _design.scss (:root). Section designs follow in _atelier-sections.scss.
+// ======================================================================
+
+.pt-light { position: relative; isolation: isolate; }
+
+// The halo: a soft amber bloom behind the section's heading, like the sign-in candle catching.
+.pt-halo {
+    position: absolute;
+    z-index: -1;
+    top: -60px;
+    left: 50%;
+    width: 78%;
+    max-width: 760px;
+    aspect-ratio: 1 / .62;
+    margin-left: -39%;
+    pointer-events: none;
+    opacity: 0;
+    transform: scale(.35);
+    transform-origin: 50% 40%;
+    background: radial-gradient(closest-side, rgba(245, 166, 90, .26) 0%, rgba(245, 166, 90, .1) 45%, rgba(245, 166, 90, 0) 100%);
+    transition: opacity var(--dur-bloom) var(--ease-glow), transform var(--dur-bloom) var(--ease-out);
+}
+@media (min-width: 976px) { .pt-halo { margin-left: -380px; } } // max-width reached: stay centred
+.pt-light[data-pt-halo='left'] > .pt-halo, .pt-light.section-left > .pt-halo { left: 0; margin-left: -8%; }
+.pt-light.is-lit > .pt-halo { opacity: 1; transform: none; animation: pt-halo-breathe 6s ease-in-out 2s infinite alternate; }
+@keyframes pt-halo-breathe { from { opacity: 1; } to { opacity: .72; } }
+
+// Three embers that drift up once as the light catches, then fade.
+.pt-ember {
+    position: absolute;
+    left: 50%;
+    top: 46%;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--ember-hot);
+    box-shadow: 0 0 6px 2px rgba(245, 166, 90, .7);
+    opacity: 0;
+}
+.pt-ember:nth-child(2) { left: 38%; top: 54%; width: 3px; height: 3px; }
+.pt-ember:nth-child(3) { left: 61%; top: 50%; width: 3px; height: 3px; }
+.pt-light.is-lit .pt-ember { animation: pt-ember-drift 2.8s var(--ease-out) .35s 1 both; }
+.pt-light.is-lit .pt-ember:nth-child(2) { animation-delay: .75s; animation-duration: 3.2s; --dx: -18px; }
+.pt-light.is-lit .pt-ember:nth-child(3) { animation-delay: 1.1s; animation-duration: 2.6s; --dx: 14px; }
+@keyframes pt-ember-drift {
+    0% { opacity: 0; transform: translate(0, 0) scale(.6); }
+    15% { opacity: 1; }
+    100% { opacity: 0; transform: translate(var(--dx, 8px), -120px) scale(1); }
+}
+
+// Headlines settle in: tracking tightens and the line rises as the section lights.
+.pt-light .section-title, .pt-light .page-heading {
+    transition: opacity 1.1s var(--ease-out), transform 1.1s var(--ease-out), letter-spacing 1.6s var(--ease-out);
+}
+.pt-light:not(.is-lit) .section-title, .pt-light:not(.is-lit) .page-heading { opacity: 0; transform: translateY(.28em); letter-spacing: .01em; }
+// The eyebrow's ember ignites.
+.pt-light .eyebrow::before { transition: background-color .8s, box-shadow 1.2s var(--ease-out); }
+.pt-light:not(.is-lit) .eyebrow::before { background: #c9b8b0; box-shadow: none; }
+.pt-light.is-lit .eyebrow::before { animation: pt-eyebrow-catch 1.6s var(--ease-out) .25s 1 both; }
+@keyframes pt-eyebrow-catch {
+    0% { box-shadow: 0 0 0 0 rgba(245, 166, 90, .6), 0 0 0 0 rgba(245, 166, 90, 0); }
+    40% { box-shadow: 0 0 0 7px rgba(245, 166, 90, 0), 0 0 14px 3px rgba(245, 166, 90, .7); }
+    100% { box-shadow: 0 0 0 0 rgba(245, 166, 90, 0), 0 0 8px 1px rgba(245, 166, 90, .5); }
+}
+// The split head's hairline draws across.
+.pt-light:not(.is-lit) .section-head::after { transform: scaleX(0); }
+
+// Staggered children: anything marked [data-pt-stagger] lights its children one after another.
+.pt-light [data-pt-stagger] > * {
+    transition: opacity .9s var(--ease-out), transform .9s var(--ease-out), filter 1.3s var(--ease-glow);
+    transition-delay: calc(var(--i, 0) * 90ms + 150ms);
+}
+.pt-light:not(.is-lit) [data-pt-stagger] > * { opacity: 0; transform: translateY(18px); filter: brightness(.85) saturate(.7); }
+
+// Night bands: full-bleed dark sections, lit warmer.
+.pt-night { color: var(--night-text); background: radial-gradient(120% 120% at 70% 40%, var(--night-2) 0%, var(--night) 72%); }
+.pt-night > .pt-halo, .pt-light.pt-night > .pt-halo { background: radial-gradient(closest-side, rgba(245, 150, 70, .38) 0%, rgba(232, 130, 60, .12) 50%, rgba(232, 130, 60, 0) 100%); mix-blend-mode: screen; }
+.pt-night .section-title, .pt-night h2, .pt-night h3 { color: #fff; }
+.pt-night .eyebrow { color: #f5c8b8; }
+.pt-night .section-lead, .pt-night p { color: var(--night-muted); }
+.pt-night .text-link { color: #fff; }
+.pt-night .text-link:hover { color: var(--ember-hot); }
+
+// Full-bleed helper for sections that sit inside .container: the band reaches the screen edges.
+.pt-bleed { margin-left: calc(var(--gutter) * -1); margin-right: calc(var(--gutter) * -1); padding-left: var(--gutter); padding-right: var(--gutter); }
+
+@media (prefers-reduced-motion: reduce) {
+    .pt-halo, .pt-light.is-lit > .pt-halo { transition: none; transform: none; animation: none; }
+    .pt-ember, .pt-light.is-lit .pt-ember { animation: none; opacity: 0; }
+    .pt-light .section-title, .pt-light .page-heading, .pt-light [data-pt-stagger] > * { opacity: 1 !important; transform: none !important; filter: none !important; letter-spacing: -.025em; }
+    .pt-light.is-lit .eyebrow::before { animation: none; }
+    .pt-light:not(.is-lit) .section-head::after { transform: none; }
+}
+@media print { .pt-halo { display: none; } }

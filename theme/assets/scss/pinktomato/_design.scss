@@ -32,6 +32,49 @@
   --shadow-lg: 0 24px 64px rgba(43, 32, 36, .18);
   --ease: cubic-bezier(.22, 1, .36, 1);
   --spring: cubic-bezier(.34, 1.56, .64, 1);
+
+  /* ---- Candlelit atelier: one system for every page ---- */
+  /* Light (the motif): ember and flame colours shared with the sign-in candle and the showcase */
+  --ember: #f5a65a;
+  --ember-hot: #ffd9a8;
+  --ember-glow: rgba(245, 166, 90, .34);
+  --flame: radial-gradient(ellipse 62% 72% at 50% 84%, #fffbea 0%, #ffe6a0 24%, #ffb54a 52%, #ff7b30 74%, rgba(255, 110, 40, 0) 86%);
+  /* Night bands (dark, like the showcase) */
+  --night: #140e0c;
+  --night-2: #251a14;
+  --night-text: #f6eadb;
+  --night-muted: rgba(246, 234, 219, .74);
+  --night-line: rgba(255, 225, 200, .14);
+
+  /* Spacing scale */
+  --space-section: clamp(72px, 8.5vw, 132px);   /* between homepage / page sections */
+  --space-section-sm: clamp(48px, 5.5vw, 80px);
+  --space-head: clamp(28px, 3.4vw, 52px);       /* section head to its content */
+  --space-stack: 20px;                          /* default gap inside a block */
+  --space-stack-lg: clamp(28px, 3vw, 40px);
+
+  /* Type scale */
+  --fs-display: clamp(42px, 6.2vw, 92px);
+  --fs-h1: clamp(38px, 5vw, 68px);
+  --fs-h2: clamp(32px, 4.1vw, 58px);
+  --fs-h3: clamp(21px, 1.8vw, 26px);
+  --fs-lead: clamp(17px, 1.35vw, 19px);
+  --fs-body: 16px;
+  --fs-small: 14px;
+  --fs-eyebrow: 11.5px;
+
+  /* Radius language: sharp crops for editorial images, soft only on real cards, pill only for buttons/chips */
+  --radius-crop: 4px;
+  --radius-card: 14px;
+  --radius-pill: 999px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --ease-glow: cubic-bezier(.45, 0, .2, 1);
+  --dur-fast: .25s;
+  --dur: .6s;
+  --dur-slow: 1.05s;
+  --dur-bloom: 1.8s;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -72,38 +115,78 @@ h1, h2, h3, h4, h5, h6 {
 .page-narrow { max-width: 880px; }
 .loading { text-align: center; padding: 60px 0; }
 
-.page-heading { font-size: clamp(30px, 4vw, 48px); text-align: center; margin: 8px 0 36px; }
-.eyebrow {
-  margin: 0 0 8px; color: var(--accent-dark); font-size: 12px; font-weight: 600;
-  letter-spacing: .16em; text-transform: uppercase;
+/* ---------- Type system: page title, eyebrow, section heads ---------- */
+.page-heading {
+  font-size: var(--fs-h1); font-weight: 400; line-height: 1.02; letter-spacing: -.028em;
+  text-align: center; margin: 10px 0 var(--space-head);
 }
-.section-title { font-size: clamp(28px, 3.2vw, 40px); margin: 0; }
-.section-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 32px; }
-.text-link { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: var(--ink); }
+.page-heading em, .section-title em { font-style: italic; font-weight: 400; color: var(--accent-dark); }
+/* One eyebrow everywhere: small caps with an ember that catches light when its section does */
+.eyebrow {
+  margin: 0 0 14px; color: var(--accent-dark); font-family: var(--font-body); font-size: var(--fs-eyebrow); font-weight: 600;
+  line-height: 1.4; letter-spacing: .2em; text-transform: uppercase;
+}
+.eyebrow::before {
+  content: ''; display: inline-block; vertical-align: middle; width: 6px; height: 6px; margin: -2px 10px 0 0; border-radius: 50%;
+  background: var(--ember); box-shadow: 0 0 0 0 var(--ember-glow), 0 0 8px 1px rgba(245, 166, 90, .5);
+}
+.section-title {
+  margin: 0; font-size: var(--fs-h2); font-weight: 400; line-height: 1.04; letter-spacing: -.025em;
+  text-wrap: balance;
+}
+.section-lead { margin: 16px 0 0; max-width: 54ch; font-size: var(--fs-lead); line-height: 1.6; color: var(--text); }
+/* Variant 1 — split: title on the left, link on the right, a hairline beneath that draws in */
+.section-head {
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 16px 32px; flex-wrap: wrap;
+  margin-bottom: var(--space-head);
+}
+.section-head > div { min-width: 0; }
+.section-head::after {
+  content: ''; order: 9; flex: 0 0 100%; height: 1px; margin-top: 6px;
+  background: linear-gradient(90deg, var(--line-strong), var(--line) 70%, transparent);
+  transform-origin: left; transition: transform var(--dur-bloom) var(--ease-out) .2s;
+}
+/* Variant 2 — centred editorial */
+.section-head--center, .wick-head, .process-head, .care-head {
+  max-width: 760px; margin: 0 auto var(--space-head); text-align: center;
+}
+.section-head--center .section-lead, .wick-head .section-lead, .process-head .section-lead, .care-head .section-lead { margin-left: auto; margin-right: auto; }
+
+/* Text link: underline that draws, arrow that nudges */
+.text-link {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-size: 14px; font-weight: 600; letter-spacing: .02em; color: var(--ink);
+  background: linear-gradient(currentColor, currentColor) 0 calc(100% - 10px) / 100% 1px no-repeat;
+  transition: color var(--dur-fast), background-size .45s var(--ease-out);
+}
 .text-link svg { transition: transform .3s var(--ease); }
-.text-link:hover { color: var(--accent-dark); }
+.text-link:hover { color: var(--accent-dark); background-size: 0 1px; background-position: 100% calc(100% - 10px); }
 .text-link:hover svg { transform: translateX(4px); }
 
-/* ---------- Buttons ---------- */
-.button {
+/* ---------- Buttons: primary, secondary (outline), light (on night bands) — identical everywhere ---------- */
+.button, .button--primary {
   position: relative; overflow: hidden;
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  min-height: 46px; padding: 12px 26px;
-  font-family: var(--font-body); font-size: 14px; font-weight: 600; letter-spacing: .02em; line-height: 1;
-  border: 1.5px solid transparent; border-radius: 999px; cursor: pointer;
-  transition: background-color .25s, color .25s, border-color .25s, transform .25s var(--ease), box-shadow .25s;
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 48px; padding: 14px 28px; margin: 0;
+  font-family: var(--font-body); font-size: 14px; font-weight: 600; letter-spacing: .04em; line-height: 1;
+  border: 1.5px solid transparent; border-radius: var(--radius-pill); cursor: pointer; text-decoration: none;
+  transition: background-color var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast), transform .3s var(--ease-out), box-shadow .45s var(--ease-out);
 }
 .button svg { transition: transform .3s var(--ease); }
 .button:hover svg { transform: translateX(3px); }
 .button:active { transform: scale(.97); }
-.button:disabled { opacity: .55; cursor: default; transform: none; }
-.button-primary { color: #fff; background: var(--accent); }
-.button-primary:hover { color: #fff; background: var(--accent-dark); transform: translateY(-2px); box-shadow: 0 10px 24px rgba(200, 71, 79, .32); }
+.button:disabled, .button[disabled] { opacity: .55; cursor: default; transform: none; box-shadow: none; }
+.button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; box-shadow: 0 0 0 7px var(--ember-glow); }
+.button-primary, .button--primary { color: #fff; background: var(--accent); border-color: var(--accent); }
+/* Hover: the button "catches" — a warm ember halo blooms around it */
+.button-primary:hover, .button--primary:hover {
+  color: #fff; background: var(--accent-dark); border-color: var(--accent-dark); transform: translateY(-2px);
+  box-shadow: 0 0 0 5px rgba(245, 166, 90, .18), 0 14px 30px rgba(200, 71, 79, .3);
+}
 .button-secondary { color: var(--ink); background: transparent; border-color: var(--ink); }
-.button-secondary:hover { color: #fff; background: var(--ink); transform: translateY(-2px); }
-.button-light { color: var(--ink); background: #fff; }
-.button-light:hover { color: #fff; background: var(--accent); transform: translateY(-2px); }
-.button-small { min-height: 38px; padding: 8px 18px; font-size: 13px; }
+.button-secondary:hover { color: #fff; background: var(--ink); border-color: var(--ink); transform: translateY(-2px); box-shadow: 0 0 0 5px rgba(245, 166, 90, .14); }
+.button-light { color: var(--ink); background: #fff8f1; border-color: #fff8f1; }
+.button-light:hover { color: var(--ink); background: var(--ember-hot); border-color: var(--ember-hot); transform: translateY(-2px); box-shadow: 0 0 0 6px rgba(245, 166, 90, .22), 0 0 34px rgba(245, 166, 90, .45); }
+.button-small { min-height: 40px; padding: 9px 18px; font-size: 13px; }
 
 .icon-button, .link-button { background: none; border: 0; padding: 0; color: inherit; cursor: pointer; font: inherit; }
 .icon-button {
@@ -704,8 +787,12 @@ body.menu-open { overflow: hidden; }
 /* ---------- Motion ---------- */
 /* "backwards" fill so no transform lingers after the animation (it would break position: fixed pop-ups) */
 .page-transition { animation: page-in .6s var(--ease) backwards; }
-.reveal { opacity: 0; transform: translateY(28px); transition: opacity .9s var(--ease), transform .9s var(--ease); }
-.reveal.is-visible { opacity: 1; transform: none; }
+/* Items "light up" rather than just fade: they rise a little and warm from dim to full colour */
+.reveal {
+  opacity: 0; transform: translateY(22px); filter: brightness(.86) saturate(.7);
+  transition: opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out), filter 1.5s var(--ease-glow);
+}
+.reveal.is-visible { opacity: 1; transform: none; filter: none; }
 
 @keyframes page-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
@@ -723,7 +810,7 @@ body.menu-open { overflow: hidden; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
-  .reveal { opacity: 1; transform: none; }
+  .reveal { opacity: 1; transform: none; filter: none; }
   .marquee { animation: none; }
 }
 
