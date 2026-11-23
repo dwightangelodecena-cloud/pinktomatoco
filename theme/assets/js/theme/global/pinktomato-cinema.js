@@ -63,9 +63,30 @@ function splitWords(heading) {
 const FILM_TITLES = '.pt-night .page-heading, .pt-night h1, .product-page .productView-title, .product-page h1.page-heading, .pt-404 .page-heading, .section-title';
 
 // ---------- 3. Curtain reveals, camera drift, scroll depth ----------
-const CURTAIN = '.product-page .product-image-frame, .category-tile, .promo-card-photo, .story-band img';
+const CURTAIN = '.product-page .product-image-frame, .promo-card-photo, .story-band img';
+
+// Cards (category tiles, product cards): the whole card rises in, one after another along the row.
+const CARDS = '.category-tile, .product-grid .product-item';
+function cardsIn() {
+    const cards = Array.prototype.slice.call(document.querySelectorAll(CARDS)).filter((c) => !c.dataset.ptCard);
+    if (!cards.length) return;
+    cards.forEach((card) => {
+        card.dataset.ptCard = '1';
+        const siblings = Array.prototype.slice.call(card.parentElement.children);
+        card.style.setProperty('--ci', String(siblings.indexOf(card) % 4));
+        card.classList.add('pt-card');
+    });
+    if (!('IntersectionObserver' in window)) { cards.forEach((c) => c.classList.add('is-in')); return; }
+    const io = new IntersectionObserver((entries) => entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('is-in');
+        io.unobserve(e.target);
+    }), { threshold: 0.12, rootMargin: '0px 0px -4% 0px' });
+    cards.forEach((c) => io.observe(c));
+}
 
 function watch() {
+    cardsIn();
     const titles = Array.prototype.slice.call(document.querySelectorAll(FILM_TITLES));
     titles.forEach(splitWords);
     const curtains = Array.prototype.slice.call(document.querySelectorAll(CURTAIN)).filter((el) => !el.dataset.ptCurtain);

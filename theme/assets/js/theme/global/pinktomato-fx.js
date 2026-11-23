@@ -94,7 +94,7 @@ function tilt(card) {
     });
 }
 
-const TILT_CARDS = '.category-tile, .contact-facts li, .promo-card, .cart-page .cart-item, .cart-summary';
+const TILT_CARDS = ' .contact-facts li, .promo-card, .cart-page .cart-item, .cart-summary';
 function tiltAll(root) {
     Array.prototype.slice.call((root || document).querySelectorAll(TILT_CARDS)).forEach(tilt);
 }
@@ -145,7 +145,6 @@ function categoryTiles() {
 }
 
 export default function pinkTomatoFx() {
-    categoryTiles();
     const title = (sel) => {
         const h = document.querySelector(sel);
         return h ? h.textContent.trim().split(/\s+/)[0] : '';
@@ -163,7 +162,7 @@ export default function pinkTomatoFx() {
         new MutationObserver(() => {
             if (queued) return;
             queued = true;
-            requestAnimationFrame(() => { queued = false; categoryTiles(); tiltAll(); });
+            requestAnimationFrame(() => { queued = false; tiltAll(); });
         }).observe(document.body, { childList: true, subtree: true });
     }
 }
