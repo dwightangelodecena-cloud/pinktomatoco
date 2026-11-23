@@ -28,6 +28,11 @@
         <a href="{{urls.checkout.single_address}}" class="button button-primary">Check Out</a>
     </div>
 {{else}}
-    <p class="cart-preview-empty">Your cart is empty</p>
+    <div class="cart-preview-empty pt-empty">
+        <span class="pt-empty-flame" aria-hidden="true"></span>
+        <h2>Your cart is empty</h2>
+        <p>Find a scent for tonight.</p>
+        <a href="/shop-all/" class="button button-secondary">Shop the collection</a>
+    </div>
 {{/if}}
 </div>

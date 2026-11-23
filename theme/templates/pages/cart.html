@@ -6,7 +6,10 @@ cart: true
 {{inject 'invalidEntryMessage' (lang 'cart.invalid_entry_message')}}
 {{inject 'multiCouponUIEnabled' cart.multi_coupon_ui_enabled}}
 <div class="page cart-page" data-cart>
-    {{> components/cart/page-title}}
+    <header class="cart-head" data-pt-light>
+        <p class="eyebrow">Almost yours</p>
+        {{> components/cart/page-title}}
+    </header>
 
     <div data-cart-status>
         {{> components/cart/status-messages}}
@@ -61,7 +64,12 @@ cart: true
         </aside>
         </div>
     {{else}}
-        <p class="cart-empty">Your cart is empty. <a href="/shop-all/">Continue shopping</a>.</p>
+        <div class="pt-empty cart-empty">
+            <span class="pt-empty-flame" aria-hidden="true"></span>
+            <h2>Your cart is waiting to be lit</h2>
+            <p>Nothing in it yet. Find a scent for tonight.</p>
+            <a href="/shop-all/" class="button button-primary">Shop the collection {{> components/pinktomato/icon name="arrow-right" size="16"}}</a>
+        </div>
     {{/if}}
 </div>
 {{/partial}}

@@ -30,7 +30,7 @@ product:
 
     {{!-- pinktomato-product.js turns the Mood / Scent Notes / Burn Time lines into an "At a glance" card. --}}
     <section class="product-tabs" data-pt-product-story>
-        <nav class="product-tabs-menu"><span class="product-tab-link is-active">Overview</span></nav>
+        <nav class="product-tabs-menu"><span class="product-tab-link is-active">The story</span></nav>
         <div class="product-story">
             <div class="product-description rte" data-pt-description>{{{product.description}}}</div>
         </div>
@@ -42,7 +42,7 @@ product:
 
     {{#if product.reviews.total}}
         <section class="product-reviews" id="product-reviews">
-            <h2 class="section-title">Reviews</h2>
+            <h2 class="section-title">What people <em>say</em></h2>
             <ul>
                 {{#each product.reviews.list}}
                     <li class="review-item">
@@ -62,9 +62,9 @@ product:
             <div class="section-head">
                 <div>
                     <p class="eyebrow">More to love</p>
-                    <h2 class="section-title">You may also like</h2>
+                    <h2 class="section-title">You may also <em>like</em></h2>
                 </div>
-                <a href="/shop-all/" class="text-link">Shop all {{> components/pinktomato/icon name="arrow-right" size="16"}}</a>
+                <a href="/shop-all/" class="text-link">Shop everything {{> components/pinktomato/icon name="arrow-right" size="16"}}</a>
             </div>
             <div class="product-grid" data-pt-also-like-grid>
                 {{#each (limit product.related_products 4)}}
