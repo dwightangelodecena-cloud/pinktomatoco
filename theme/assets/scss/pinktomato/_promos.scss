@@ -48,3 +48,22 @@
 .promo-strip-code { letter-spacing: .08em; color: var(--accent-dark, #a83a42); }
 .promo-strip .promo-copy { color: #fff; background: var(--ink, #2b2024); }
 .promo-strip-link { font-size: 13px; font-weight: 700; color: var(--accent-dark, #a83a42); white-space: nowrap; }
+
+/* Alignment: cards in a row share one photo height and start their text on the same line; buttons sit at the bottom. */
+.promo-cards { align-items: stretch; }
+.promo-card { display: flex; flex-direction: column; }
+.promo-card-photo { flex: none; min-height: 0; aspect-ratio: 16 / 7; }
+.promo-card-body { flex: 1; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 12px; padding: 28px clamp(22px, 3vw, 36px) 30px; }
+.promo-card p, .promo-tiers { max-width: none; }
+.promo-tiers { width: 100%; }
+.promo-card .promo-btn { margin-top: auto; }
+.promo-card .promo-code + .promo-btn, .promo-card p + .promo-btn { margin-top: auto; }
+.promo-card-body > :last-child:not(.promo-btn) { margin-bottom: 0; }
+/* One offer on its own: photo beside the text, both full height. */
+.promo-cards.is-1 .promo-card.has-photo { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+.promo-cards.is-1 .promo-card.has-photo .promo-card-photo { aspect-ratio: auto; min-height: 300px; }
+.promo-cards.is-1 .promo-card-body { justify-content: center; }
+@media (max-width: 767px) {
+  .promo-cards.is-1 .promo-card.has-photo { display: flex; }
+  .promo-cards.is-1 .promo-card.has-photo .promo-card-photo { aspect-ratio: 16 / 9; min-height: 0; }
+}
