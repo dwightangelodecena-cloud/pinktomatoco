@@ -11,8 +11,12 @@ blog:
 {{/partial}}
 
 {{#partial "page"}}
-<div class="page">
-    <h1 class="page-heading">{{blog.name}}</h1>
+<div class="page pt-blog">
+    <header class="pt-page-head" data-pt-light>
+        <p class="eyebrow">Notes from the studio</p>
+        <h1 class="page-heading">{{blog.name}}</h1>
+        <p class="pt-page-lead">Scent notes, candle care and small stories from our studio in Watford City.</p>
+    </header>
     {{#if blog.posts.length}}
         <div class="blog-posts">
             {{#each blog.posts}}
@@ -26,6 +30,13 @@ blog:
             {{/each}}
         </div>
         {{> components/pinktomato/pagination pagination.blog}}
+    {{else}}
+        <div class="pt-empty">
+            <span class="pt-empty-flame" aria-hidden="true"></span>
+            <h2>The first notes are being written</h2>
+            <p>Stories from the studio are on their way. Until then, come and smell the candles.</p>
+            <a href="/shop-all/" class="button button-primary">Shop the collection {{> components/pinktomato/icon name="arrow-right" size="16"}}</a>
+        </div>
     {{/if}}
 </div>
 {{/partial}}

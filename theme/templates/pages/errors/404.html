@@ -1,8 +1,18 @@
 {{#partial "page"}}
-<div class="page page-narrow">
-    <h1 class="page-heading">404 Error - Page not found</h1>
-    <p>The page you were looking for does not exist.</p>
-    <a href="{{urls.home}}" class="button button-primary">Continue Shopping</a>
-</div>
+{{!-- Page not found: a candle that has just been blown out, a curl of smoke rising from the wick. --}}
+<section class="pt-404" data-pt-light>
+    <div class="pt-404-candle" aria-hidden="true">
+        <span class="pt-404-smoke"><i></i><i></i><i></i></span>
+        <span class="pt-404-wick"></span>
+        <span class="pt-404-jar"><span class="pt-404-wax"></span></span>
+    </div>
+    <p class="eyebrow">Error 404</p>
+    <h1 class="page-heading">This page has <em>burned out</em></h1>
+    <p class="pt-404-text">The page you were looking for isn't here any more. The candles still are.</p>
+    <div class="pt-404-actions">
+        <a href="/shop-all/" class="button button-primary">Shop the collection {{> components/pinktomato/icon name="arrow-right" size="16"}}</a>
+        <a href="{{urls.home}}" class="button button-secondary">Back to home</a>
+    </div>
+</section>
 {{/partial}}
 {{> layout/base}}
