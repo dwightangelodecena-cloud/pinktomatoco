@@ -11,7 +11,15 @@ product_results:
 {{/partial}}
 
 {{#partial "page"}}
-<div class="page">
+<div class="page catalog-page search-page">
+    <header class="catalog-head" data-pt-light>
+        <p class="eyebrow">Search the studio</p>
+    {{#if forms.search.query}}
+        <h1 class="page-heading">{{#if pagination.product_results.total}}{{pagination.product_results.total}}{{else}}{{product_results.products.length}}{{/if}} result{{#if product_results.products.length '!==' 1}}s{{/if}} for <em>'{{forms.search.query}}'</em></h1>
+    {{else}}
+        <h1 class="page-heading">What are you <em>looking for?</em></h1>
+    {{/if}}
+    </header>
     {{!-- data-advanced-search-form and #search_query_adv keep Cornerstone's search script happy. --}}
     <form class="search-page-form" action="{{urls.search}}" method="get" role="search" data-advanced-search-form>
         {{> components/pinktomato/icon name="search" size="20"}}
@@ -22,7 +30,6 @@ product_results:
     </form>
 
     {{#if forms.search.query}}
-        <h1 class="page-heading">{{#if pagination.product_results.total}}{{pagination.product_results.total}}{{else}}{{product_results.products.length}}{{/if}} result{{#if product_results.products.length '!==' 1}}s{{/if}} for '{{forms.search.query}}'</h1>
         {{#if product_results.products.length}}
             <div class="product-grid">
                 {{#each product_results.products}}
@@ -31,10 +38,13 @@ product_results:
             </div>
             {{> components/pinktomato/pagination pagination.product_results}}
         {{else}}
-            <p class="cart-empty">Sorry, nothing matched your search.</p>
+            <div class="pt-empty">
+                <span class="pt-empty-flame" aria-hidden="true"></span>
+                <h2>No candle by that name</h2>
+                <p>Try a scent note like rose, peony or cedar, or browse the whole collection.</p>
+                <a href="/shop-all/" class="button button-secondary">See everything {{> components/pinktomato/icon name="arrow-right" size="16"}}</a>
+            </div>
         {{/if}}
-    {{else}}
-        <h1 class="page-heading">Search</h1>
     {{/if}}
 </div>
 {{/partial}}

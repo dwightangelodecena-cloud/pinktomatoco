@@ -10,11 +10,15 @@ category:
 {{/partial}}
 
 {{#partial "page"}}
-<div class="page">
-    <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <ol><li aria-current="page">{{category.name}}</li></ol>
-    </nav>
-    <h1 class="page-heading">{{category.name}}</h1>
+<div class="page catalog-page">
+    <header class="catalog-head" data-pt-light>
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+            <ol><li aria-current="page">{{category.name}}</li></ol>
+        </nav>
+        <p class="eyebrow">Poured by hand in Watford City</p>
+        <h1 class="page-heading">{{category.name}}</h1>
+        {{#if category.description}}<div class="catalog-lead">{{{category.description}}}</div>{{/if}}
+    </header>
     {{{region name="category_below_header"}}}
 
     {{!-- Category buttons: every visible category, the current one highlighted (admin: Content → Categories). --}}
@@ -49,7 +53,12 @@ category:
 
         {{> components/pinktomato/pagination pagination.category}}
     {{else}}
-        <p class="cart-empty" data-no-products-notification role="alert">There are no products listed under this category.</p>
+        <div class="pt-empty" data-no-products-notification role="alert">
+            <span class="pt-empty-flame" aria-hidden="true"></span>
+            <h2>Nothing on this shelf yet</h2>
+            <p>New pours land here as soon as they're ready.</p>
+            <a href="/shop-all/" class="button button-secondary">See everything {{> components/pinktomato/icon name="arrow-right" size="16"}}</a>
+        </div>
     {{/if}}
 
     {{{region name="category_below_content"}}}

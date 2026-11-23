@@ -199,7 +199,7 @@ export const card = (p, i, { badge = true } = {}) => {
         <div class="product-item-details">
             <h3 class="product-item-title"><a href="${href}">${name}</a></h3>
             <div class="product-item-price">${price}</div>
-            <a href="${href}" class="product-item-action">Pick Options ${icon('arrow-right', 16)}</a>
+            <a href="${href}" class="product-item-action">Choose options ${icon('arrow-right', 16)}</a>
         </div>
     </article>`;
 };
