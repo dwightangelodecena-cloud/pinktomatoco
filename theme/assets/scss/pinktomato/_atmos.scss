@@ -126,11 +126,9 @@
 
 // ---------- Light mode (slow devices, see pinktomato-perf.js): decoration stays, loops hold still ----------
 .pt-lite .pt-aurora *, .pt-lite .pt-night-deco *, .pt-lite .pt-stage-float *, .pt-lite .pt-tile-float *,
-.pt-lite .showcase-note, .pt-lite .showcase-embers i, .pt-lite .showcase-figure, .pt-lite .showcase-img,
-.pt-lite .showcase-glow, .pt-lite .pt-halo, .pt-lite .product-image-frame img, .pt-lite .story-band *, .pt-lite .mood-finder *,
+.pt-lite .pt-halo, .pt-lite .product-image-frame img, .pt-lite .story-band *, .pt-lite .mood-finder *,
 .pt-lite .wick-guide *, .pt-lite .pt-404 *, .pt-lite .announcement-bar::after { animation: none !important; }
-.pt-lite .showcase-note { opacity: 1; }
-.pt-lite .pt-streams, .pt-lite .pt-cursor, .pt-lite .pt-sparks-rise, .pt-lite .showcase-embers { display: none !important; }
+.pt-lite .pt-streams, .pt-lite .pt-cursor, .pt-lite .pt-sparks-rise { display: none !important; }
 .pt-lite .pt-tilt { transform: none !important; }
 // The message bar's glow animated its background every frame (a full repaint); it is now a still glow.
 .announcement-bar { animation: none !important; background-position: 50% 50% !important; }

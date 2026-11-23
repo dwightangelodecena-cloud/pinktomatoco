@@ -15,7 +15,6 @@ function lightModeCheck() {
     try { saved = sessionStorage.getItem('pt-lite'); } catch (e) { /* private mode */ }
     const conn = navigator.connection;
     if (saved === '1' || (conn && conn.saveData)) { root.classList.add('pt-lite'); return; }
-    if (saved === '0') return;
     setTimeout(() => {
         let frames = 0;
         const start = performance.now();
@@ -23,12 +22,12 @@ function lightModeCheck() {
             frames += 1;
             if (now - start < 1200) { requestAnimationFrame(count); return; }
             const fps = frames / ((now - start) / 1000);
-            const lite = fps < 45;
+            const lite = fps < 24;
             root.classList.toggle('pt-lite', lite);
-            try { sessionStorage.setItem('pt-lite', lite ? '1' : '0'); } catch (e) { /* private mode */ }
+            if (lite) { try { sessionStorage.setItem('pt-lite', '1'); } catch (e) { /* private mode */ } }
         };
         requestAnimationFrame(count);
-    }, 1500);
+    }, 3500);
 }
 
 export default function pinkTomatoPerf() {
