@@ -21,7 +21,7 @@
     opacity: 0;
     transform: scale(.35);
     transform-origin: 50% 40%;
-    background: radial-gradient(closest-side, rgba(245, 166, 90, .26) 0%, rgba(245, 166, 90, .1) 45%, rgba(245, 166, 90, 0) 100%);
+    background: radial-gradient(closest-side, rgba(245, 166, 90, .17) 0%, rgba(245, 166, 90, .07) 50%, rgba(245, 166, 90, 0) 100%);
     transition: opacity var(--dur-bloom) var(--ease-glow), transform var(--dur-bloom) var(--ease-out);
 }
 @media (min-width: 976px) { .pt-halo { margin-left: -380px; } } // max-width reached: stay centred
